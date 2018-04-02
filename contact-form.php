@@ -4,7 +4,7 @@
 //////////////////////////
 
 //Your E-mail
-$your_email = 'your@email.com';
+$your_email = 'contact@bitcoin42.com.mx';
 
 //Default Subject if 'subject' field not specified
 $default_subject = 'From My Contact Form';
