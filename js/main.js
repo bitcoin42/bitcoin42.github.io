@@ -1231,7 +1231,7 @@ $window.on('load', function(){
 			var styles = [{"featureType": "administrative","elementType": "labels.text.fill","stylers": [{"color": "#444444"}]},{"featureType": "landscape","elementType": "all","stylers": [{"color": "#f2f2f2"}]},{"featureType": "poi","elementType": "all","stylers": [{"visibility": "off"}]},{"featureType": "road","elementType": "all","stylers": [{"saturation": -100},{"lightness": 45}]},{"featureType": "road.highway","elementType": "all","stylers": [{"visibility": "simplified"}]},{"featureType": "road.arterial","elementType": "labels.icon","stylers": [{"visibility": "off"}]},{"featureType": "transit","elementType": "all","stylers": [{"visibility": "off"}]},{"featureType": "water","elementType": "all","stylers": [{"color": "#0095b3"},{"visibility": "on"}]}];
 			
 			//map settings
-			var address = $map.data('address') ? $map.data('address') : 'london, baker street, 221b';
+			var address = $map.data('address') ? $map.data('address') : 'Tijuana, Misión de San Javier, 10643';
 			var markerDescription = $map.find('.map_marker_description').prop('outerHTML');
 
 			//if you do not provide map title inside #map (.page_map) section inside H3 tag - default titile (Map Title) goes here:
@@ -1239,7 +1239,7 @@ $window.on('load', function(){
 			var markerIconSrc = $map.find('.map_marker_icon').first().attr('src');
 
 			//type your address after "address="
-			jQuery.getJSON('http://maps.googleapis.com/maps/api/geocode/json?address=' + address, function(data) {
+			jQuery.getJSON('http://maps.googleapis.com/maps/api/geocode/json?address=Tijuana' + address, function(data) {
 				
 				lat = data.results[0].geometry.location.lat;
 				lng = data.results[0].geometry.location.lng;
