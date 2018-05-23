@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js">
+<!--<![endif]-->
+
+<head>
+	<title>Bitcoin42</title>
+	<meta charset="utf-8">
+	<!--[if IE]>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<![endif]-->
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/animations.css">
+	<link rel="stylesheet" href="css/fonts.css">
+	<link rel="stylesheet" href="css/main.css" class="color-switcher-link">
+	<link rel="stylesheet" href="css/shop.css">
+	<script src="js/vendor/modernizr-2.6.2.min.js"></script>
+	<!--[if lt IE 9]>
+		<script src="js/vendor/html5shiv.min.js"></script>
+		<script src="js/vendor/respond.min.js"></script>
+		<script src="js/vendor/jquery-1.12.4.min.js"></script>
+	<![endif]-->
+</head>
+
+<body>
+	<!--[if lt IE 9]>
+		<div class="bg-danger text-center">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/" class="highlight">upgrade your browser</a> to improve your experience.</div>
+	<![endif]-->
+	<div class="preloader">
+		<div class="preloader_image"></div>
+	</div>
+	<!-- search modal -->
+	<div class="modal" tabindex="-1" role="dialog" aria-labelledby="search_modal" id="search_modal"> <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		<span aria-hidden="true">
+			<i class="rt-icon2-cross2"></i>
+		</span>
+	</button>
+		<div class="widget widget_search">
+			<form method="get" class="searchform search-form form-inline" action="./">
+				<div class="form-group bottommargin_0"> <input type="text" value="" name="search" class="form-control" placeholder="Search keyword" id="modal-search-input"> </div> <button type="submit" class="theme_button no_bg_button">Search</button> </form>
+		</div>
+	</div>
+	<!-- Unyson messages modal -->
+	<div class="modal fade" tabindex="-1" role="dialog" id="messages_modal">
+		<div class="fw-messages-wrap ls with_padding">
+			<!-- Uncomment this UL with LI to show messages in modal popup to your user: -->
+			<!--
+		<ul class="list-unstyled">
+			<li>Message To User</li>
+		</ul>
+		-->
+		</div>
+	</div>
+	<!-- eof .modal -->
+	<!-- wrappers for visual page editor and boxed version of template -->
+	<div id="canvas">
+		<div id="box_wrapper">
+			<!-- template sections -->
+			<section class="page_toplogo ls section_padding_top_15 section_padding_bottom_15 table_section table_section_md">
+				<div class="container">
+					<div class="row">
+						<div class="col-md-4 col-sm-12 col-md-push-4 text-center"> <a href="./" class="logo top_logo top_offset_logo">
+                    <img src="images/logo.png" alt="">
+                </a>
+							<!-- header toggler --><span class="toggle_menu"><span></span></span>
+						</div>
+						<div class="col-md-4 col-sm-6 col-md-pull-4 text-center text-md-left">
+							<div> <a class="social-icon border-icon rounded-icon color-icon soc-facebook" href="https://www.facebook.com/Bitcoin42-1900249033621464/" title="Facebook"></a> <a class="social-icon border-icon rounded-icon color-icon soc-twitter" href="https://twitter.com/afmhahn" title="Twitter"></a>  <a class="social-icon border-icon rounded-icon color-icon soc-instagram" href="https://www.instagram.com/bitcoin42/" title="Instagram"></a> </div>
+						</div>
+						<div class="col-md-4 col-sm-6 text-center text-md-right hidden-xs">
+							<div class="widget widget_search inline-block">
+								<form method="get" class="searchform form-inline" action="./">
+									<div class="form-group-wrap">
+										<div class="form-group margin_0"> <label class="sr-only" for="topline-search">Search for:</label> <input id="topline-search" type="text" value="" name="search" class="form-control" placeholder=""> </div> <button type="submit" class="theme_button color1 no_bg_button">Search</button>										</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+						<header class="page_header header_white">
+							<div class="container">
+								<div class="row">
+									<div class="col-sm-12 text-center">
+										<!-- main nav start -->
+										<nav class="mainmenu_wrapper">
+											<ul class="mainmenu nav sf-menu">
+												<li class="active"> <a href="index.html">Inicio</a></li>
+												<li> <a href="services.html">Servicios</a></li>
+												<!-- eof pages -->
+												<li> <a href="exchange.html">Intercambiar</a> </li>
+												<li> <a href="https://360.bitcoin42.com/">360 Coininfo</a></li>
+												<li> <a href="timetable.html">Educación</a></li>
+												<!-- shop 
+												<li> <a href="shop.html">Shop</a>
+													<ul>
+														<li> <a href="shop-cart-right.html">Shopping Cart</a> </li>
+														<li> <a href="shop-checkout-right.html">Checkout</a> </li>
+														<li> <a href="shop-register.html">Registration</a> </li>
+													</ul>
+												</li>
+												<!-- eof shop
+												<li> <a href="#">Preguntas Frecuentes
+											's</a> 
+													<ul>
+														<li> <a href="faq-general.html">General Bitcoin Preguntas Frecuentes
+													
+														</a> </li>
+														<li> <a href="faq-services.html">Services and Intercambiar Preguntas Frecuentes
+													 </a> </li>
+														<li> <a href="faq-atm.html">ATMs Preguntas Frecuentes
+													 </a> </li>
+													</ul>
+												<!-- contacts -->
+													<li> <a href="contact2.html">Contacto
+												
+													</a> </li>
+												<!-- eof contacts -->
+											</ul>
+										</nav>
+										<!-- eof main nav -->
+									</div>
+								</div>
+							</div>
+						</header>
+			
+			<section class="page_breadcrumbs cs gradient background_cover color_overlay section_padding_top_65 section_padding_bottom_65">
+				<div class="container">
+					<div class="row">
+						<div class="col-sm-12 text-center">
+							<h2>Preguntas Frecuentes
+						
+							</h2>
+							<ol class="breadcrumb big-spacing darklinks">
+								<li> <a href="./">
+							Home
+						</a> </li>
+								<li> <a href="#">Páginas</a> </li>
+								<li class="active">Preguntas Frecuentes
+							
+								</li>
+							</ol>
+						</div>
+					</div>
+				</div>
+			</section>
+			<section class="ls section_padding_top_150 section_padding_bottom_150 columns_padding_25">
+				<div class="container">
+					<div class="row vertical-tabs">
+						<div class="col-sm-5">
+							<!-- Nav tabs -->
+							<ul class="nav" role="tablist">
+								<li class="active"> <a href="#vertical-tab1" role="tab" data-toggle="tab">¿Qué es Bitcoin?</a> </li>
+								<li> <a href="#vertical-tab2" role="tab" data-toggle="tab">¿Quién creó Bitcoin?</a> </li>
+								<li> <a href="#vertical-tab3" role="tab" data-toggle="tab">¿Quién controla la red Bitcoin?</a> </li>
+								<li> <a href="#vertical-tab4" role="tab" data-toggle="tab">¿Cómo funciona Bitcoin?</a> </li>
+								<li> <a href="#vertical-tab5" role="tab" data-toggle="tab">¿Las personas realmente usan Bitcoin?</a> </li>
+								<li> <a href="#vertical-tab6" role="tab" data-toggle="tab">¿Cómo se pueden conseguir Bitcoins?</a> </li>
+								<li> <a href="#vertical-tab7" role="tab" data-toggle="tab">¿Cuáles son las ventajas de Bitcoin?</a> </li>
+								<li> <a href="#vertical-tab8" role="tab" data-toggle="tab">¿Cuáles son las desventajas de Bitcoin?</a> </li>
+								<li> <a href="#vertical-tab9" role="tab" data-toggle="tab">¿Por qué las personas confían en Bitcoin?</a> </li>
+								<li> <a href="#vertical-tab10" role="tab" data-toggle="tab">¿Puedo hacer dinero con Bitcoin?</a> </li>
+							</ul>
+						</div>
+						<div class="col-sm-7">
+							<!-- Tab panes -->
+							<div class="tab-content no-border">
+								<div class="tab-pane fade in active" id="vertical-tab1">
+									<h3 class="poppins">¿Qué es Bitcoin?</h3>
+									<p>Bitcoin es una red de consenso que permite un nuevo sistema de pago y un dinero completamente digital. Es la primera red descentralizada de pagos punto a punto impulsada por sus usuarios sin autoridad central o intermediarios. Desde la perspectiva del usuario, Bitcoin es bastante parecido a efectivo para Internet. Bitcoin también puede verse como el sistema de contabilidad de entrada triple más prominente que existe.</p>
+								</div>
+								<div class="tab-pane fade" id="vertical-tab2">
+									<h3 class="poppins">¿Quién creó Bitcoin?</h3>
+									<p>Bitcoin es la primera implementación de un concepto llamado "criptomoneda", que Wei Dai describió por primera vez en 1998 en la lista de correo de cypherpunks, sugiriendo la idea de una nueva forma de dinero que utiliza la criptografía para controlar su creación y transacciones, en lugar de una Autoridad central. La primera especificación y prueba de concepto de Bitcoin fue publicada en 2009 en una lista de correo de criptografía por Satoshi Nakamoto. Satoshi dejó el proyecto a finales de 2010 sin revelar mucho sobre sí mismo. Desde entonces, la comunidad ha crecido exponencialmente con muchos desarrolladores que trabajan en Bitcoin. </p>
+									<p>El anonimato de Satoshi a menudo plantea preocupaciones injustificadas, muchas de las cuales están relacionadas con la incomprensión de la naturaleza de fuente abierta de Bitcoin. El protocolo y el software Bitcoin se publican abiertamente y cualquier desarrollador de todo el mundo puede revisar el código o crear su propia versión modificada del software Bitcoin. Al igual que los desarrolladores actuales, la influencia de Satoshi se limitó a los cambios que hizo que otros los adoptaran y, por lo tanto, no controló a Bitcoin. Como tal, la identidad del inventor de Bitcoin es probablemente tan relevante hoy como la identidad de la persona que inventó el papel.</p>
+								</div>
+								<div class="tab-pane fade" id="vertical-tab3">
+									<h3 class="poppins">¿Quién controla la red de Bitcoin?</h3>
+									<p>Nadie posee la red de Bitcoin como nadie posee la tecnología detrás del correo electrónico. Bitcoin es controlado por todos los usuarios de Bitcoin de todo el mundo. Si bien los desarrolladores están mejorando el software, no pueden forzar un cambio en el protocolo de Bitcoin porque todos los usuarios son libres de elegir qué software y versión usan. Para mantenerse compatibles entre sí, todos los usuarios deben usar un software que cumpla con las mismas reglas. Bitcoin solo puede funcionar correctamente con un consenso completo entre todos los usuarios. Por lo tanto, todos los usuarios y desarrolladores tienen un fuerte incentivo para proteger este consenso.</p>
+								</div>
+								<div class="tab-pane fade" id="vertical-tab4">
+									<h3 class="poppins">¿Cómo funciona Bitcoin?</h3>
+									<p>Detrás de escena, la red Bitcoin está compartiendo un libro público llamado "cadena de bloques". Este libro contiene cada transacción procesada, permitiendo que la computadora de un usuario verifique la validez de cada transacción. La autenticidad de cada transacción está protegida por firmas digitales correspondientes a las direcciones de envío, lo que permite a todos los usuarios tener control total sobre el envío de bitcoins desde sus propias direcciones de Bitcoin. Además, cualquiera puede procesar transacciones utilizando el poder de cómputo del hardware especializado y ganar una recompensa en bitcoins por este servicio. Esto a menudo se llama "minería". Para obtener más información sobre Bitcoin, puede consultar la página dedicada y el documento original. 
+
+									</p>
+								</div>
+								<div class="tab-pane fade" id="vertical-tab5">
+									<h3 class="poppins">¿Bitcoin realmente es utilizado por personas? </h3>
+									<p>Sí. Hay un número creciente de empresas y personas que usan Bitcoin. Esto incluye negocios tradicionales como restaurantes, apartamentos y bufetes de abogados, así como servicios populares en línea como Namecheap, Overstock.com y Reddit. Si bien Bitcoin sigue siendo un fenómeno relativamente nuevo, está creciendo rápidamente. A fines de abril de 2017, el valor total de todos los bitcoins existentes excedía los 20 mil millones de dólares estadounidenses, y se intercambiaban diariamente millones de dólares en bitcoins. </p>
+								</div>
+								<div class="tab-pane fade" id="vertical-tab6">
+									<h3 class="poppins">¿Cómo se puede adquirir bitcoins? </h3>
+									<p>Como pago por bienes o servicios. </p>
+									<p>Compra de bitcoins en un intercambio de Bitcoin. </p>
+									<p>Intercambia bitcoins con alguien cerca de ti.</p>
+									<p>Gana bitcoins a través de la minería competitiva. </p>
+								</div>
+								<div class="tab-pane fade" id="vertical-tab7">
+									<h3 class="poppins">¿Cuáles son las ventajas de Bitcoin? </h3>
+									<p>Libertad de pago: es posible enviar y recibir bitcoins en cualquier parte del mundo en cualquier momento. No festivos. Sin Fronteras. Sin burocracia Bitcoin les permite a sus usuarios tener el control total de su dinero. </p>
+									<p>Elija sus propias tarifas: no hay tarifas para recibir bitcoins, y muchas carteras le permiten controlar qué tan grande es la tarifa que debe pagar cuando gasta. Las tarifas más altas pueden alentar una confirmación más rápida de sus transacciones. Las tarifas no están relacionadas con la cantidad transferida, por lo que es posible enviar 100.000 bitcoins por la misma tarifa que cuesta enviar 1 bitcoin. Además, existen procesadores comerciales para ayudar a los comerciantes a procesar transacciones, convertir bitcoins a moneda fiduciaria y depositar fondos directamente en las cuentas bancarias de los comerciantes diariamente. Como estos servicios se basan en Bitcoin, se pueden ofrecer por tarifas mucho más bajas que con PayPal o redes de tarjetas de crédito. </p>
+									<p>Menos riesgos para los comerciantes: las transacciones de Bitcoin son seguras, irreversibles y no contienen información confidencial o personal de los clientes. Esto protege a los comerciantes contra las pérdidas causadas por fraude o contracargos fraudulentos, y no es necesario cumplir con PCI. Los comerciantes pueden expandirse fácilmente a nuevos mercados donde las tarjetas de crédito no están disponibles o las tasas de fraude son inaceptablemente altas. Los resultados netos son tarifas más bajas, mercados más grandes y menos costos administrativos.</p>
+									<p>Seguridad y control: los usuarios de Bitcoin tienen el control total de sus transacciones; es imposible para los comerciantes forzar cargos no deseados o desapercibidos como puede suceder con otros métodos de pago. Los pagos con Bitcoin pueden realizarse sin información personal vinculada a la transacción. Esto ofrece una fuerte protección contra el robo de identidad. Los usuarios de Bitcoin también pueden proteger su dinero con copia de seguridad y encriptación.</p>
+								    <p>Transparente y neutral: toda la información relativa al suministro de dinero de Bitcoin en sí está disponible en la cadena de bloques para que cualquiera la pueda verificar y usar en tiempo real. Ningún individuo u organización puede controlar o manipular el protocolo de Bitcoin porque es criptográficamente seguro. Esto permite que se confíe en el núcleo de Bitcoin por ser completamente neutral, transparente y predecible.</p>
+								</div>
+								<div class="tab-pane fade" id="vertical-tab8">
+									<h3 class="poppins">¿Cuáles son las desventajas de Bitcoin?</h3>
+									<p>Grado de aceptación: muchas personas aún desconocen Bitcoin. Cada día, más empresas aceptan bitcoins porque quieren las ventajas de hacerlo, pero la lista sigue siendo pequeña y aún necesita crecer para beneficiarse de los efectos de red.</p>
+									<p>Volatilidad: el valor total de bitcoins en circulación y el número de empresas que usan Bitcoin son todavía muy pequeños en comparación con lo que podrían ser. Por lo tanto, eventos relativamente pequeños, intercambios o actividades comerciales pueden afectar significativamente el precio. En teoría, esta volatilidad disminuirá a medida que los mercados de Bitcoin y la tecnología madure. Nunca antes el mundo ha visto una moneda de puesta en marcha, por lo que es realmente difícil (y emocionante) imaginar cómo se desarrollará.</p>
+									<p>Desarrollo continuo: el software de Bitcoin todavía está en beta con muchas características incompletas en desarrollo activo. Se están desarrollando nuevas herramientas, características y servicios para que Bitcoin sea más seguro y accesible para las masas. Algunos de estos todavía no están listos para todos. La mayoría de las empresas de Bitcoin son nuevas y aún no ofrecen seguro. En general, Bitcoin aún está en proceso de maduración.</p>
+								</div>
+								<div class="tab-pane fade" id="vertical-tab9">
+									<h3 class="poppins">¿Por qué la gente confía en Bitcoin? </h3>
+									<p>Gran parte de la confianza en Bitcoin proviene del hecho de que no requiere confianza en absoluto. Bitcoin es completamente de código abierto y descentralizado. Esto significa que cualquier persona tiene acceso a todo el código fuente en cualquier momento. Cualquier desarrollador en el mundo puede verificar exactamente cómo funciona Bitcoin. Todas las transacciones y bitcoins emitidos a la existencia pueden ser consultados de forma transparente en tiempo real por cualquier persona. Todos los pagos se pueden realizar sin depender de un tercero y todo el sistema está protegido por algoritmos criptográficos muy revisados ​​por pares, como los utilizados para la banca en línea. Ninguna organización o individuo puede controlar Bitcoin, y la red permanece segura incluso si no se puede confiar en todos sus usuarios. </p>
+								</div>
+								<div class="tab-pane fade" id="vertical-tab10">
+									<h3 class="poppins">¿Puedo ganar dinero con Bitcoin? </h3>
+									<p>Nunca debe esperar hacerse rico con Bitcoin o cualquier tecnología emergente. Siempre es importante desconfiar de cualquier cosa que suene demasiado buena para ser cierta o que desobedezca las reglas económicas básicas. Bitcoin es un espacio de innovación en crecimiento y existen oportunidades comerciales que también incluyen riesgos. No hay garantía de que Bitcoin continúe creciendo a pesar de que se ha desarrollado a un ritmo muy rápido hasta el momento. Invertir tiempo y recursos en todo lo relacionado con Bitcoin requiere iniciativa empresarial.</p>
+									<p>Hay varias maneras de ganar dinero con Bitcoin, como la minería, la especulación o la gestión de nuevas empresas. Todos estos métodos son competitivos y no hay garantía de ganancia. Depende de cada individuo hacer una evaluación adecuada de los costos y los riesgos involucrados en cualquier proyecto de ese tipo. .</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row vertical-tabs">
+							<div class="col-sm-5">
+								<!-- Nav tabs -->
+								<ul class="nav" role="tablist">
+							<li> <a href="#vertical-tab11" role="tab" data-toggle="tab">¿Qué sucede cuando se pierden bitcoins? </a> </li>
+							<li> <a href="#vertical-tab12" role="tab" data-toggle="tab">¿Es legal Bitcoin?</a> </li>
+							<li> <a href="#vertical-tab13" role="tab" data-toggle="tab">¿Cómo son creados los Bitcoins?</a> </li>
+							<li> <a href="#vertical-tab14" role="tab" data-toggle="tab">¿Por qué los Bitcoin tienen valor?</a> </li>
+							<li> <a href="#vertical-tab15" role="tab" data-toggle="tab"> ¿Qué determina el precio de Bitcoin?</a> </li>
+							<li> <a href="#vertical-tab16" role="tab" data-toggle="tab">¿El Bitcoin puede perder valor?</a> </li>
+							<li> <a href="#vertical-tab17" role="tab" data-toggle="tab">¿Qué es la minería Bitcoin?</a> </li>
+							<li> <a href="#vertical-tab18" role="tab" data-toggle="tab">Me gustaría saber más. Dónde puedo encontrar más?</a> </li>
+						</ul>
+					</div>
+					<div class="col-sm-7">
+						<!-- Tab panes -->
+						<div class="tab-content no-border">
+							<div class="tab-pane fade" id="vertical-tab11">
+								<h3 class="poppins">¿Qué sucede cuando se pierden bitcoins?</h3>
+								<p>Cuando un usuario pierde su billetera, tiene el efecto de sacar dinero de la circulación. Los bitcoins perdidos todavía permanecen en la cadena de bloques al igual que cualquier otro bitcoins. Sin embargo, los bitcoins perdidos permanecen inactivos para siempre porque no hay forma de que alguien encuentre la (s) clave (s) privada (s) que les permita volver a gastarlos. Debido a la ley de oferta y demanda, cuando hay menos bitcoins disponibles, los que quedan tendrán una mayor demanda y aumentarán su valor para compensar.</p>
+							</div>
+							<div class="tab-pane fade" id="vertical-tab12">
+								<h3 class="poppins">¿Es legal Bitcoin?</h3>
+								<p>Hasta donde tenemos conocimiento, Bitcoin no ha sido declarado ilegal por la legislación en la mayoría de las jurisdicciones. Sin embargo, algunas jurisdicciones (como Argentina y Rusia) restringen o prohíben severamente las monedas extranjeras. Otras jurisdicciones (como Tailandia) pueden limitar la concesión de licencias a ciertas entidades, como los intercambios de Bitcoin.</p>
+								<p>Los reguladores de varias jurisdicciones están tomando medidas para proporcionar a las personas y las empresas las reglas sobre cómo integrar esta nueva tecnología con el sistema financiero formal y regulado. Por ejemplo, la Red de Ejecución de Delitos Financieros (FinCEN), una oficina en el Departamento del Tesoro de los Estados Unidos, emitió una guía no vinculante sobre cómo caracteriza ciertas actividades que involucran monedas virtuales. </p>
+							</div>
+							<div class="tab-pane fade" id="vertical-tab13">
+								<h3 class="poppins">¿Cómo se crean bitcoins? </h3>
+								<p>Los nuevos bitcoins son generados por un proceso competitivo y descentralizado llamado "minería". Este proceso implica que los individuos son recompensados ​​por la red por sus servicios. Los mineros de Bitcoin están procesando transacciones y asegurando la red usando hardware especializado y están recolectando nuevas bitcoins a cambio. gún poder para controlar o manipular el sistema para aumentar sus ganancias. Cada nodo de Bitcoin en el mundo rechazará cualquier cosa que no cumpla con las reglas que espera que el sistema siga. 
+
+										El protocolo de Bitcoin está diseñado de tal manera que los nuevos bitcoins se crean a una tasa fija. Esto hace que Bitcoin mine sea un negocio muy competitivo. Cuando más mineros se unen a la red, cada vez es más difícil obtener ganancias y los mineros deben buscar la eficiencia para reducir sus costos operativos. Ninguna autoridad central o desarrollador tiene ningún poder para controlar o manipular el sistema para aumentar sus ganancias. Cada nodo de Bitcoin en el mundo rechazará cualquier cosa que no cumpla con las reglas que espera que el sistema siga. </p>
+								<p>Los bitcoins se crean a una velocidad decreciente y predecible. El número de bitcoins nuevos creados cada año se reduce automáticamente a la mitad a lo largo del tiempo hasta que la emisión de bitcoins se detiene por completo con un total de 21 millones de bitcoins en existencia. En este punto, los mineros de Bitcoin probablemente contarán con el respaldo exclusivo de numerosas tarifas de transacción pequeñas. </p>
+							</div>
+							<div class="tab-pane fade" id="vertical-tab14">
+								<h3 class="poppins">¿Por qué los bitcoins tienen valor? </h3>
+								<p>Los bitcoins tienen valor porque son útiles como una forma de dinero. Bitcoin tiene las características de dinero (durabilidad, portabilidad, fungibilidad, escasez, divisibilidad y reconocibilidad) basadas en las propiedades de las matemáticas en lugar de depender de las propiedades físicas (como oro y plata) o confiar en las autoridades centrales (como las monedas fiduciarias). En resumen, Bitcoin está respaldado por las matemáticas. Con estos atributos, todo lo que se requiere para que una forma de dinero tenga valor es la confianza y la adopción. En el caso de Bitcoin, esto se puede medir por su creciente base de usuarios, comerciantes y startups. Al igual que con todas las monedas, el valor de bitcoin proviene solo y directamente de personas dispuestas a aceptarlas como pago. </p>
+							</div>
+							<div class="tab-pane fade" id="vertical-tab15">
+								<h3 class="poppins">¿Qué determina el precio de bitcoin?</h3>
+								<p>El precio de un bitcoin está determinado por la oferta y la demanda. Cuando la demanda de bitcoins aumenta, el precio aumenta, y cuando la demanda cae, el precio baja. Solo hay un número limitado de bitcoins en circulación y se crean nuevas bitcoins a un ritmo predecible y decreciente, lo que significa que la demanda debe seguir este nivel de inflación para mantener el precio estable. Debido a que Bitcoin sigue siendo un mercado relativamente pequeño en comparación con lo que podría ser, no se necesitan grandes cantidades de dinero para subir o bajar el precio del mercado, y por lo tanto, el precio de un bitcoin sigue siendo muy volátil</p>
+							</div>
+							<div class="tab-pane fade" id="vertical-tab16">
+								<h3 class="poppins">¿Pueden los bitcoins perder su valor?</h3>
+								<p>Sí. La historia está plagada de monedas que fracasaron y ya no se utilizan, como el marco alemán durante la República de Weimar y, más recientemente, el dólar zimbabuense. Aunque las fallas de moneda anteriores se debieron típicamente a la hiperinflación de un tipo que Bitcoin imposibilita, siempre hay posibilidades de fallas técnicas, monedas rivales, problemas políticos, etc. Como regla básica, ninguna moneda debe considerarse absolutamente segura contra fallas o tiempos difíciles. Bitcoin ha demostrado ser confiable por años desde su creación y hay un gran potencial para que Bitcoin continúe creciendo. Sin embargo, nadie está en condiciones de predecir cuál será el futuro de Bitcoin.</p>
+							</div>
+							<div class="tab-pane fade" id="vertical-tab17">
+								<h3 class="poppins">¿Qué es la minería de Bitcoin?</h3>
+								<p>La minería es el proceso de gastar energía informática para procesar transacciones, asegurar la red y mantener a todos en el sistema sincronizados. Se puede percibir como el centro de datos de Bitcoin, excepto que se diseñó para que esté totalmente descentralizado con mineros que operan en todos los países y ninguna persona tiene control sobre la red. Este proceso se conoce como "minería" como una analogía de la extracción de oro porque también es un mecanismo temporal utilizado para emitir nuevos bitcoins. Sin embargo, a diferencia de la extracción de oro, la minería de Bitcoin ofrece una recompensa a cambio de servicios útiles necesarios para operar una red de pago segura. La minería aún será necesaria después de la emisión del último bitcoin.</p>
+							</div>
+							<div class="tab-pane fade" id="vertical-tab18">
+								<h3 class="poppins">>Me gustaría aprender más. ¿Dónde puedo obtener ayuda?</h3>
+								<p>Puede encontrar más información y ayuda sobre los recursos y las páginas de la comunidad o sobre las preguntas frecuentes de Wiki.
+							</div>
+						</div>
+					</div>
+			</section>
+
+			<footer class="page_footer ds texture_bg section_padding_top_65 section_padding_bottom_65 columns_padding_25 table_section">
+				<div class="container">
+					<div class="row">
+						<div class="col-md-4 col-sm-12 col-md-push-4 text-center">
+							<div class="widget widget_text"> <a href="./" class="logo">
+	                    <img src="images/logo-clear.png" alt="">
+	                </a>
+								<h3 class="widget-title topmargin_15">Bitcoin42</h3>
+								<p class="bottommargin_10"> IOS Office Piso 4, Oficina 417, Misión de San Javier 10643, Zona Urbana Rio Tijuana, 22010 Tijuana, B.C., Mexiko</p>
+								<p class="small-text grey colorlinks">+52 1 664 542 6547<br> <a href="mailto:contact@bitcoin42.com.mx">contact@bitcoin42.com.mx</a> </p>
+								<p class="topmargin_25"> <a href="#" class="social-icon color-icon rounded-icon border-icon soc-facebook"></a> <a href="#" class="social-icon color-icon rounded-icon border-icon soc-twitter"></a> <a href="#" class="social-icon color-icon rounded-icon border-icon soc-google"></a>									<a href="#" class="social-icon color-icon rounded-icon border-icon soc-linkedin"></a> <a href="#" class="social-icon color-icon rounded-icon border-icon soc-youtube"></a> </p>
+							</div>
+						</div>
+				 	<div class="col-md-4 col-sm-6 col-md-pull-4 text-center">
+							<div class="widget widget_recent_entries widget_media_margin">
+							<h3 class="widget-title">Sobre Nosotros</h3>
+								<ul class="greylinks">
+									<li>
+										<p class="bottommargin_0">Nuestro objetivo es promover las monedas virtuales y llevarlas al mundo real. Somos un equipo profesional, expertos dedicados y entusiastas de Bitcoin. Estamos ayudando a establecer un medio de pago justo, rápido y económico. </a> </p>
+								</ul>	
+							</div>
+						</div>      																	
+						<div class="col-md-4 col-sm-6 text-center">
+							<div class="widget widget_mailchimp widget_media_margin">
+								<h3 class="widget-title">Noticias</h3>
+								<form class="signup" action="./" method="get">
+									<p class="bottommargin_30">Suscríbete a nuestra lista de correo para recibir nuevas actualizaciones y ofertas especiales:</p>
+									<div class="form-group-wrap">
+										<div class="form-group"> <label for="footer-mailchimp" class="sr-only">Ínserte correo eléctronico</label> <input name="email" type="email" id="footer-mailchimp" class="mailchimp_email form-control" placeholder="Correo Eléctronico"> </div> <button type="submit" class="theme_button no_bg_button color1">Suscribete</button>										</div>
+									<div class="response"></div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</footer>
+			<section class="ls page_copyright section_padding_15">
+				<div class="container">
+					<div class="row">
+						<div class="col-sm-12 text-center">
+							<p class="small-text thin">&copy; NAOME S.A.P.I. de C.V. dba Bitcoin42 - Copyright 2018. Todos los derechos reservados.</p>
+						</div>
+					</div>
+				</div>
+			</section>
+		</div>
+		<!-- eof #box_wrapper -->
+	</div>
+	<!-- eof #canvas -->
+	<script src="js/compressed.js"></script>
+	<script src="js/main.js"></script>
+	<!-- Google Map Script -->
+	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDTwYSMRGuTsmfl2z_zZDStYqMlKtrybxo"></script>
+</body>
+
+</html>
