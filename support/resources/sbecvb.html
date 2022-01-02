@@ -1,0 +1,57 @@
+<div class="sb-main sb-admin-box">
+    <div class="sb-input">
+        <span>Insert your Envato Purchase Code</span>
+        <input type="text" />
+    </div>
+    <p>
+        Please insert your Envato Purchase Code to enter the administration area. You can only use it on up to 2 live domains and on localhost. 
+        <a class="btn-text" href="https://help.market.envato.com/hc/en-us/articles/202822600-Where-Is-My-Purchase-Code-" rel="nofollow" target="_blank">Where is my purchase code?</a>
+    </p>
+    <a href="#" class="sb-btn">Activate</a>
+</div>
+<style>
+    .sb-input {
+        display: block;
+    }
+
+    .sb-input > span {
+        display: block;
+        width: auto;
+        font-size: 17px;
+        margin-bottom: 15px;
+    }
+
+    p {
+        color: #566069;
+        font-size: 15px;
+        line-height: 25px;
+    }
+
+    p a {
+        color: #566069;
+    }
+</style>
+<script>
+    (function ($) {
+        $(document).ready(function () {
+            $('body').on('click', '.sb-btn', function () {
+                let code = $.trim($('.sb-input input').val());
+                if (code == '') return;
+                if ($(this).hasClass('sb-loading')) return;
+                $(this).addClass('sb-loading');
+                $.ajax({
+                    method: 'POST',
+                    url: `https://board.support/synch/verification.php?verification&code=${code}&domain=${SB_URL}`
+                }).done((response) => {
+                    if (response == ('ver' + 'ification-success')) {
+                        SBF.cookie('_ga_' + 'VGCKMENS', 'VGCKMENS', 3650, 'set');
+                        location.reload();
+                    } else {
+                        alert(response);
+                        $(this).removeClass('sb-loading');
+                    };
+                });
+            }); 
+        });
+    }(jQuery)); 
+</script>
