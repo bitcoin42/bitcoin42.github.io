@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" role="img" aria-label="Bitcoin42">
+  <title>Bitcoin42 — Bildmarke</title>
+  
+  <circle cx="50" cy="50" r="43" fill="none" stroke="#E8871A" stroke-width="4"/>
+  <g fill="none" stroke="#1B3A4B" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M40 27 L19 59 L53 59"/>
+    <path d="M40 27 L40 73"/>
+    <path d="M59 38 A 13 13 0 1 1 82 46 C 82 57 61 63 59 73 L 84 73"/>
+  </g>
+</svg>
