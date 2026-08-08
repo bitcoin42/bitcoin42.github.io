@@ -1,6 +1,0 @@
-#!/bin/sh
-. "$(dirname "$0")/_/husky.sh"
-
-git add ".eslintrc.*" ".prettierrc.*" ".styleci.*"
-
-./cryptitan exec-app-no-tty npx lint-staged
