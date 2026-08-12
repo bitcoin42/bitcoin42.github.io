@@ -1,469 +1,562 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>bitcoin42 — Self-Custody-Beratung von Alec F. M. Hahn</title>
-<meta name="description" content="Seit 2014 im Bitcoin-Space. Technische Beratung zu Eigenverwahrung, Multisig, Cold Storage und Krypto-Treasury für Privatpersonen, Familien und Unternehmen. Erstgespräch kostenlos.">
-<link rel="icon" href="logo/bitcoin42-favicon.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-<!-- Zeeg Terminbuchung -->
-<link href="https://assets.zeeg.me/embed.min.css" rel="stylesheet">
-<script type="text/javascript" src="https://assets.zeeg.me/embed.min.js" defer></script>
+<title>NightTrader — a Bitcoin order book you co-sign</title>
+<meta name="description" content="A Bitcoin-native exchange with a full bid/ask order book. Coins settle into multisig addresses you hold a key to, with a timelock that returns them if the nodes disappear.">
 <style>
+/* ---------------------------------------------------------------
+   NightTrader — landing page
+   No third-party requests: no webfonts, no analytics, no CDN.
+   Type: whitepaper serif (display) / system sans (body) / mono (data)
+----------------------------------------------------------------*/
 :root{
-  --steel:#DCDFD9;        /* Hintergrund: kaltes Beton-Grau */
-  --card:#F4F5F1;         /* Kartenfläche */
-  --ink:#14181C;          /* Text */
-  --ink-soft:#5A6169;     /* Sekundärtext */
-  --vault:#1B3A4B;        /* Tiefes Tresor-Blau */
-  --signal:#E8871A;       /* Bitcoin-Orange, streng dosiert */
-  --line:rgba(20,24,28,.14);
-  --display:"Familjen Grotesk",-apple-system,Segoe UI,sans-serif;
-  --body:"Newsreader",Georgia,serif;
-  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  --paper:#FCFCFB;
+  --ink:#101114;
+  --grey:#6B7076;
+  --rule:#E2E2DF;
+  --orange:#F7931A;
+  --night:#0C1220;
+  --serif:"Times New Roman",Times,"Liberation Serif",serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  --gutter:150px;
+  --pad:32px;
 }
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{-webkit-text-size-adjust:100%}
 body{
-  margin:0;background:var(--steel);color:var(--ink);
-  font-family:var(--body);font-size:18px;line-height:1.6;
+  margin:0;background:var(--paper);color:var(--ink);
+  font-family:var(--sans);font-size:16.5px;line-height:1.62;
   -webkit-font-smoothing:antialiased;
 }
-.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
-h1,h2,h3,.mono,nav,button,.btn{font-family:var(--display)}
-h2{font-size:clamp(28px,4vw,42px);line-height:1.1;letter-spacing:-.02em;margin:0 0 8px;font-weight:600}
-h3{font-size:21px;line-height:1.25;margin:0 0 8px;font-weight:600;letter-spacing:-.01em}
-p{margin:0 0 16px}
-a{color:inherit}
-.mono{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft)}
-.eyebrow{display:flex;align-items:center;gap:12px;margin-bottom:22px}
-.eyebrow::after{content:"";flex:1;height:1px;background:var(--line)}
-section{padding:76px 0;border-top:1px solid var(--line)}
+a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--orange);padding-bottom:1px}
+a:hover{background:var(--orange);border-bottom-color:var(--orange)}
+:focus-visible{outline:2px solid var(--orange);outline-offset:3px}
 
-/* ---- Kopfzeile ---- */
-header{position:sticky;top:0;z-index:20;background:rgba(220,223,217,.88);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
-.bar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 0}
-.sig{font-family:var(--display);font-weight:700;letter-spacing:-.02em;font-size:17px}
-
-nav{display:flex;gap:24px;font-size:14px;font-weight:500}
-nav a{text-decoration:none;color:var(--ink-soft)}
-nav a:hover{color:var(--ink)}
-@media(max-width:820px){nav{display:none}}
-
-.btn{display:inline-block;background:var(--vault);color:#fff;text-decoration:none;
-  padding:13px 22px;border-radius:2px;font-weight:600;font-size:15px;letter-spacing:.01em;
-  border:1px solid var(--vault);transition:background .18s ease,transform .18s ease}
-.btn:hover{background:#122b38;transform:translateY(-1px)}
-.btn--signal{background:var(--signal);border-color:var(--signal);color:#14181C}
-.btn--signal:hover{background:#d4790f}
-.btn--ghost{background:transparent;color:var(--ink);border:1px solid var(--ink)}
-.btn--ghost:hover{background:var(--ink);color:var(--card)}
-.btn--sm{padding:9px 16px;font-size:14px}
-
-/* ---- Hero: Seed-Karte ---- */
-.hero{padding:64px 0 72px}
-.hero h1{font-size:clamp(38px,6.4vw,68px);line-height:1.02;letter-spacing:-.035em;font-weight:600;margin:0 0 18px;max-width:16ch}
-.hero .lede{font-size:clamp(19px,2.2vw,22px);max-width:52ch;color:#2C333A}
-.hero-actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:28px}
-.hero-note{font-family:var(--mono);font-size:12px;color:var(--ink-soft)}
-
-.seedcard{background:var(--card);border:1px solid var(--line);border-radius:3px;padding:22px;
-  box-shadow:0 1px 0 rgba(255,255,255,.6) inset, 0 18px 40px -34px rgba(20,24,28,.9)}
-.seedcard-top{display:flex;justify-content:space-between;align-items:baseline;
-  border-bottom:1px solid var(--line);padding-bottom:12px;margin-bottom:16px}
-.seedgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line)}
-.seedgrid div{background:var(--card);padding:11px 10px;display:flex;align-items:baseline;gap:9px;
-  opacity:0;animation:reveal .5s ease forwards}
-.seedgrid b{font-family:var(--mono);font-size:11px;color:var(--signal);font-weight:500;min-width:15px}
-.seedgrid i{font-style:normal;font-family:var(--display);font-weight:500;font-size:15px;letter-spacing:-.01em}
-@keyframes reveal{to{opacity:1}}
-@media(max-width:520px){.seedgrid{grid-template-columns:repeat(2,1fr)}}
-@media(prefers-reduced-motion:reduce){
-  .seedgrid div{animation:none;opacity:1}
-  html{scroll-behavior:auto}
-  .btn:hover{transform:none}
+/* ---------- layout: document with an annotation gutter ---------- */
+.wrap{max-width:1120px;margin:0 auto;padding:0 var(--pad)}
+.band{border-bottom:1px solid var(--rule)}
+.row{display:grid;grid-template-columns:var(--gutter) 1fr;gap:0 40px;padding:64px 0}
+.gut{
+  font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--grey);padding-top:9px;
 }
-.herogrid{display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:center}
-@media(max-width:900px){.herogrid{grid-template-columns:1fr;gap:40px}}
+.gut b{display:block;color:var(--ink);font-weight:600}
+.col{max-width:720px}
 
-/* ---- Kennzahlen ---- */
-.facts{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);
-  border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-.facts div{background:var(--steel);padding:24px 20px}
-.facts strong{display:block;font-family:var(--display);font-size:34px;font-weight:600;letter-spacing:-.03em;line-height:1}
-.facts span{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);display:block;margin-top:8px}
-@media(max-width:760px){.facts{grid-template-columns:repeat(2,1fr)}}
+h1,h2,h3{font-family:var(--serif);font-weight:400;letter-spacing:-.015em;margin:0}
+h1{font-size:clamp(40px,7.2vw,74px);line-height:.98}
+h2{font-size:clamp(28px,3.6vw,40px);line-height:1.08;margin-bottom:18px}
+h3{font-size:20px;line-height:1.25;margin-bottom:6px}
+p{margin:0 0 18px}
+p.lede{font-size:19px;color:#2C2F34;max-width:62ch}
+.small{font-size:14px;color:var(--grey)}
+.mono{font-family:var(--mono)}
 
-/* ---- Karten ---- */
-.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin-top:36px}
-@media(max-width:760px){.cards{grid-template-columns:1fr}}
-.card{background:var(--card);border:1px solid var(--line);border-radius:3px;padding:28px}
-.card ul{margin:12px 0 0;padding-left:18px;font-size:16.5px;color:#39414A}
-.card li{margin-bottom:5px}
-.card .tag{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--signal);display:block;margin-bottom:12px}
+/* ---------- masthead ---------- */
+header{border-bottom:1px solid var(--rule);background:var(--paper)}
+.mast{display:flex;align-items:baseline;justify-content:space-between;gap:24px;padding:18px 0;flex-wrap:wrap}
+.brand{font-family:var(--mono);font-size:13px;letter-spacing:.24em;font-weight:600;text-transform:uppercase;border:0}
+.brand:hover{background:none}
+.brand .dot{color:var(--orange)}
+nav{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;display:flex;gap:20px;flex-wrap:wrap}
+nav a{border-bottom:1px solid transparent;color:var(--grey)}
+nav a:hover{background:none;color:var(--ink);border-bottom-color:var(--orange)}
 
-/* ---- Ablauf ---- */
-.steps{counter-reset:s;margin-top:36px;display:grid;gap:1px;background:var(--line);border:1px solid var(--line)}
-.step{background:var(--card);padding:26px 28px;display:grid;grid-template-columns:64px 1fr;gap:20px;align-items:start}
-.step::before{counter-increment:s;content:counter(s,decimal-leading-zero);
-  font-family:var(--mono);font-size:13px;color:var(--signal);padding-top:5px}
-.step p{margin:0;color:#39414A;font-size:16.5px}
-@media(max-width:560px){.step{grid-template-columns:1fr;gap:8px}}
+/* ---------- hero ---------- */
+.hero{padding:78px 0 56px}
+.kicker{font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--orange);margin-bottom:26px}
+h1 .thin{color:var(--grey)}
+.hero .answer{
+  font-family:var(--mono);font-size:clamp(13px,1.7vw,15.5px);letter-spacing:.02em;
+  margin:26px 0 30px;padding-left:16px;border-left:2px solid var(--orange);
+}
+.cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px;align-items:center}
+.btn{
+  font-family:var(--mono);font-size:13px;letter-spacing:.08em;text-transform:uppercase;
+  padding:13px 22px;border:1px solid var(--ink);background:var(--ink);color:var(--paper);
+}
+.btn:hover{background:var(--orange);border-color:var(--orange);color:var(--ink)}
+.btn.ghost{background:none;color:var(--ink)}
+.btn.ghost:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
 
-/* ---- Preise ---- */
-.prices{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:36px}
-@media(max-width:860px){.prices{grid-template-columns:1fr}}
-.price{background:var(--card);border:1px solid var(--line);border-radius:3px;padding:28px;display:flex;flex-direction:column}
-.price--lead{border:1.5px solid var(--vault);position:relative}
-.price--lead::after{content:"Meistgewählt";position:absolute;top:-11px;left:26px;background:var(--vault);color:#fff;
-  font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:4px 9px}
-.amount{font-family:var(--display);font-size:38px;font-weight:600;letter-spacing:-.03em;line-height:1;margin:14px 0 4px}
-.amount small{font-family:var(--mono);font-size:12px;font-weight:400;letter-spacing:.06em;color:var(--ink-soft);margin-left:6px}
-.price ul{margin:16px 0 24px;padding-left:18px;font-size:16px;color:#39414A;flex:1}
-.price li{margin-bottom:6px}
+/* ---------- signature: the annotated redeem script ---------- */
+.script{
+  border:1px solid var(--rule);background:#fff;margin-top:52px;
+}
+.script-head{
+  display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  padding:12px 18px;border-bottom:1px solid var(--rule);
+  font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey);
+}
+.script-body{display:grid;grid-template-columns:1fr 300px}
+pre.code{
+  margin:0;padding:26px 20px;font-family:var(--mono);font-size:14px;line-height:2.05;
+  overflow-x:auto;white-space:pre;
+}
+.tok{
+  font:inherit;background:#FDF1E0;border:0;border-bottom:1.5px solid var(--orange);
+  padding:2px 4px;cursor:pointer;color:var(--ink);
+}
+.tok:hover,.tok[aria-pressed="true"]{background:var(--orange)}
+.op{color:var(--grey)}
+.note{
+  border-left:1px solid var(--rule);padding:26px 22px;font-size:14.5px;line-height:1.6;
+}
+.note .tag{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--orange);display:block;margin-bottom:8px}
+.note p{margin:0}
+.hint{font-size:12.5px;color:var(--grey);margin-top:18px;font-family:var(--mono)}
 
-/* ---- Über / Zitat ---- */
-.about{display:grid;grid-template-columns:.85fr 1.15fr;gap:48px;align-items:start}
-@media(max-width:860px){.about{grid-template-columns:1fr;gap:28px}}
-.portrait{position:relative;background:var(--card);border:1px solid var(--line);padding:10px;border-radius:3px;
-  box-shadow:0 18px 40px -34px rgba(20,24,28,.9)}
-.portrait img{display:block;width:100%;height:auto;border-radius:2px;filter:saturate(.88) contrast(1.03)}
-.portrait figcaption{display:flex;justify-content:space-between;gap:12px;padding:12px 4px 3px;
-  font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
-.portrait figcaption em{font-style:normal;color:var(--signal)}
-.byline{display:flex;align-items:center;gap:14px;justify-content:center;margin-top:30px}
-.byline img{width:52px;height:52px;border-radius:50%;object-fit:cover;object-position:50% 22%;
-  border:1px solid rgba(255,255,255,.28)}
-.byline span{font-family:var(--mono);font-size:12px;color:#B9C7D0;text-align:left;line-height:1.5}
-blockquote{margin:0;border-left:2px solid var(--signal);padding-left:22px;font-size:22px;line-height:1.45;font-style:italic;color:#2C333A}
+/* ---------- comparison table ---------- */
+.tbl{width:100%;border-collapse:collapse;font-size:14.5px;margin-top:8px}
+.tbl th,.tbl td{border-top:1px solid var(--rule);padding:14px 14px 14px 0;text-align:left;vertical-align:top}
+.tbl thead th{
+  border-top:0;border-bottom:1px solid var(--ink);font-family:var(--mono);font-weight:600;
+  font-size:11px;letter-spacing:.11em;text-transform:uppercase;padding-bottom:10px;
+}
+.tbl tbody th{font-weight:400;color:var(--grey);width:180px;font-size:13.5px}
+.tbl td.us{background:#FFF8EF}
+.wide{overflow-x:auto}
+.wide table{min-width:720px}
 
-/* ---- FAQ ---- */
-details{background:var(--card);border:1px solid var(--line);margin-bottom:10px;border-radius:3px}
-summary{cursor:pointer;padding:18px 22px;font-family:var(--display);font-weight:600;font-size:17px;list-style:none;display:flex;justify-content:space-between;gap:16px}
-summary::-webkit-details-marker{display:none}
-summary::after{content:"+";color:var(--signal);font-weight:400;font-size:20px;line-height:1}
-details[open] summary::after{content:"–"}
-details p{padding:0 22px 20px;margin:0;font-size:16.5px;color:#39414A}
+/* ---------- steps ---------- */
+ol.steps{list-style:none;margin:0;padding:0;counter-reset:s}
+ol.steps li{
+  counter-increment:s;border-top:1px solid var(--rule);padding:22px 0 22px 62px;position:relative;
+}
+ol.steps li::before{
+  content:counter(s,decimal-leading-zero);position:absolute;left:0;top:23px;
+  font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:var(--orange);
+}
+ol.steps p{margin:0;color:#33363B;font-size:15.5px}
 
-/* ---- Termin ---- */
-.book{background:var(--vault);color:#EEF1F3;border-radius:3px;padding:clamp(32px,5vw,56px);text-align:center}
-.book h2{color:#fff;max-width:20ch;margin:0 auto 14px}
-.book p{color:#B9C7D0;max-width:56ch;margin:0 auto 26px}
-.slot{display:inline-flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:26px}
-.slot span{font-family:var(--mono);font-size:12px;border:1px solid rgba(255,255,255,.25);padding:8px 12px;color:#B9C7D0}
+/* ---------- timelock ---------- */
+.tl{margin:34px 0 8px;font-family:var(--mono);font-size:12px;color:var(--grey)}
+.tl-bar{height:1px;background:var(--rule);position:relative;margin:34px 0 12px}
+.tl-bar span{position:absolute;top:-4px;width:1px;height:9px;background:var(--ink)}
+.tl-bar span:last-child{background:var(--orange);height:15px;top:-7px;width:2px}
+.tl-labels{display:flex;justify-content:space-between;gap:12px;font-family:var(--mono);font-size:11.5px;letter-spacing:.04em;color:var(--grey);text-transform:uppercase}
+.tl-labels em{font-style:normal;color:var(--orange)}
 
-footer{padding:44px 0 60px;font-size:14px;color:var(--ink-soft);font-family:var(--display)}
-footer a{color:var(--ink-soft)}
-.legal{font-size:13px;line-height:1.5;max-width:70ch;margin-top:18px}
-.sig{display:inline-flex;align-items:center;gap:10px;color:var(--vault)}.mark{width:28px;height:28px;flex:none}.sig em{font-style:normal;color:var(--ink)}
-:focus-visible{outline:2px solid var(--signal);outline-offset:3px}
+/* ---------- fees ---------- */
+.fees{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule);margin-bottom:26px}
+.fee{background:var(--paper);padding:22px 18px}
+.fee .n{font-family:var(--serif);font-size:34px;line-height:1;display:block;margin-bottom:8px}
+.fee .l{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey)}
+
+/* ---------- night band ---------- */
+.night{background:var(--night);color:#DCDFE6;border-bottom:0}
+.night h2{color:#fff}
+.night .gut{color:#727B90}
+.night .gut b{color:#fff}
+.night a{color:#fff;border-bottom-color:var(--orange)}
+.night a:hover{background:var(--orange);color:var(--night)}
+.night p{color:#B9C0CC}
+.verify{list-style:none;margin:26px 0 0;padding:0}
+.verify li{border-top:1px solid #1E2739;padding:16px 0;display:grid;grid-template-columns:120px 1fr;gap:18px;align-items:baseline}
+.verify .k{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#727B90}
+.verify .v{font-size:15px}
+
+/* ---------- run a node (bitmessage) ---------- */
+.node{border:1px solid #24304A;margin-top:42px;padding:24px 22px}
+.node-l{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--orange);margin-bottom:12px}
+.node p{margin:0 0 16px;font-size:15px}
+.bm{display:flex;align-items:stretch;gap:0;flex-wrap:wrap;border:1px solid #24304A;background:#080D18}
+.bm code{
+  font-family:var(--mono);font-size:13px;color:#fff;padding:12px 14px;flex:1 1 300px;
+  overflow-x:auto;white-space:nowrap;letter-spacing:.01em;
+}
+.copy{
+  font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  background:none;border:0;border-left:1px solid #24304A;color:#B9C0CC;padding:12px 18px;cursor:pointer;
+}
+.copy:hover{background:var(--orange);color:var(--night)}
+.node-f{margin:16px 0 0;font-size:13px;color:#727B90}
+
+/* ---------- impressum ---------- */
+.imp{border:1px solid var(--rule);padding:20px 20px 16px;margin-top:30px;max-width:720px}
+.imp h4{margin-bottom:12px}
+.imp address{font-style:normal;font-size:13.5px;line-height:1.75;color:var(--ink)}
+.imp .note-s{margin:12px 0 0;font-size:12.5px;color:var(--grey)}
+
+/* ---------- tradeoffs ---------- */
+dl.trade{margin:0}
+dl.trade dt{font-family:var(--mono);font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);border-top:1px solid var(--rule);padding-top:18px;margin-top:18px}
+dl.trade dd{margin:8px 0 0;color:#33363B;font-size:15.5px}
+
+/* ---------- footer ---------- */
+footer{padding:52px 0 64px;font-size:13.5px;color:var(--grey)}
+.fgrid{display:grid;grid-template-columns:var(--gutter) 1fr;gap:0 40px}
+.fcols{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;max-width:720px}
+footer h4{font-family:var(--mono);font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink);margin:0 0 10px;font-weight:600}
+footer ul{list-style:none;margin:0;padding:0}
+footer li{margin-bottom:6px}
+.legal{margin-top:34px;padding-top:20px;border-top:1px solid var(--rule);font-size:12.5px;line-height:1.65;max-width:720px}
+
+/* ---------- responsive ---------- */
+@media (max-width:900px){
+  :root{--gutter:0px;--pad:22px}
+  .row,.fgrid{grid-template-columns:1fr;gap:0}
+  .gut{padding:0 0 18px;border-bottom:1px solid var(--rule);margin-bottom:26px}
+  .night .gut{border-bottom-color:#1E2739}
+  .script-body{grid-template-columns:1fr}
+  .note{border-left:0;border-top:1px solid var(--rule)}
+  .fees{grid-template-columns:1fr}
+  .fcols{grid-template-columns:1fr 1fr}
+  .verify li{grid-template-columns:1fr;gap:4px}
+}
+@media (prefers-reduced-motion:no-preference){
+  .tok{transition:background .12s linear}
+  .btn,a{transition:background .12s linear,color .12s linear}
+}
 </style>
 </head>
 <body>
 
 <header>
-  <div class="wrap bar">
-    <a class="sig" href="index.html" style="text-decoration:none"><svg class="mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="43" fill="none" stroke="var(--signal)" stroke-width="4"/><g fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"><path d="M40 27 L19 59 L53 59"/><path d="M40 27 L40 73"/><path d="M59 38 A 13 13 0 1 1 82 46 C 82 57 61 63 59 73 L 84 73"/></g></svg><em>bitcoin42</em></a>
+  <div class="wrap mast">
+    <a class="brand" href="#top">NightTrader<span class="dot">.</span>Exchange</a>
     <nav>
-      <a href="#leistungen">Leistungen</a>
-      <a href="#ablauf">Ablauf</a>
-      <a href="#preise">Preise</a>
-      <a href="#person">Person</a>
-      <a href="#faq">FAQ</a>
+      <a href="#custody">Custody</a>
+      <a href="#how">How it settles</a>
+      <a href="#timelock">Timelock</a>
+      <a href="#fees">Fees</a>
+      <a href="#verify">Verify</a>
+      <a href="#limits">Tradeoffs</a>
     </nav>
-    <a class="btn btn--sm js-book" href="https://zeeg.me/afmhahn/kostenfreie-beratung" target="_blank" rel="noopener">Termin buchen</a>
   </div>
 </header>
 
-<div class="wrap hero">
-  <div class="herogrid">
-    <div>
-      <div class="eyebrow"><span class="mono">bitcoin42 · seit 2014 · Wolfratshausen bei München</span></div>
-      <h1>Ihre Coins gehören Ihnen. Ihre Schlüssel auch?</h1>
-      <p class="lede">Ich richte Eigenverwahrung ein, die einen Wohnungsbrand, eine Scheidung, einen Hackversuch und den eigenen Todesfall übersteht. Technisch, nachvollziehbar, ohne Fondsverkauf und ohne Kursprognosen.</p>
-      <div class="hero-actions">
-        <a class="btn btn--signal js-book" href="https://zeeg.me/afmhahn/kostenfreie-beratung" target="_blank" rel="noopener">Kostenloses Erstgespräch, 30 Min.</a>
-        <a class="btn btn--ghost" href="#preise">Preise ansehen</a>
-      </div>
-      <p class="hero-note" style="margin-top:18px">Antwort in der Regel innerhalb von 24 Stunden.</p>
+<main id="top">
+
+<!-- ============ HERO ============ -->
+<section class="band">
+  <div class="wrap hero">
+    <p class="kicker">Bitcoin-native · Non-custodial · Full bid / ask order book</p>
+    <h1>Not your keys,<br>not your coins.<br><span class="thin">So we gave you a key.</span></h1>
+
+    <p class="answer">Every NightTrader account is a 2-of-2 or 3-of-3 multisig address.<br>
+    One key is yours, generated in your browser. The exchange cannot spend without it.</p>
+
+    <p class="lede">A real order book — limit bids, limit asks, tight spreads — without an omnibus wallet holding your stack. No wrapped BTC. No IOU balance in someone else's database. No exit to scam.</p>
+
+    <div class="cta">
+      <a class="btn" href="https://nighttrader.exchange">Open the exchange</a>
+      <a class="btn ghost" href="https://github.com/NightTrader/nighttrader.github.io/blob/master/Nighttrader_A_Decentralized_Multisignature_Electronic_Cash_Wallet.pdf">Read the paper</a>
+      <a class="btn ghost" href="#verify">Read the source</a>
     </div>
 
-    <div class="seedcard" role="img" aria-label="Karte im Stil einer Seed-Phrase mit den Wörtern: nicht deine keys nicht deine coins seit 2014 sicher durch jeden zyklus">
-      <div class="seedcard-top">
-        <span class="mono">Recovery Sheet</span>
-        <span class="mono">12 / 12</span>
+    <!-- ===== SIGNATURE ELEMENT: the annotated redeem script ===== -->
+    <div class="script">
+      <div class="script-head">
+        <span>P2SH redeem script · your account</span>
+        <span>Tap a highlighted term</span>
       </div>
-      <div class="seedgrid" aria-hidden="true">
-        <div style="animation-delay:.05s"><b>01</b><i>nicht</i></div>
-        <div style="animation-delay:.13s"><b>02</b><i>deine</i></div>
-        <div style="animation-delay:.21s"><b>03</b><i>keys</i></div>
-        <div style="animation-delay:.29s"><b>04</b><i>nicht</i></div>
-        <div style="animation-delay:.37s"><b>05</b><i>deine</i></div>
-        <div style="animation-delay:.45s"><b>06</b><i>coins</i></div>
-        <div style="animation-delay:.53s"><b>07</b><i>seit</i></div>
-        <div style="animation-delay:.61s"><b>08</b><i>2014</i></div>
-        <div style="animation-delay:.69s"><b>09</b><i>sicher</i></div>
-        <div style="animation-delay:.77s"><b>10</b><i>durch</i></div>
-        <div style="animation-delay:.85s"><b>11</b><i>jeden</i></div>
-        <div style="animation-delay:.93s"><b>12</b><i>zyklus</i></div>
+      <div class="script-body">
+<pre class="code">OP_IF
+  <span class="op">2</span> <button class="tok" type="button" aria-pressed="true" data-tag="Your key"
+     data-note="Derived in your browser from your credentials and never transmitted. Nothing moves out of the address without a signature from this key — not a trade, not a withdrawal, not a support ticket.">&lt;your_pubkey&gt;</button> <button class="tok" type="button" aria-pressed="false" data-tag="The node key"
+     data-note="A threshold signature held collectively by the node set. No single operator can reconstruct it; a supermajority must agree before the second signature exists at all.">&lt;node_threshold_pubkey&gt;</button> <span class="op">2 OP_CHECKMULTISIG</span>
+OP_ELSE
+  <button class="tok" type="button" aria-pressed="false" data-tag="Force-majeure exit"
+     data-note="OP_CHECKLOCKTIMEVERIFY. If the nodes vanish, are seized, or simply stop answering, this branch activates on schedule and pays the address out to your key alone. No permission, no support queue, no recovery fee.">&lt;locktime&gt; OP_CHECKLOCKTIMEVERIFY</button> <span class="op">OP_DROP</span>
+  <span class="op">&lt;your_pubkey&gt; OP_CHECKSIG</span>
+OP_ENDIF</pre>
+        <aside class="note" id="note" aria-live="polite">
+          <span class="tag" id="note-tag">Your key</span>
+          <p id="note-body">Derived in your browser from your credentials and never transmitted. Nothing moves out of the address without a signature from this key — not a trade, not a withdrawal, not a support ticket.</p>
+        </aside>
       </div>
     </div>
+    <p class="hint">Trades authorise a single amount with SIGHASH_SINGLE. Bid 0.2 BTC out of a 10 BTC balance and 0.2 BTC is all you have signed away.</p>
   </div>
-</div>
+</section>
 
-<div class="wrap">
-  <div class="facts">
-    <div><strong>10+</strong><span>Jahre Bitcoin</span></div>
-    <div><strong>20+</strong><span>Jahre Tech-Unternehmer</span></div>
-    <div><strong>300+</strong><span>Alpha-Trader betreut</span></div>
-    <div><strong>2,5</strong><span>Jahre Börsen-Beta geleitet</span></div>
-  </div>
-</div>
+<!-- ============ CUSTODY ============ -->
+<section class="band" id="custody">
+  <div class="wrap row">
+    <div class="gut"><b>Custody</b>Who can move it</div>
+    <div class="col">
+      <h2>Four ways to trade bitcoin. Only one of them leaves the key with you and still gives you a book.</h2>
+      <p class="lede">Bisq and RoboSats are honest, non-custodial venues and we say so. The tradeoff they make is cost and speed: every trade is an on-chain event, and continuous depth is hard to build on top of that. We made a different tradeoff.</p>
 
-<section id="leistungen">
-  <div class="wrap">
-    <div class="eyebrow"><span class="mono">Leistungen</span></div>
-    <h2>Vier Mandate, die ich übernehme</h2>
-    <p style="max-width:56ch;color:#39414A">Kein Portfolio-Coaching, keine Kaufempfehlungen. Ich arbeite an dem, was schiefgeht, wenn niemand hinsieht: Schlüsselverwaltung, Wiederherstellung, Zugriffsrechte und Betriebssicherheit.</p>
-
-    <div class="cards">
-      <div class="card">
-        <span class="tag">Privat</span>
-        <h3>Self-Custody-Einrichtung</h3>
-        <p style="margin:0;color:#39414A">Hardware-Wallet, Backup-Strategie und Testlauf der Wiederherstellung – gemeinsam, an Ihrem Gerät.</p>
-        <ul>
-          <li>Auswahl und Einrichtung der Geräte</li>
-          <li>Backup auf Metall statt Papier</li>
-          <li>Wiederherstellung einmal komplett durchgespielt</li>
-          <li>Passphrase-Konzept ohne Selbstsperre</li>
-        </ul>
+      <div class="wide">
+      <table class="tbl">
+        <thead>
+          <tr><th scope="col"></th><th scope="col">NightTrader</th><th scope="col">Custodial CEX</th><th scope="col">Wrapped BTC on a DEX</th><th scope="col">Atomic swap DEX</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Who can move your coins</th>
+            <td class="us">You + node quorum, per trade</td><td>The exchange, unilaterally</td><td>The bridge custodian</td><td>You</td>
+          </tr>
+          <tr>
+            <th scope="row">What you hold</th>
+            <td class="us">A key in a multisig UTXO</td><td>A database row</td><td>A token claim on someone's reserve</td><td>A key</td>
+          </tr>
+          <tr>
+            <th scope="row">If the venue disappears</th>
+            <td class="us">Timelock returns your coins</td><td>Bankruptcy claim</td><td>Depends on the custodian</td><td>You keep your coins</td>
+          </tr>
+          <tr>
+            <th scope="row">Order book</th>
+            <td class="us">Full bid / ask, off-chain matching</td><td>Full bid / ask</td><td>AMM pool, no bids</td><td>Thin, slow to fill</td>
+          </tr>
+          <tr>
+            <th scope="row">Chain cost per trade</th>
+            <td class="us">None — settlement is batched</td><td>None</td><td>Gas on every swap</td><td>Multiple on-chain txs</td>
+          </tr>
+          <tr>
+            <th scope="row">Exposure while trading</th>
+            <td class="us">Only the amount you signed</td><td>Your entire balance</td><td>Your entire wrapped balance</td><td>The trade amount</td>
+          </tr>
+        </tbody>
+      </table>
       </div>
-
-      <div class="card">
-        <span class="tag">Familie & Nachlass</span>
-        <h3>Erbfall und Notzugriff</h3>
-        <p style="margin:0;color:#39414A">Damit Ihre Bestände nicht mit Ihnen verschwinden – und trotzdem zu Lebzeiten niemand herankommt.</p>
-        <ul>
-          <li>Multisig mit verteilten Schlüsselhaltern</li>
-          <li>Zeitschloss- und Notfallpfade</li>
-          <li>Anleitung für Angehörige in Klartext</li>
-          <li>Abstimmung mit Notar oder Steuerberater</li>
-        </ul>
-      </div>
-
-      <div class="card">
-        <span class="tag">Unternehmen</span>
-        <h3>Krypto-Treasury & Vier-Augen-Prinzip</h3>
-        <p style="margin:0;color:#39414A">Bestände auf der Bilanz brauchen Freigabeprozesse, nicht ein Handy in der Schublade des Geschäftsführers.</p>
-        <ul>
-          <li>Multisig-Richtlinien und Rollenverteilung</li>
-          <li>Verfahrensdokumentation für die Prüfung</li>
-          <li>Zahlungsannahme in Bitcoin</li>
-          <li>Schulung des Finanzteams</li>
-        </ul>
-      </div>
-
-      <div class="card">
-        <span class="tag">Gründer</span>
-        <h3>Sparring für Krypto-Projekte</h3>
-        <p style="margin:0;color:#39414A">Ich habe eine nicht-kustodiale Börse gebaut, finanziert und durch zwei Bärenmärkte getragen. Fragen Sie mich, bevor Sie es doppelt bezahlen.</p>
-        <ul>
-          <li>Architektur von Verwahrung und Matching</li>
-          <li>Token- und Kapitalstruktur, MiCAR-Realität</li>
-          <li>Pitch, Datenraum, Investorenprozess</li>
-          <li>Sicherheitsreview vor dem Launch</li>
-        </ul>
-      </div>
+      <p class="small" style="margin-top:16px">Off-chain matching means the book moves at exchange speed; the chain only sees settlement. That is the whole trick, and it is built out of script primitives Bitcoin has had since 2009.</p>
     </div>
   </div>
 </section>
 
-<section id="ablauf">
-  <div class="wrap">
-    <div class="eyebrow"><span class="mono">Ablauf</span></div>
-    <h2>Vom Erstgespräch zum getesteten Backup</h2>
+<!-- ============ HOW ============ -->
+<section class="band" id="how">
+  <div class="wrap row">
+    <div class="gut"><b>Settlement</b>In order</div>
+    <div class="col">
+      <h2>What actually happens when you place an order</h2>
+      <ol class="steps">
+        <li>
+          <h3>Your key is generated client-side</h3>
+          <p>Your browser derives the key locally. It signs your deposit address into existence together with the node threshold key. The server never receives it, so there is nothing to breach and nothing to hand over.</p>
+        </li>
+        <li>
+          <h3>You sign one amount, not your balance</h3>
+          <p>A bid is a signature hash authorising a specific input for a specific size — Bitcoin's original allowance mechanism. Your change output stays under your control. The nodes can only route the amount you signed.</p>
+        </li>
+        <li>
+          <h3>The quorum counter-signs and the book fills</h3>
+          <p>Matching happens off-chain against a live bid/ask book. Settlement batches to the chain. No single node can produce the second signature alone; a threshold has to agree.</p>
+        </li>
+        <li>
+          <h3>The timelock is always sitting behind you</h3>
+          <p>Every applicable coin uses CHECKLOCKTIMEVERIFY. Refresh it while you trade and you never approach it. Stop trading and it eventually pays you out anyway.</p>
+        </li>
+      </ol>
+    </div>
+  </div>
+</section>
 
-    <div class="steps">
-      <div class="step">
-        <div>
-          <h3>Erstgespräch, 30 Minuten, kostenlos</h3>
-          <p>Videocall oder Telefon. Sie schildern Ihre Situation, ich sage Ihnen, ob ich der Richtige bin – und wenn nicht, an wen Sie sich wenden sollten. Keine Beträge, keine Adressen, keine Schlüssel im Gespräch.</p>
+<!-- ============ TIMELOCK ============ -->
+<section class="band" id="timelock">
+  <div class="wrap row">
+    <div class="gut"><b>Force majeure</b>The exit that doesn't need us</div>
+    <div class="col">
+      <h2>Assume we get raided tonight.</h2>
+      <p class="lede">Servers seized, domain pulled, team unreachable, node operators gone. Under a custodial exchange that is the end of the story and the beginning of a creditors' process. Here it is a waiting period.</p>
+
+      <div class="tl">
+        <div class="tl-bar">
+          <span style="left:0"></span><span style="left:33%"></span><span style="left:66%"></span><span style="left:calc(100% - 2px)"></span>
+        </div>
+        <div class="tl-labels">
+          <span>Deposit</span><span>Trade freely</span><span>Inactive</span><span><em>Locktime → paid to your key</em></span>
         </div>
       </div>
-      <div class="step">
-        <div>
-          <h3>Bestandsaufnahme und Angebot</h3>
-          <p>Sie erhalten binnen zwei Werktagen eine schriftliche Empfehlung mit Aufwand, Festpreis und Terminvorschlag. Erst danach entstehen Kosten.</p>
+      <p class="small" style="margin-top:22px">The locktime is set per account and refreshed as you trade — the book will not fill an order that would leave you near expiry, and after a long dormancy you will be asked to roll to a new script and a current node set. The branch is enforced by consensus, not by us. We cannot switch it off, and neither can anyone who takes our servers.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FEES ============ -->
+<section class="band" id="fees">
+  <div class="wrap row">
+    <div class="gut"><b>Fees</b>All of them</div>
+    <div class="col">
+      <h2>Three numbers. There is no fourth.</h2>
+      <div class="fees">
+        <div class="fee"><span class="n">0.125<span style="font-size:20px">%</span></span><span class="l">Per completed trade</span></div>
+        <div class="fee"><span class="n">0.1<span style="font-size:20px">%</span></span><span class="l">Transfer between accounts</span></div>
+        <div class="fee"><span class="n">0.5<span style="font-size:20px">%</span></span><span class="l">Withdrawal to your own wallet</span></div>
+      </div>
+      <p>Fees pay the node operators who hold the other half of the signature. There is no NightTrader token, no pre-mine, no treasury taking a cut of your trade, and no yield being promised to anyone. The exchange was launched without issuing a coin on purpose.</p>
+      <div class="wide">
+      <table class="tbl">
+        <thead><tr><th scope="col">Taker fee, for comparison</th><th scope="col"></th></tr></thead>
+        <tbody>
+          <tr><th scope="row">NightTrader</th><td class="us">0.125% — you hold a key</td></tr>
+          <tr><th scope="row">Uniswap</th><td>0.30% + gas + slippage</td></tr>
+          <tr><th scope="row">Coinbase</th><td>up to 0.40% — custodial</td></tr>
+          <tr><th scope="row">Kraken / Bitfinex</th><td>0.20% — custodial</td></tr>
+          <tr><th scope="row">Binance / KuCoin</th><td>0.10% — custodial</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p class="small" style="margin-top:16px">Listing a coin costs the project, not the traders. Integration and contract auditing are quoted per project. Nothing on this page is a promise of returns, liquidity, or execution quality.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ VERIFY (night band) ============ -->
+<section class="night" id="verify">
+  <div class="wrap row">
+    <div class="gut"><b>Verify</b>Don't trust</div>
+    <div class="col">
+      <h2>Every claim above is checkable. Go check it.</h2>
+      <p>A landing page is marketing. Script is not. If any line here disagrees with the code, the code is right and we have a bug to fix — tell us.</p>
+      <ul class="verify">
+        <li><span class="k">Source</span><span class="v"><a href="https://github.com/NightTrader/nighttrader.github.io">github.com/NightTrader</a> — front end and signing logic. Read the key derivation before you deposit.</span></li>
+        <li><span class="k">Run it local</span><span class="v">Clone the repo and serve it yourself. No packages to install, no need to visit this domain to trade.</span></li>
+        <li><span class="k">Paper</span><span class="v" id="paper"><a href="https://github.com/NightTrader/nighttrader.github.io/blob/master/Nighttrader_A_Decentralized_Multisignature_Electronic_Cash_Wallet.pdf">A Decentralized Multisignature Electronic Cash Wallet</a> — the full construction, including the Monero and EVM cases.</span></li>
+        <li><span class="k">Your script</span><span class="v">Derived deterministically, and material changes are burned on-chain. You should be able to reconstruct your own redeem script without asking us for it.</span></li>
+        <li><span class="k">Data</span><span class="v">We collect the minimum to operate and encrypt what we hold. This page loads no fonts, no analytics and no third-party scripts — check the network tab.</span></li>
+      </ul>
+
+      <div class="node" id="node">
+        <div class="node-l">Run a node</div>
+        <p>Node operators hold the other half of every signature and take a share of the fees. There is no signup form and no email list. Reach us over Bitmessage:</p>
+        <div class="bm">
+          <code id="bm-addr">BM-2cU2YA1q5UEyxUedNkgKnLsn3jurKpzuWR</code>
+          <button class="copy" type="button" id="bm-copy" data-addr="BM-2cU2YA1q5UEyxUedNkgKnLsn3jurKpzuWR">Copy</button>
         </div>
-      </div>
-      <div class="step">
-        <div>
-          <h3>Umsetzung an Ihrem Gerät</h3>
-          <p>Vor Ort im Großraum München oder per geteiltem Bildschirm. Sie führen jeden Schritt selbst aus, ich leite an. Ich sehe zu keinem Zeitpunkt Ihre Wiederherstellungswörter.</p>
-        </div>
-      </div>
-      <div class="step">
-        <div>
-          <h3>Härtetest und Übergabe</h3>
-          <p>Wir löschen das Gerät und stellen aus dem Backup wieder her. Erst wenn das funktioniert, ist das Mandat beendet. Sie bekommen eine Dokumentation, die auch Ihre Angehörigen verstehen.</p>
-        </div>
+        <p class="node-f">If that channel is inconvenient for you, you are probably not the operator we are looking for.</p>
       </div>
     </div>
   </div>
 </section>
 
-<section id="preise">
-  <div class="wrap">
-    <div class="eyebrow"><span class="mono">Preise</span></div>
-    <h2>Feste Pakete statt Stundenzettel</h2>
-    <p style="max-width:56ch;color:#39414A">Alle Beträge sind Endpreise. Nach § 19 UStG wird keine Umsatzsteuer ausgewiesen. Anfahrt innerhalb 100 km inklusive.</p>
+<!-- ============ TRADEOFFS ============ -->
+<section class="band" id="limits">
+  <div class="wrap row">
+    <div class="gut"><b>Tradeoffs</b>What this is not</div>
+    <div class="col">
+      <h2>The part other exchanges leave off the front page.</h2>
+      <dl class="trade">
+        <dt>This is not self-custody</dt>
+        <dd>It is co-custody with a timelocked exit. You hold one of two required keys, which is strictly better than an exchange balance and strictly worse than coins in your own cold storage. Trade here; do not store here.</dd>
 
-    <div class="prices">
-      <div class="price">
-        <span class="mono">Einstieg</span>
-        <div class="amount">390 €<small>90 Min.</small></div>
-        <ul>
-          <li>Eine Hardware-Wallet eingerichtet</li>
-          <li>Backup-Konzept festgelegt</li>
-          <li>Wiederherstellung getestet</li>
-          <li>Checkliste als PDF</li>
-        </ul>
-        <a class="btn btn--ghost js-book" href="https://zeeg.me/afmhahn/kostenfreie-beratung" target="_blank" rel="noopener">Termin anfragen</a>
-      </div>
+        <dt>Nodes can go offline</dt>
+        <dd>If the quorum breaks mid-trade, half-signed transactions are simply never broadcast. You do not lose principal, but you can lose a fill and the profit that went with it.</dd>
 
-      <div class="price price--lead">
-        <span class="mono">Sicherheits-Audit</span>
-        <div class="amount">ab 1.450 €<small>Festpreis</small></div>
-        <ul>
-          <li>Prüfung des bestehenden Setups</li>
-          <li>Multisig- oder Nachlasskonzept</li>
-          <li>Umsetzung in zwei Sitzungen</li>
-          <li>Notfalldokument für Angehörige</li>
-          <li>30 Tage Rückfragen inklusive</li>
-        </ul>
-        <a class="btn js-book" href="https://zeeg.me/afmhahn/kostenfreie-beratung" target="_blank" rel="noopener">Termin anfragen</a>
-      </div>
+        <dt>The browser is the attack surface</dt>
+        <dd>Your key is derived from your credentials. A weak password, a compromised machine or a phished login is the realistic way to lose coins here — not a hack of our servers. Use a long passphrase and 2FA, and keep your backup off the machine you trade on.</dd>
 
-      <div class="price">
-        <span class="mono">Unternehmen</span>
-        <div class="amount">1.400 €<small>pro Tag</small></div>
-        <ul>
-          <li>Treasury- und Freigabeprozesse</li>
-          <li>Verfahrensdokumentation</li>
-          <li>Schulung für das Team</li>
-          <li>Betreuung ab 2.400 €/Monat</li>
-        </ul>
-        <a class="btn btn--ghost js-book" href="https://zeeg.me/afmhahn/kostenfreie-beratung" target="_blank" rel="noopener">Termin anfragen</a>
+        <dt>We can be asked for KYC</dt>
+        <dd>We reserve the right to request verification, collected on a separate platform. Note what that cannot do: freezing an account does not freeze your funds forever, because the timelock branch still executes.</dd>
+
+        <dt>Not everything here is bitcoin</dt>
+        <dd>Bitcoin is the base pair and the design target — the first integrations were chosen for CHECKLOCKTIMEVERIFY support. Other assets are listed where the same guarantees can be reproduced. If a coin cannot be secured this way, we would rather not list it.</dd>
+
+        <dt>Not Lightning, not a rollup</dt>
+        <dd>Different tool. Lightning is excellent for payments and awkward as a venue for a large order book; rollups and atomic swaps are the long-run answer and are still too expensive or too slow for daily bid/ask. We will move when they are ready.</dd>
+      </dl>
+
+      <div class="cta">
+        <a class="btn" href="https://nighttrader.exchange">Open the exchange</a>
+        <a class="btn ghost" href="#top">Back to the script</a>
       </div>
     </div>
   </div>
 </section>
 
-<section id="person">
-  <div class="wrap">
-    <div class="eyebrow"><span class="mono">Zur Person</span></div>
-    <div class="about">
-      <figure class="portrait" style="margin:0">
-        <img src="alec-hahn.jpg" alt="Porträt von Alec Frazer Matthew Hahn" width="1131" height="1550" loading="lazy">
-        <figcaption><span>Alec F. M. Hahn</span><em>Wolfratshausen, DE</em></figcaption>
-      </figure>
-      <div>
-        <h2 style="margin-bottom:20px">Alec Frazer Matthew Hahn</h2>
-        <p>Seit 2014 arbeite ich mit Bitcoin – erst als Nutzer, dann als Entwickler und Unternehmer. 2022 habe ich das Whitepaper zu NightTrader veröffentlicht, einer Börse, bei der Guthaben nie in fremder Verwahrung liegen, sondern in Multisignatur-Konten mit Zeitschloss-Rückweg.</p>
-        <p>Aus zweieinhalb Jahren Beta mit über 300 Testern kenne ich die Fehler, die Menschen mit ihren Schlüsseln machen, ziemlich genau. Fast alle davon sind vermeidbar – aber nur vorher, nicht nachher.</p>
-        <p>Davor: über 20 Jahre Unternehmer in der Technologiebranche. Ich spreche Deutsch und Englisch und arbeite von Wolfratshausen bei München aus.</p>
-        <p>Unter <strong>bitcoin42</strong> arbeite ich seit 2014 – die Domain ist seitdem ununterbrochen in meinem Besitz. Die 42 ist kein Zufall: Es sind zwei mal 21 Millionen, die gesamte jemals existierende Bitcoin-Menge, zweimal genommen. Wer die Anspielung kennt, weiß auch, dass 42 die Antwort ist.</p>
-
-        <blockquote style="margin-top:32px">Die meisten Verluste, die ich gesehen habe, kamen nicht von Hackern. Sie kamen von einem Backup, das nie jemand getestet hat.</blockquote>
-
-        <p class="mono" style="margin-top:30px">Auswahl</p>
-        <p style="font-size:16.5px;color:#39414A;margin-bottom:26px">Gründer und CEO, NightTrader.Exchange · Autor „A Decentralized Multisignature Electronic Cash Wallet and Exchange“ (2022) · Zusammenarbeit mit David Zimbeck, Entwickler des BitHalo-Protokolls</p>
-
-        <a class="btn js-book" href="https://zeeg.me/afmhahn/kostenfreie-beratung" target="_blank" rel="noopener">Kostenloses Erstgespräch buchen</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="faq">
-  <div class="wrap">
-    <div class="eyebrow"><span class="mono">Häufige Fragen</span></div>
-    <h2>Was Sie vorher wissen sollten</h2>
-
-    <div style="margin-top:32px">
-      <details open>
-        <summary>Sagen Sie mir, was ich kaufen soll?</summary>
-        <p>Nein. Ich erbringe keine Anlageberatung und gebe keine Kauf-, Verkaufs- oder Halteempfehlungen zu einzelnen Kryptowerten ab. Meine Arbeit ist technischer Natur: Verwahrung, Wiederherstellung, Zugriffsrechte, Prozesse. Für Anlage- und Steuerfragen arbeite ich mit zugelassenen Beratern zusammen und vermittle gern.</p>
-      </details>
-      <details>
-        <summary>Bekommen Sie Zugriff auf meine Bestände?</summary>
-        <p>Zu keinem Zeitpunkt. Ich sehe weder Ihre Wiederherstellungswörter noch Ihre privaten Schlüssel und halte keine Guthaben. Sie führen jeden sicherheitsrelevanten Schritt selbst aus. Wenn Sie mir Ihre Seed-Wörter zeigen wollen, breche ich ab.</p>
-      </details>
-      <details>
-        <summary>Ich habe seit Jahren alles auf einer Börse liegen. Zu spät?</summary>
-        <p>Nein, das ist der häufigste Ausgangspunkt. Wir bewegen zuerst einen kleinen Testbetrag, prüfen den Weg vollständig und übertragen erst danach den Rest.</p>
-      </details>
-      <details>
-        <summary>Vor Ort oder online?</summary>
-        <p>Beides. Im Großraum München und im Oberland – Starnberg, Bad Tölz, Garmisch – komme ich zu Ihnen, sonst arbeiten wir per Videocall mit geteiltem Bildschirm. Für Unternehmensmandate reise ich deutschlandweit an.</p>
-      </details>
-      <details>
-        <summary>Was, wenn ich nach dem Erstgespräch nicht weitermachen will?</summary>
-        <p>Dann endet es dort. Das Erstgespräch ist kostenlos und unverbindlich, es gibt keine Nachfassanrufe.</p>
-      </details>
-    </div>
-  </div>
-</section>
-
-<section id="termin" style="border-top:none">
-  <div class="wrap">
-    <div class="book">
-      <h2>Reden wir 30 Minuten über Ihr Setup</h2>
-      <p>Kostenlos, unverbindlich, ohne Verkaufsgespräch. Sagen Sie mir kurz, worum es geht – ich melde mich in der Regel am selben Werktag.</p>
-      <a class="btn btn--signal js-book" href="https://zeeg.me/afmhahn/kostenfreie-beratung" target="_blank" rel="noopener">Freien Termin wählen</a>
-      <div class="byline">
-        <img src="alec-hahn.jpg" alt="" aria-hidden="true">
-        <span>Sie sprechen direkt mit Alec.<br>Kein Vertrieb, kein Callcenter.</span>
-      </div>
-      <div class="slot">
-        <span>alec@bitcoin42.com</span>
-        <span>+49 176 85911204</span>
-        <span>t.me/nighttrader_org</span>
-        <span>Mo–Fr, 9–19 Uhr</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<script>
-/* Zeeg-Popup: Links funktionieren auch ohne JavaScript (Fallback auf die Buchungsseite). */
-document.addEventListener('click', function (e) {
-  var el = e.target.closest('.js-book');
-  if (!el || typeof Zeeg === 'undefined') return;
-  e.preventDefault();
-  Zeeg.initPopupWidget({
-    url: 'https://zeeg.me/afmhahn/kostenfreie-beratung',
-    utm: { source: null, medium: null, campaign: null, content: null, term: null }
-  });
-});
-</script>
+</main>
 
 <footer>
-  <div class="wrap">
-    <div style="display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:center">
-      <a class="sig" href="index.html" style="text-decoration:none"><svg class="mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="43" fill="none" stroke="var(--signal)" stroke-width="4"/><g fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"><path d="M40 27 L19 59 L53 59"/><path d="M40 27 L40 73"/><path d="M59 38 A 13 13 0 1 1 82 46 C 82 57 61 63 59 73 L 84 73"/></g></svg><em>bitcoin42</em></a>
-      <div style="display:flex;gap:20px;font-size:14px">
-        <a href="impressum.html">Impressum</a>
-        <a href="datenschutz.html">Datenschutz</a>
-        <a href="https://bitcoin42.com" rel="noopener">bitcoin42.com</a>
+  <div class="wrap fgrid">
+    <div class="gut"><b>NightTrader</b>Exchange</div>
+    <div>
+      <div class="fcols">
+        <div>
+          <h4>Exchange</h4>
+          <ul>
+            <li><a href="https://nighttrader.exchange">Trade</a></li>
+            <li><a href="#fees">Fees</a></li>
+            <li><a href="#node">Run a node</a></li>
+            <li><a href="mailto:ceo@nighttrader.org">List a coin</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Verify</h4>
+          <ul>
+            <li><a href="https://github.com/NightTrader/nighttrader.github.io">Source</a></li>
+            <li><a href="https://github.com/NightTrader/nighttrader.github.io/blob/master/Nighttrader_A_Decentralized_Multisignature_Electronic_Cash_Wallet.pdf">Whitepaper</a></li>
+            <li><a href="#timelock">Timelock exit</a></li>
+            <li><a href="#limits">Known tradeoffs</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="#impressum">Impressum</a></li>
+            <li><a href="/datenschutz.html">Datenschutz</a></li>
+            <li><a href="/terms.html">Terms of use</a></li>
+            <li><a href="#limits">Risk disclosure</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="imp" id="impressum">
+        <h4>Impressum · Angaben gemäß § 5 TMG</h4>
+        <address>
+          Alec Hahn<br>
+          Yorckstraße 75<br>
+          10965 Berlin<br>
+          Deutschland<br>
+          E-Mail: <a href="mailto:ceo@nighttrader.org">ceo@nighttrader.org</a>
+        </address>
+        <p class="note-s">Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV: Alec Hahn, Anschrift wie oben.</p>
+      </div>
+
+      <div class="legal">
+        <p style="margin:0 0 10px">NightTrader.Exchange is a non-custodial trading interface. It is not a bank, a broker, a custodian or an investment service, and nothing here is investment advice or a promise of yield, liquidity or execution. Trading digital assets can result in total loss. You are responsible for your own key and your own backups.</p>
+        <p class="mono" style="margin:0;font-size:11.5px;letter-spacing:.06em">Served from bitcoin42.com — registered 2014 · No third-party requests on this page.</p>
       </div>
     </div>
-    <p class="legal">Hinweis: Die angebotenen Leistungen umfassen technische Beratung, Schulung und Umsetzung im Bereich Eigenverwahrung. Sie stellen keine Anlageberatung, Anlagevermittlung, Vermögensverwaltung, Rechts- oder Steuerberatung dar und beinhalten keine Verwahrung von Kryptowerten für Dritte. Der Handel mit Kryptowerten ist mit dem Risiko des Totalverlusts verbunden.</p>
   </div>
 </footer>
 
+<script>
+// Annotated script: click a token, the margin note changes.
+(function () {
+  var toks = document.querySelectorAll('.tok');
+  var tag = document.getElementById('note-tag');
+  var body = document.getElementById('note-body');
+  toks.forEach(function (t) {
+    t.addEventListener('click', function () {
+      toks.forEach(function (o) { o.setAttribute('aria-pressed', 'false'); });
+      t.setAttribute('aria-pressed', 'true');
+      tag.textContent = t.dataset.tag;
+      body.textContent = t.dataset.note;
+    });
+  });
+
+  // Bitmessage address: copy, with a select-all fallback.
+  var copy = document.getElementById('bm-copy');
+  if (copy) {
+    copy.addEventListener('click', function () {
+      var addr = copy.dataset.addr;
+      var done = function () {
+        copy.textContent = 'Copied';
+        setTimeout(function () { copy.textContent = 'Copy'; }, 1800);
+      };
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(addr).then(done, select);
+      } else {
+        select();
+      }
+      function select() {
+        var r = document.createRange();
+        r.selectNodeContents(document.getElementById('bm-addr'));
+        var s = window.getSelection();
+        s.removeAllRanges();
+        s.addRange(r);
+        copy.textContent = 'Select all';
+        setTimeout(function () { copy.textContent = 'Copy'; }, 1800);
+      }
+    });
+  }
+})();
+</script>
 </body>
 </html>
