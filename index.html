@@ -159,6 +159,23 @@ ol.steps p{margin:0;color:#33363B;font-size:15.5px}
 .verify .k{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#727B90}
 .verify .v{font-size:15px}
 
+/* ---------- controls ---------- */
+ul.ctrl{list-style:none;margin:8px 0 0;padding:0}
+ul.ctrl li{border-top:1px solid var(--rule);padding:22px 0}
+ul.ctrl h3{margin-bottom:6px}
+ul.ctrl p{margin:0;color:#33363B;font-size:15.5px}
+.qr{
+  display:inline-block;font-family:var(--mono);font-size:11px;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--grey);border:1px solid var(--rule);padding:4px 9px;margin-top:12px;
+}
+
+/* ---------- privacy block ---------- */
+.priv{border:1px solid #24304A;margin-top:42px;padding:24px 22px}
+.priv-l{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--orange);margin-bottom:12px}
+.priv p{margin:0 0 14px;font-size:15px}
+.priv p:last-child{margin-bottom:0}
+.priv .ten{color:#fff;border-bottom:1px solid var(--orange)}
+
 /* ---------- run a node (bitmessage) ---------- */
 .node{border:1px solid #24304A;margin-top:42px;padding:24px 22px}
 .node-l{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--orange);margin-bottom:12px}
@@ -221,9 +238,10 @@ footer li{margin-bottom:6px}
     <nav>
       <a href="#custody">Custody</a>
       <a href="#how">How it settles</a>
+      <a href="#controls">Controls</a>
       <a href="#timelock">Timelock</a>
       <a href="#fees">Fees</a>
-      <a href="#verify">Verify</a>
+      <a href="#privacy">Privacy</a>
       <a href="#limits">Tradeoffs</a>
     </nav>
   </div>
@@ -329,7 +347,7 @@ OP_ENDIF</pre>
       <ol class="steps">
         <li>
           <h3>Your key is generated client-side</h3>
-          <p>Your browser derives the key locally. It signs your deposit address into existence together with the node threshold key. The server never receives it, so there is nothing to breach and nothing to hand over.</p>
+          <p>Your browser derives the key locally, or you keep it on an air-gapped signer and never expose it at all. It signs your deposit address into existence together with the node threshold key. The server never receives it, so there is nothing to breach and nothing to hand over.</p>
         </li>
         <li>
           <h3>You sign one amount, not your balance</h3>
@@ -344,6 +362,31 @@ OP_ENDIF</pre>
           <p>Every applicable coin uses CHECKLOCKTIMEVERIFY. Refresh it while you trade and you never approach it. Stop trading and it eventually pays you out anyway.</p>
         </li>
       </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTROLS ============ -->
+<section class="band" id="controls">
+  <div class="wrap row">
+    <div class="gut"><b>Controls</b>What you hold and watch</div>
+    <div class="col">
+      <h2>Three things the exchange hands you and cannot take back.</h2>
+      <ul class="ctrl">
+        <li>
+          <h3>Sign from an air-gapped device</h3>
+          <p>Your key does not have to live in a browser tab. Pair an offline signer — an air-gapped phone running <a href="https://airgap.it/">AirGap Vault</a> or a compatible hardware wallet — and the key never touches an internet-connected machine. Orders and withdrawals cross the gap as QR codes: unsigned request out, signature back in. The exchange sees a signature and nothing else.</p>
+          <span class="qr">Unsigned request → QR → signature back</span>
+        </li>
+        <li>
+          <h3>Your backup script, at signup</h3>
+          <p>The redeem script is shown to you when your account is created — not buried in a support article, not available on request. Save it. With that script and your key you can reconstruct and spend the timelock branch yourself, from any wallet that speaks Bitcoin script, with the exchange gone and this domain dead.</p>
+        </li>
+        <li>
+          <h3>Node health, on screen</h3>
+          <p>Logged in, you see the live state of the node set holding the other signature — who is up, whether the quorum is intact. If the backend is degrading you find out from the interface, not from a status page written after the fact. A venue that hides its own health is telling you something.</p>
+        </li>
+      </ul>
     </div>
   </div>
 </section>
@@ -413,6 +456,13 @@ OP_ENDIF</pre>
         <li><span class="k">Data</span><span class="v">We collect the minimum to operate and encrypt what we hold. This page loads no fonts, no analytics and no third-party scripts — check the network tab.</span></li>
       </ul>
 
+      <div class="priv" id="privacy">
+        <div class="priv-l">Privacy</div>
+        <p>We collect the minimum required to run an order book and encrypt what we hold. There is no advertising pixel, no session replay, no behavioural profile, and no data broker relationship. This page makes zero third-party requests — no fonts, no analytics, no CDN. Open the network tab and confirm it rather than believing us.</p>
+        <p>If we are ever compelled to verify a user, that process runs through <a href="https://www.zk.me/">zkMe</a>. Document checks happen on your own device — nothing is transmitted to us in the clear. What we receive is a zero-knowledge proof that you passed verification, not the underlying documents. NightTrader never sees or stores your identity data ourselves; zkMe's role is limited to that verification and proof generation.</p>
+        <p>And note what verification cannot do here: an account under review still has a timelock branch. Freezing an account does not freeze your coins, because the script pays you out whatever we decide.</p>
+      </div>
+
       <div class="node" id="node">
         <div class="node-l">Run a node</div>
         <p>Node operators hold the other half of every signature and take a share of the fees. There is no signup form and no email list. Reach us over Bitmessage:</p>
@@ -443,7 +493,7 @@ OP_ENDIF</pre>
         <dd>Your key is derived from your credentials. A weak password, a compromised machine or a phished login is the realistic way to lose coins here — not a hack of our servers. Use a long passphrase and 2FA, and keep your backup off the machine you trade on.</dd>
 
         <dt>We can be asked for KYC</dt>
-        <dd>We reserve the right to request verification, collected on a separate platform. Note what that cannot do: freezing an account does not freeze your funds forever, because the timelock branch still executes.</dd>
+        <dd>We reserve the right to request verification, run through <a href="https://www.zk.me/">zkMe</a>. Documents are checked on your device and never reach us — we receive a zero-knowledge proof of a pass, not your identity data. Note what that cannot do: freezing an account does not freeze your funds forever, because the timelock branch still executes.</dd>
 
         <dt>Not everything here is bitcoin</dt>
         <dd>Bitcoin is the base pair and the design target — the first integrations were chosen for CHECKLOCKTIMEVERIFY support. Other assets are listed where the same guarantees can be reproduced. If a coin cannot be secured this way, we would rather not list it.</dd>
@@ -481,7 +531,7 @@ OP_ENDIF</pre>
           <ul>
             <li><a href="https://github.com/NightTrader/nighttrader.github.io">Source</a></li>
             <li><a href="https://github.com/NightTrader/nighttrader.github.io/blob/master/Nighttrader_A_Decentralized_Multisignature_Electronic_Cash_Wallet.pdf">Whitepaper</a></li>
-            <li><a href="#timelock">Timelock exit</a></li>
+            <li><a href="#controls">Air-gapped signing</a></li>
             <li><a href="#limits">Known tradeoffs</a></li>
           </ul>
         </div>
