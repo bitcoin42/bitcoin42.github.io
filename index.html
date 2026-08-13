@@ -45,15 +45,15 @@
 <title>NightTrader — a Bitcoin order book you co-sign</title>
 <meta name="description" content="A Bitcoin-native exchange with a full bid/ask order book. Coins settle into a multisig you hold a key to — a timelock returns them if the nodes vanish.">
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="https://bitcoin42.github.io/">
+<link rel="canonical" href="https://bitcoin42.com/">
 
 <!-- Open Graph -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="NightTrader.Exchange">
 <meta property="og:title" content="NightTrader — a Bitcoin order book you co-sign">
 <meta property="og:description" content="A Bitcoin-native exchange with a full bid/ask order book. Coins settle into a multisig you hold a key to — a timelock returns them if the nodes vanish.">
-<meta property="og:url" content="https://bitcoin42.github.io/">
-<meta property="og:image" content="https://bitcoin42.github.io/og-image.png">
+<meta property="og:url" content="https://bitcoin42.com/">
+<meta property="og:image" content="https://bitcoin42.com/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="NightTrader.Exchange — not your keys, not your coins, so we gave you a key.">
@@ -63,7 +63,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="NightTrader — a Bitcoin order book you co-sign">
 <meta name="twitter:description" content="A Bitcoin-native exchange with a full bid/ask order book. Coins settle into a multisig you hold a key to — a timelock returns them if the nodes vanish.">
-<meta name="twitter:image" content="https://bitcoin42.github.io/og-image.png">
+<meta name="twitter:image" content="https://bitcoin42.com/og-image.png">
 <meta name="twitter:image:alt" content="NightTrader.Exchange — not your keys, not your coins, so we gave you a key.">
 
 <!-- Icons -->
@@ -79,10 +79,10 @@
   "@graph": [
     {
       "@type": "Organization",
-      "@id": "https://bitcoin42.github.io/#organization",
+      "@id": "https://bitcoin42.com/#organization",
       "name": "NightTrader.Exchange",
-      "url": "https://bitcoin42.github.io/",
-      "logo": "https://bitcoin42.github.io/favicon-512.png",
+      "url": "https://bitcoin42.com/",
+      "logo": "https://bitcoin42.com/favicon-512.png",
       "foundingDate": "2014",
       "description": "A Bitcoin-native, non-custodial exchange with a full bid/ask order book. Coins settle into 2-of-2 or 3-of-3 multisig addresses secured by a CHECKLOCKTIMEVERIFY timelock.",
       "sameAs": [
@@ -91,11 +91,11 @@
     },
     {
       "@type": "WebSite",
-      "@id": "https://bitcoin42.github.io/#website",
-      "url": "https://bitcoin42.github.io/",
+      "@id": "https://bitcoin42.com/#website",
+      "url": "https://bitcoin42.com/",
       "name": "NightTrader.Exchange",
       "description": "A Bitcoin-native exchange with a full bid/ask order book. Coins settle into a multisig you hold a key to — a timelock returns them if the nodes vanish.",
-      "publisher": { "@id": "https://bitcoin42.github.io/#organization" },
+      "publisher": { "@id": "https://bitcoin42.com/#organization" },
       "inLanguage": "en"
     }
   ]
@@ -849,6 +849,7 @@ OP_ENDIF</pre>
         <div class="fee"><span class="n">0.5<span style="font-size:20px">%</span></span><span class="l" data-i18n="fees.f3_l">Withdrawal to your own wallet</span></div>
       </div>
       <p data-i18n="fees.p">Fees pay the node operators who hold the other half of the signature. There is no NightTrader token, no pre-mine, no treasury taking a cut of your trade, and no yield being promised to anyone. The exchange was launched without issuing a coin on purpose.</p>
+      <p class="small" data-i18n="fees.asof">Fees shown as of August 2026. Check the exchange for the current schedule.</p>
       <h3 data-i18n="fees.compare_h">How that compares</h3>
       <p class="small" data-i18n="fees.compare_note">Fees at other venues vary by tier, product and pair, and change over time. Rather than publish a snapshot that quietly goes stale, we suggest comparing against each venue's current published schedule. Note that on an automated market maker you should also count gas and slippage, and on a custodial venue you are also accepting custody risk.</p>
       <p class="small" style="margin-top:16px" data-i18n="fees.small">Listing a coin costs the project, not the traders. Integration and contract auditing are quoted per project. Nothing on this page is a promise of returns, liquidity, or execution quality.</p>
@@ -993,6 +994,9 @@ OP_ENDIF</pre>
         <div>
           <h4 data-i18n="footer.col_legal">Legal</h4>
           <ul>
+            <li><a href="https://nighttrader.exchange/tandc.html" data-i18n="footer.link_terms">Terms &amp; conditions</a></li>
+            <li><a href="https://nighttrader.exchange/privacy.html" data-i18n="footer.link_privacy">Privacy policy</a></li>
+            <li><a href="https://nighttrader.exchange/cookiepolicy.html" data-i18n="footer.link_cookies">Cookie policy</a></li>
             <li><a href="#limits" data-i18n="footer.link_risk">Risk disclosure</a></li>
           </ul>
         </div>
@@ -1005,10 +1009,11 @@ OP_ENDIF</pre>
           <span data-i18n="footer.imp_email_label">E-Mail:</span> <a href="mailto:ceo@nighttrader.org">ceo@nighttrader.org</a>
         </address>
         <p class="note-s" lang="es">Persona responsable del contenido: Alec Hahn, en representación de NAOME SAPI DE CV.</p>
+        <p class="note-s" data-i18n="footer.entities">NightTrader is the exchange. bitcoin42 is the team behind it, operating since 2014; this page is published at bitcoin42.com. NAOME SAPI DE CV is the legal operator named above. The exchange itself runs at nighttrader.exchange.</p>
       </div>
 
       <div class="legal">
-        <p style="margin:0 0 10px" data-i18n="footer.legal_p1">NightTrader.Exchange is a non-custodial trading interface. It is not a bank, a broker, a custodian or an investment service, and nothing here is investment advice or a promise of yield, liquidity or execution. Trading digital assets can result in total loss. You are responsible for your own key and your own backups.</p>
+        <p style="margin:0 0 10px" data-i18n="footer.legal_p1">NightTrader.Exchange is a co-custodial trading interface: during trading, funds sit in multisig addresses you co-sign, with a time-delayed recovery path. It is not a bank, a broker or an investment service, and nothing here is investment advice or a promise of yield, liquidity or execution. Trading digital assets can result in total loss. You are responsible for your own key and your own backups. Your use is governed by the <a href="https://nighttrader.exchange/tandc.html">Terms &amp; conditions</a>.</p>
         <p class="mono" style="margin:0;font-size:11.5px;letter-spacing:.06em" data-i18n="footer.legal_p2">Served from bitcoin42.com — registered 2014 · No third-party requests on this page.</p>
       </div>
     </div>
