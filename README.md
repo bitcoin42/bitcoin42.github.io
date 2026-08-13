@@ -29,6 +29,14 @@ as duplicates.
 > `bitcoin42.com` is served through Cloudflare, not GitHub Pages. Adding a `CNAME` would make Pages
 > attempt to claim the domain and would conflict with the Cloudflare deployment.
 
+> ⚠️ **The canonical domain is currently stale.** The Cloudflare Workers Build `afmhahn-bitcoin`
+> is failing, so `bitcoin42.com` still serves a pre-August-2026 copy of this page — including
+> wording about the recovery timelock that was corrected as factually wrong. This repository
+> contains no Cloudflare configuration (no `wrangler.toml`, `_headers` or `_redirects`); the build
+> is configured in the Cloudflare dashboard and must be fixed there. See `AUDIT.md` finding D-7.
+> **There is no build step here** — the site is served straight from the committed files, so the
+> Workers project should have an empty build command.
+
 ## Brand and entity relationships
 
 - **NightTrader** — the exchange/product.
