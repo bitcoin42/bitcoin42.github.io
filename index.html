@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#F7931A">
 <title>NightTrader — a Bitcoin order book you co-sign</title>
 <meta name="description" content="A Bitcoin-native exchange with a full bid/ask order book. Coins settle into multisig addresses you hold a key to, with a timelock that returns them if the nodes disappear.">
 <style>
@@ -44,7 +45,7 @@ a:hover{background:var(--orange);border-bottom-color:var(--orange)}
   color:var(--grey);padding-top:9px;
 }
 .gut b{display:block;color:var(--ink);font-weight:600}
-.col{max-width:720px}
+.col{max-width:720px;min-width:0}
 
 h1,h2,h3{font-family:var(--serif);font-weight:400;letter-spacing:-.015em;margin:0}
 h1{font-size:clamp(40px,7.2vw,74px);line-height:.98}
@@ -56,14 +57,15 @@ p.lede{font-size:19px;color:#2C2F34;max-width:62ch}
 .mono{font-family:var(--mono)}
 
 /* ---------- masthead ---------- */
-header{border-bottom:1px solid var(--rule);background:var(--paper)}
-.mast{display:flex;align-items:baseline;justify-content:space-between;gap:24px;padding:18px 0;flex-wrap:wrap}
+header{border-bottom:1px solid var(--rule);background:var(--paper);position:sticky;top:0;z-index:50}
+.mast{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:16px 0;flex-wrap:wrap}
 .brand{font-family:var(--mono);font-size:13px;letter-spacing:.24em;font-weight:600;text-transform:uppercase;border:0}
 .brand:hover{background:none}
 .brand .dot{color:var(--orange)}
-nav{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;display:flex;gap:20px;flex-wrap:wrap}
-nav a{border-bottom:1px solid transparent;color:var(--grey)}
-nav a:hover{background:none;color:var(--ink);border-bottom-color:var(--orange)}
+nav{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+nav a:not(.btn){border-bottom:1px solid transparent;color:var(--grey);padding:8px 0}
+nav a:not(.btn):hover{background:none;color:var(--ink);border-bottom-color:var(--orange)}
+nav .btn.sm{margin-left:4px}
 
 /* ---------- hero ---------- */
 .hero{padding:78px 0 56px;position:relative;overflow:hidden}
@@ -83,15 +85,24 @@ h1 .thin{color:var(--grey)}
   margin:26px 0 30px;padding-left:16px;border-left:2px solid var(--orange);
 }
 .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px;align-items:center}
+.cta-note{font-family:var(--mono);font-size:12px;letter-spacing:.05em;color:var(--grey);margin:14px 0 0}
+.cta-note::before{content:"● ";color:var(--orange)}
 .btn{
-  font-family:var(--mono);font-size:13px;letter-spacing:.08em;text-transform:uppercase;
-  padding:13px 22px;border:1px solid var(--ink);background:var(--ink);color:var(--paper);
+  display:inline-flex;align-items:center;justify-content:center;text-align:center;
+  font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  padding:15px 26px;min-height:48px;border:1px solid var(--orange);background:var(--orange);color:var(--ink);
+  touch-action:manipulation;
 }
-.btn:hover{background:var(--orange);border-color:var(--orange);color:var(--ink)}
-.btn.ghost{background:none;color:var(--ink)}
+.btn:hover{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.btn.ghost{background:none;color:var(--ink);border-color:var(--ink)}
 .btn.ghost:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.btn.sm{padding:9px 16px;min-height:36px;font-size:11px}
 @media (max-width:900px){
   .hero-mark{width:min(360px,88vw);top:4%;right:-18%;opacity:.07}
+}
+@media (max-width:560px){
+  .cta{flex-direction:column;align-items:stretch}
+  .cta .btn{width:100%}
 }
 
 /* ---------- signature: the annotated redeem script ---------- */
@@ -103,7 +114,8 @@ h1 .thin{color:var(--grey)}
   padding:12px 18px;border-bottom:1px solid var(--rule);
   font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey);
 }
-.script-body{display:grid;grid-template-columns:1fr 300px}
+.script-body{display:grid;grid-template-columns:1fr 300px;min-width:0}
+.script-body > *{min-width:0}
 pre.code{
   margin:0;padding:26px 20px;font-family:var(--mono);font-size:14px;line-height:2.05;
   overflow-x:auto;white-space:pre;
@@ -194,7 +206,7 @@ ul.ctrl p{margin:0;color:#33363B;font-size:15.5px}
 .node p{margin:0 0 16px;font-size:15px}
 .bm{display:flex;align-items:stretch;gap:0;flex-wrap:wrap;border:1px solid #24304A;background:#080D18}
 .bm code{
-  font-family:var(--mono);font-size:13px;color:#fff;padding:12px 14px;flex:1 1 300px;
+  font-family:var(--mono);font-size:13px;color:#fff;padding:12px 14px;flex:1 1 300px;min-width:0;
   overflow-x:auto;white-space:nowrap;letter-spacing:.01em;
 }
 .copy{
@@ -218,6 +230,7 @@ dl.trade dd{margin:8px 0 0;color:#33363B;font-size:15.5px}
 /* ---------- footer ---------- */
 footer{padding:52px 0 64px;font-size:13.5px;color:var(--grey)}
 .fgrid{display:grid;grid-template-columns:var(--gutter) 1fr;gap:0 40px}
+.fgrid > *{min-width:0}
 .fcols{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;max-width:720px}
 footer h4{font-family:var(--mono);font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink);margin:0 0 10px;font-weight:600}
 footer ul{list-style:none;margin:0;padding:0}
@@ -235,6 +248,19 @@ footer li{margin-bottom:6px}
   .fees{grid-template-columns:1fr}
   .fcols{grid-template-columns:1fr 1fr}
   .verify li{grid-template-columns:1fr;gap:4px}
+}
+@media (max-width:640px){
+  nav a:not(.btn){display:none}
+  nav{gap:0}
+  .hero{padding:48px 0 40px}
+  .tbl th,.tbl td{padding:12px 10px 12px 0;font-size:13.5px}
+}
+@media (max-width:480px){
+  :root{--pad:18px}
+  .fcols{grid-template-columns:1fr;gap:22px}
+  .bm{flex-direction:column}
+  .bm code{width:100%;flex:0 1 auto}
+  .copy{border-left:0;border-top:1px solid #24304A;justify-content:center;display:flex}
 }
 @media (prefers-reduced-motion:no-preference){
   .tok{transition:background .12s linear}
@@ -255,6 +281,7 @@ footer li{margin-bottom:6px}
       <a href="#fees">Fees</a>
       <a href="#privacy">Privacy</a>
       <a href="#limits">Tradeoffs</a>
+      <a class="btn sm" href="https://nighttrader.exchange">Open exchange</a>
     </nav>
   </div>
 </header>
@@ -290,6 +317,7 @@ footer li{margin-bottom:6px}
       <a class="btn ghost" href="https://github.com/NightTrader/nighttrader.github.io/blob/master/Nighttrader_A_Decentralized_Multisignature_Electronic_Cash_Wallet.pdf">Read the paper</a>
       <a class="btn ghost" href="#verify">Read the source</a>
     </div>
+    <p class="cta-note">Non-custodial · No signup wall to browse the book · Withdraw whenever you want</p>
 
     <!-- ===== SIGNATURE ELEMENT: the annotated redeem script ===== -->
     <div class="script">
