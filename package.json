@@ -1,0 +1,26 @@
+{
+  "name": "nighttrader-landing",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Static landing page for NightTrader, published by bitcoin42. Dev dependencies only — nothing here ships to production.",
+  "scripts": {
+    "start": "http-server . -p 8080 -c-1 --silent",
+    "lint": "eslint assets/site.js tests/ && prettier --check \"**/*.{json,md}\"",
+    "format": "prettier --write \"**/*.{json,md}\"",
+    "test:html": "html-validate index.html",
+    "test:locales": "node tests/locales.test.js",
+    "test:claims": "node tests/claims.test.js",
+    "test:links": "node tests/links.test.js",
+    "test:a11y": "node tests/a11y.test.js",
+    "test:e2e": "node tests/e2e.test.js",
+    "test": "npm run test:locales && npm run test:claims && npm run test:html && npm run test:links && npm run test:a11y && npm run test:e2e"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.47.0",
+    "axe-core": "^4.13.0",
+    "eslint": "^8.57.0",
+    "html-validate": "^8.24.0",
+    "http-server": "^14.1.1",
+    "prettier": "^3.3.0"
+  }
+}
