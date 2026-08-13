@@ -55,11 +55,23 @@ headers at all; Cloudflare can. See §9.
 
 **Finding D-7 (P0) — OWNER ACTION REQUIRED, OUTSIDE THIS REPOSITORY.** The canonical host is
 **not receiving deployments**. The Cloudflare Workers Build `afmhahn-bitcoin` reports
-`conclusion: failure` on every commit checked, and in each case `started_at == completed_at` —
-the build fails immediately rather than running, which points at project configuration rather
-than at repository content. This is **not** caused by the changes in this audit: the same
-instant failure is recorded on PR #15, before any CI, `package.json` or `package-lock.json`
-existed in this repository.
+`conclusion: failure` on every commit checked. This is **not** caused by the changes in this
+audit: the same failure is recorded on PR #15, before any CI workflow, `package.json` or
+`package-lock.json` existed in this repository.
+
+> **Do not read build duration from the GitHub check run.** Cloudflare posts the check only on
+> completion and stamps `started_at` and `completed_at` with the same value, so every one of these
+> checks appears to take zero seconds. That is a reporting artifact, **not** evidence that the
+> build fails immediately. The real duration is visible in the `cloudflare-workers-and-pages[bot]`
+> PR comment, which transitions "In progress" → "Deployment failed": for build `bd7e8d0a` that was
+> 16:44:17 → 16:44:36 UTC, roughly **19 seconds**. The build does run, and then fails.
+
+Because the build genuinely executes, the cause cannot be narrowed to project configuration from
+the outside. **The build log is the only thing that identifies it**, and it is reachable only from
+the Cloudflare dashboard — the GitHub check exposes no `output.text`, and no Cloudflare credential
+is available to this repository's tooling. Note that this repository commits no Wrangler
+configuration, which is one candidate cause among several (`wrangler deploy` needs a
+`wrangler.toml`/`wrangler.jsonc` or equivalent arguments), but that is a hypothesis, not a finding.
 
 Observed consequences, verified by fetching both hosts:
 
@@ -77,17 +89,20 @@ Two things follow, and both matter:
    safety wording** — including the description of the recovery timelock as paying out on
    schedule, which §7 records as factually wrong about Bitcoin.
 
-Nothing in this repository can fix this. There is no `wrangler.toml`, no `_headers`, no
-`_redirects` and no other Cloudflare configuration committed here, so the Workers Build is
-configured entirely in the Cloudflare dashboard. The build log is at the `details_url` on the
-failing GitHub check and must be read there.
-
-> **Recommended owner action.** Open the failing build in the Cloudflare dashboard and inspect
-> the log before changing anything in this repository. If the project is configured with a build
-> command, note that this repository has **no build step** — the site is served directly from the
-> committed files — so the correct setting is an empty build command with the repository root as
-> the output directory. Do not add a placeholder `build` script here to satisfy a guess about the
-> Cloudflare configuration; that would hide the real misconfiguration rather than fix it.
+> **Recommended owner action.** Open the failing build from the `details_url` on the GitHub check
+> and read the log **before** changing anything in this repository. Two constraints should shape
+> whatever fix follows:
+>
+> 1. This repository has **no build step** — the site is served directly from the committed files.
+>    Whatever the Workers project is currently trying to build, it should not need to.
+> 2. The `afmhahn-bitcoin` Worker is **currently serving traffic** on the canonical domain, albeit
+>    stale content. Adding a Wrangler configuration here would change how that domain is served
+>    and could replace behaviour (routing, redirects, headers) that exists only in the deployed
+>    Worker. Its code could not be retrieved for inspection, so that risk is unquantified.
+>
+> Do **not** add a placeholder `build` script, or a speculative `wrangler.toml`, merely to turn the
+> check green. Either would hide the real misconfiguration, and the second could take the canonical
+> domain down.
 
 ### 1.2 The linked "source" repository does not contain the product
 
