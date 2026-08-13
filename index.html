@@ -114,6 +114,8 @@
   --grey:#6B7076;
   --rule:#E2E2DF;
   --orange:#F7931A;
+  --orange-ink:#A85A07; /* AA-contrast orange for small text on paper */
+  --on-orange:#101114;  /* text on an orange fill; must NOT flip with theme */
   --night:#0C1220;
   --surface:#fff;
   --tokbg:#FDF1E0;
@@ -127,6 +129,7 @@
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
+    --orange-ink:#F7931A;
     --paper:#0B0C0F;
     --ink:#F1F2F4;
     --ink2:#C7CAD1;
@@ -139,6 +142,7 @@
   }
 }
 :root[data-theme="dark"]{
+  --orange-ink:#F7931A;
   --paper:#0B0C0F;
   --ink:#F1F2F4;
   --ink2:#C7CAD1;
@@ -187,9 +191,30 @@ header{border-bottom:1px solid var(--rule);background:var(--paper);position:stic
 .brand:hover{background:none}
 .brand .dot{color:var(--orange)}
 nav{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.nav-links{display:contents}
 nav a:not(.btn){border-bottom:1px solid transparent;color:var(--grey);padding:8px 0}
 nav a:not(.btn):hover{background:none;color:var(--ink);border-bottom-color:var(--orange)}
 nav .btn.sm{margin-left:4px}
+
+section[id],#main,#top{scroll-margin-top:96px}
+
+/* ---------- skip link ---------- */
+.skip-link{
+  position:absolute;left:8px;top:-60px;z-index:100;
+  font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;
+  background:var(--orange);color:var(--on-orange);border:0;padding:12px 18px;
+  transition:top .12s linear;
+}
+.skip-link:focus{top:8px}
+.sr-only{
+  position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;
+}
+
+/* ---------- mobile nav toggle (hidden on desktop) ---------- */
+.nav-toggle{display:none}
+.nav-toggle-bars{display:inline-flex;flex-direction:column;justify-content:center;gap:3px;width:14px;height:12px}
+.nav-toggle-bars span{display:block;height:1.5px;width:100%;background:currentColor}
 #theme-toggle .tt-to-dark,#theme-toggle .tt-to-light{display:none}
 :root[data-theme="light"] #theme-toggle .tt-to-dark{display:inline}
 :root[data-theme="dark"] #theme-toggle .tt-to-light{display:inline}
@@ -205,7 +230,7 @@ nav .btn.sm{margin-left:4px}
   color:var(--orange);opacity:.09;
 }
 .hero-mark svg{display:block;width:100%;height:auto}
-.kicker{font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--orange);margin-bottom:26px}
+.kicker{font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--orange-ink);margin-bottom:26px}
 .arch-label{
   display:inline-block;font-family:var(--mono);font-size:11.5px;line-height:1.5;
   letter-spacing:.04em;color:var(--ink2);background:var(--highlight);
@@ -222,7 +247,7 @@ h1 .thin{color:var(--grey)}
 .btn{
   display:inline-flex;align-items:center;justify-content:center;text-align:center;
   font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
-  padding:15px 26px;min-height:48px;border:1px solid var(--orange);background:var(--orange);color:var(--ink);
+  padding:15px 26px;min-height:48px;border:1px solid var(--orange);background:var(--orange);color:var(--on-orange);
   touch-action:manipulation;
 }
 .btn:hover{background:var(--ink);border-color:var(--ink);color:var(--paper)}
@@ -256,12 +281,12 @@ pre.code{
   font:inherit;background:var(--tokbg);border:0;border-bottom:1.5px solid var(--orange);
   padding:2px 4px;cursor:pointer;color:var(--ink);
 }
-.tok:hover,.tok[aria-pressed="true"]{background:var(--orange)}
+.tok:hover,.tok[aria-pressed="true"]{background:var(--orange);color:var(--on-orange)}
 .op{color:var(--grey)}
 .note{
   border-left:1px solid var(--rule);padding:26px 22px;font-size:14.5px;line-height:1.6;
 }
-.note .tag{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--orange);display:block;margin-bottom:8px}
+.note .tag{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--orange-ink);display:block;margin-bottom:8px}
 .note p{margin:0}
 .hint{font-size:12.5px;color:var(--grey);margin-top:18px;font-family:var(--mono)}
 
@@ -390,10 +415,10 @@ ol.steps p{margin:0;color:var(--ink2);font-size:15.5px}
 .tl-bar span:last-child{background:var(--orange);height:15px;top:-7px;width:2px}
 .tl-labels{display:flex;justify-content:space-between;gap:12px;font-family:var(--mono);font-size:11.5px;letter-spacing:.04em;color:var(--grey);text-transform:uppercase}
 .tl-labels>*{min-width:0;overflow-wrap:anywhere}
-.tl-labels em{font-style:normal;color:var(--orange)}
+.tl-labels em{font-style:normal;color:var(--orange-ink)}
 .tl-labels button{font:inherit;letter-spacing:inherit;text-transform:inherit;color:inherit;background:none;border:0;padding:2px 0;margin:0;cursor:pointer;text-align:start}
 .tl-labels button:hover{color:var(--ink)}
-.tl-labels button.active{color:var(--orange)}
+.tl-labels button.active{color:var(--orange-ink)}
 .tl-labels button.active em{color:inherit}
 
 /* ---------- dead-man's switch (timelock) ---------- */
@@ -434,14 +459,14 @@ ol.steps p{margin:0;color:var(--ink2);font-size:15.5px}
 /* ---------- night band ---------- */
 .night{background:var(--night);color:#DCDFE6;border-bottom:0}
 .night h2{color:#fff}
-.night .gut{color:#727B90}
+.night .gut{color:#7B8499}
 .night .gut b{color:#fff}
 .night a{color:#fff;border-bottom-color:var(--orange)}
 .night a:hover{background:var(--orange);color:var(--night)}
 .night p{color:#B9C0CC}
 .verify{list-style:none;margin:26px 0 0;padding:0}
 .verify li{border-top:1px solid #1E2739;padding:16px 0;display:grid;grid-template-columns:120px 1fr;gap:18px;align-items:baseline}
-.verify .k{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#727B90}
+.verify .k{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#7B8499}
 .verify .v{font-size:15px}
 
 /* ---------- controls ---------- */
@@ -475,11 +500,11 @@ ul.ctrl p{margin:0;color:var(--ink2);font-size:15.5px}
   background:none;border:0;border-left:1px solid #24304A;color:#B9C0CC;padding:12px 18px;cursor:pointer;
 }
 .copy:hover{background:var(--orange);color:var(--night)}
-.node-f{margin:16px 0 0;font-size:13px;color:#727B90}
+.node-f{margin:16px 0 0;font-size:13px;color:#7B8499}
 
 /* ---------- impressum ---------- */
 .imp{border:1px solid var(--rule);padding:20px 20px 16px;margin-top:30px;max-width:720px}
-.imp h4{margin-bottom:12px}
+.imp .fh{margin-bottom:12px}
 .imp address{font-style:normal;font-size:13.5px;line-height:1.75;color:var(--ink)}
 .imp .note-s{margin:12px 0 0;font-size:12.5px;color:var(--grey)}
 
@@ -493,7 +518,7 @@ footer{padding:52px 0 64px;font-size:13.5px;color:var(--grey)}
 .fgrid{display:grid;grid-template-columns:var(--gutter) 1fr;gap:0 40px}
 .fgrid > *{min-width:0}
 .fcols{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;max-width:720px}
-footer h4{font-family:var(--mono);font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink);margin:0 0 10px;font-weight:600}
+footer .fh,.imp .fh{font-family:var(--mono);font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink);margin:0 0 10px;font-weight:600}
 footer ul{list-style:none;margin:0;padding:0}
 footer li{margin-bottom:6px}
 .legal{margin-top:34px;padding-top:20px;border-top:1px solid var(--rule);font-size:12.5px;line-height:1.65;max-width:720px}
@@ -538,8 +563,26 @@ footer li{margin-bottom:6px}
   .verify li{grid-template-columns:1fr;gap:4px}
 }
 @media (max-width:640px){
-  nav a:not(.btn){display:none}
-  nav{gap:0}
+  nav{gap:10px}
+  /* Section links move into a real disclosure menu rather than disappearing. */
+  .nav-toggle{
+    display:inline-flex;align-items:center;gap:8px;
+    font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+    background:none;color:var(--ink);border:1px solid var(--ink);
+    padding:9px 14px;min-height:36px;cursor:pointer;touch-action:manipulation;
+  }
+  .nav-toggle[aria-expanded="true"]{background:var(--ink);color:var(--paper)}
+  .nav-links{
+    display:none;position:absolute;left:0;right:0;top:100%;
+    background:var(--paper);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);
+    padding:8px var(--pad) 14px;
+    flex-direction:column;align-items:stretch;gap:0;
+  }
+  .nav-links[data-open="true"]{display:flex}
+  .nav-links a:not(.btn){
+    padding:13px 0;border-bottom:1px solid var(--rule);min-height:44px;display:flex;align-items:center;
+  }
+  .nav-links a:not(.btn):last-child{border-bottom:0}
   .hero{padding:48px 0 40px}
   .tbl th,.tbl td{padding:12px 10px 12px 0;font-size:13.5px}
 }
@@ -563,19 +606,27 @@ footer li{margin-bottom:6px}
 </head>
 <body>
 
+<a class="skip-link" href="#main" data-i18n="a11y.skip">Skip to content</a>
+
 <header>
   <div class="wrap mast">
     <a class="brand" href="#top">NightTrader<span class="dot">.</span>Exchange</a>
-    <nav>
-      <a href="#custody" data-i18n="nav.custody">Custody</a>
-      <a href="#how" data-i18n="nav.how">How it settles</a>
-      <a href="#controls" data-i18n="nav.controls">Controls</a>
-      <a href="#timelock" data-i18n="nav.timelock">Timelock</a>
-      <a href="#fees" data-i18n="nav.fees">Fees</a>
-      <a href="#privacy" data-i18n="nav.privacy">Privacy</a>
-      <a href="#limits" data-i18n="nav.tradeoffs">Tradeoffs</a>
-      <a href="#history" data-i18n="nav.history">History</a>
-      <button id="theme-toggle" class="btn ghost sm" type="button" aria-label="Toggle color theme">
+    <nav id="site-nav" data-i18n-aria-label="a11y.nav_primary" aria-label="Primary">
+      <button id="nav-toggle" class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" data-i18n-aria-label="a11y.nav_menu" aria-label="Sections menu">
+        <span class="nav-toggle-bars" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span data-i18n="a11y.nav_menu_label">Sections</span>
+      </button>
+      <div class="nav-links" id="nav-links">
+        <a href="#custody" data-i18n="nav.custody">Custody</a>
+        <a href="#how" data-i18n="nav.how">How it settles</a>
+        <a href="#controls" data-i18n="nav.controls">Controls</a>
+        <a href="#timelock" data-i18n="nav.timelock">Timelock</a>
+        <a href="#fees" data-i18n="nav.fees">Fees</a>
+        <a href="#privacy" data-i18n="nav.privacy">Privacy</a>
+        <a href="#limits" data-i18n="nav.tradeoffs">Tradeoffs</a>
+        <a href="#history" data-i18n="nav.history">History</a>
+      </div>
+      <button id="theme-toggle" class="btn ghost sm" type="button" data-i18n-aria-label="a11y.theme_toggle" aria-label="Toggle colour theme">
         <span class="tt-to-dark" data-i18n="theme.to_dark">Dark</span><span class="tt-to-light" data-i18n="theme.to_light">Light</span>
       </button>
       <a class="btn sm" href="https://nighttrader.exchange" data-i18n="nav.open">Open exchange</a>
@@ -583,7 +634,8 @@ footer li{margin-bottom:6px}
   </div>
 </header>
 
-<main id="top">
+<main id="main" tabindex="-1">
+<span id="top" aria-hidden="true"></span>
 
 <!-- ============ HERO ============ -->
 <section class="band">
@@ -681,10 +733,10 @@ OP_ENDIF</pre>
       </aside>
       <p class="hint" data-i18n="custody.viz_hint">Tap a side to pause and inspect</p>
 
-      <div class="wide">
+      <div class="wide" tabindex="0" role="region" data-i18n-aria-label="a11y.table_region" aria-label="Comparison table, scrollable">
       <table class="tbl">
         <thead>
-          <tr><th scope="col"></th><th scope="col" data-i18n="custody.th_nighttrader">NightTrader</th><th scope="col" data-i18n="custody.th_cex">Custodial CEX</th><th scope="col" data-i18n="custody.th_wrapped">Wrapped BTC on a DEX</th><th scope="col" data-i18n="custody.th_atomic">Atomic swap DEX</th></tr>
+          <tr><th scope="col"><span class="sr-only" data-i18n="a11y.col_criterion">Criterion</span></th><th scope="col" data-i18n="custody.th_nighttrader">NightTrader</th><th scope="col" data-i18n="custody.th_cex">Custodial CEX</th><th scope="col" data-i18n="custody.th_wrapped">Wrapped BTC on a DEX</th><th scope="col" data-i18n="custody.th_atomic">Atomic swap DEX</th></tr>
         </thead>
         <tbody>
           <tr>
@@ -886,6 +938,7 @@ OP_ENDIF</pre>
           <code id="bm-addr">BM-2cU2YA1q5UEyxUedNkgKnLsn3jurKpzuWR</code>
           <button class="copy" type="button" id="bm-copy" data-addr="BM-2cU2YA1q5UEyxUedNkgKnLsn3jurKpzuWR" data-i18n="node.copy">Copy</button>
         </div>
+        <p class="sr-only" id="copy-status" role="status" aria-live="polite"></p>
         <p class="node-f" data-i18n="node.f">If that channel is inconvenient for you, you are probably not the operator we are looking for.</p>
       </div>
     </div>
@@ -974,7 +1027,7 @@ OP_ENDIF</pre>
     <div>
       <div class="fcols">
         <div>
-          <h4 data-i18n="footer.col_exchange">Exchange</h4>
+          <h3 class="fh" data-i18n="footer.col_exchange">Exchange</h3>
           <ul>
             <li><a href="https://nighttrader.exchange" data-i18n="footer.link_trade">Trade</a></li>
             <li><a href="#fees" data-i18n="nav.fees">Fees</a></li>
@@ -983,7 +1036,7 @@ OP_ENDIF</pre>
           </ul>
         </div>
         <div>
-          <h4 data-i18n="verify.gut_b">Verify</h4>
+          <h3 class="fh" data-i18n="verify.gut_b">Verify</h3>
           <ul>
             <li><a href="https://github.com/NightTrader/nighttrader.github.io" data-i18n="verify.li_source_k">Source</a></li>
             <li><a href="https://github.com/NightTrader/nighttrader.github.io/blob/master/Nighttrader_A_Decentralized_Multisignature_Electronic_Cash_Wallet.pdf" data-i18n="footer.link_whitepaper">Whitepaper</a></li>
@@ -992,7 +1045,7 @@ OP_ENDIF</pre>
           </ul>
         </div>
         <div>
-          <h4 data-i18n="footer.col_legal">Legal</h4>
+          <h3 class="fh" data-i18n="footer.col_legal">Legal</h3>
           <ul>
             <li><a href="https://nighttrader.exchange/tandc.html" data-i18n="footer.link_terms">Terms &amp; conditions</a></li>
             <li><a href="https://nighttrader.exchange/privacy.html" data-i18n="footer.link_privacy">Privacy policy</a></li>
@@ -1003,7 +1056,7 @@ OP_ENDIF</pre>
       </div>
 
       <div class="imp" id="impressum">
-        <h4 data-i18n="footer.imp_h4">Legal notice · Operator</h4>
+        <h3 class="fh" data-i18n="footer.imp_h4">Legal notice · Operator</h3>
         <address>
           NAOME SAPI DE CV<br>
           <span data-i18n="footer.imp_email_label">E-Mail:</span> <a href="mailto:ceo@nighttrader.org">ceo@nighttrader.org</a>

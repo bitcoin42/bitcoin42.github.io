@@ -5,7 +5,7 @@
   var T = {};
 
   T.en = {
-    'nav.custody':'Custody','nav.how':'How it settles','nav.controls':'Controls','nav.timelock':'Timelock',
+    'a11y.table_region':'Comparison table, scrollable','a11y.skip':'Skip to content','a11y.nav_primary':'Primary','a11y.nav_menu':'Sections menu','a11y.nav_menu_label':'Sections','a11y.theme_toggle':'Toggle colour theme','a11y.col_criterion':'Criterion','a11y.copy_ok':'Bitmessage address copied to clipboard.','a11y.copy_fallback':'Bitmessage address selected. Copy it with your keyboard.','meta.title':'NightTrader — a Bitcoin order book you co-sign','meta.description':'A Bitcoin-native exchange with a full bid/ask order book. Accounts settle into multisig addresses you hold a key to, with a time-delayed recovery path.','nav.custody':'Custody','nav.how':'How it settles','nav.controls':'Controls','nav.timelock':'Timelock',
     'nav.fees':'Fees','nav.privacy':'Privacy','nav.tradeoffs':'Tradeoffs','nav.history':'History','nav.open':'Open exchange',
     'theme.to_dark':'Dark','theme.to_light':'Light',
     'hero.kicker':'Bitcoin-native · Co-custodial · Full bid / ask order book',
@@ -110,7 +110,7 @@
   };
 
   T.zh = {
-    'nav.custody':'托管方式','nav.how':'结算流程','nav.controls':'控制权','nav.timelock':'时间锁',
+    'a11y.table_region':'Comparison table, scrollable','a11y.skip':'Skip to content','a11y.nav_primary':'Primary','a11y.nav_menu':'Sections menu','a11y.nav_menu_label':'Sections','a11y.theme_toggle':'Toggle colour theme','a11y.col_criterion':'Criterion','a11y.copy_ok':'Bitmessage address copied to clipboard.','a11y.copy_fallback':'Bitmessage address selected. Copy it with your keyboard.','meta.title':'NightTrader — a Bitcoin order book you co-sign','meta.description':'A Bitcoin-native exchange with a full bid/ask order book. Accounts settle into multisig addresses you hold a key to, with a time-delayed recovery path.','nav.custody':'托管方式','nav.how':'结算流程','nav.controls':'控制权','nav.timelock':'时间锁',
     'nav.fees':'费用','nav.privacy':'隐私','nav.tradeoffs':'权衡取舍','nav.history':'发展历程','nav.open':'打开交易所',
     'theme.to_dark':'深色','theme.to_light':'浅色',
     'hero.kicker':'Bitcoin-native · Co-custodial · Full bid / ask order book',
@@ -215,7 +215,7 @@
   };
 
   T.ru = {
-    'nav.custody':'Хранение','nav.how':'Как проходит расчёт','nav.controls':'Контроль','nav.timelock':'Таймлок',
+    'a11y.table_region':'Comparison table, scrollable','a11y.skip':'Skip to content','a11y.nav_primary':'Primary','a11y.nav_menu':'Sections menu','a11y.nav_menu_label':'Sections','a11y.theme_toggle':'Toggle colour theme','a11y.col_criterion':'Criterion','a11y.copy_ok':'Bitmessage address copied to clipboard.','a11y.copy_fallback':'Bitmessage address selected. Copy it with your keyboard.','meta.title':'NightTrader — a Bitcoin order book you co-sign','meta.description':'A Bitcoin-native exchange with a full bid/ask order book. Accounts settle into multisig addresses you hold a key to, with a time-delayed recovery path.','nav.custody':'Хранение','nav.how':'Как проходит расчёт','nav.controls':'Контроль','nav.timelock':'Таймлок',
     'nav.fees':'Комиссии','nav.privacy':'Приватность','nav.tradeoffs':'Компромиссы','nav.history':'История','nav.open':'Открыть биржу',
     'theme.to_dark':'Тёмная','theme.to_light':'Светлая',
     'hero.kicker':'Bitcoin-native · Co-custodial · Full bid / ask order book',
@@ -320,7 +320,7 @@
   };
 
   T.es = {
-    'nav.custody':'Custodia','nav.how':'Cómo liquida','nav.controls':'Control','nav.timelock':'Timelock',
+    'a11y.table_region':'Comparison table, scrollable','a11y.skip':'Skip to content','a11y.nav_primary':'Primary','a11y.nav_menu':'Sections menu','a11y.nav_menu_label':'Sections','a11y.theme_toggle':'Toggle colour theme','a11y.col_criterion':'Criterion','a11y.copy_ok':'Bitmessage address copied to clipboard.','a11y.copy_fallback':'Bitmessage address selected. Copy it with your keyboard.','meta.title':'NightTrader — a Bitcoin order book you co-sign','meta.description':'A Bitcoin-native exchange with a full bid/ask order book. Accounts settle into multisig addresses you hold a key to, with a time-delayed recovery path.','nav.custody':'Custodia','nav.how':'Cómo liquida','nav.controls':'Control','nav.timelock':'Timelock',
     'nav.fees':'Comisiones','nav.privacy':'Privacidad','nav.tradeoffs':'Compromisos','nav.history':'Historia','nav.open':'Abrir exchange',
     'theme.to_dark':'Oscuro','theme.to_light':'Claro',
     'hero.kicker':'Bitcoin-native · Co-custodial · Full bid / ask order book',
@@ -425,7 +425,7 @@
   };
 
   T.it = {
-    'nav.custody':'Custodia','nav.how':'Come si liquida','nav.controls':'Controllo','nav.timelock':'Timelock',
+    'a11y.table_region':'Comparison table, scrollable','a11y.skip':'Skip to content','a11y.nav_primary':'Primary','a11y.nav_menu':'Sections menu','a11y.nav_menu_label':'Sections','a11y.theme_toggle':'Toggle colour theme','a11y.col_criterion':'Criterion','a11y.copy_ok':'Bitmessage address copied to clipboard.','a11y.copy_fallback':'Bitmessage address selected. Copy it with your keyboard.','meta.title':'NightTrader — a Bitcoin order book you co-sign','meta.description':'A Bitcoin-native exchange with a full bid/ask order book. Accounts settle into multisig addresses you hold a key to, with a time-delayed recovery path.','nav.custody':'Custodia','nav.how':'Come si liquida','nav.controls':'Controllo','nav.timelock':'Timelock',
     'nav.fees':'Commissioni','nav.privacy':'Privacy','nav.tradeoffs':'Compromessi','nav.history':'Storia','nav.open':'Apri l\'exchange',
     'theme.to_dark':'Scuro','theme.to_light':'Chiaro',
     'hero.kicker':'Bitcoin-native · Co-custodial · Full bid / ask order book',
@@ -530,7 +530,7 @@
   };
 
   T.pt = {
-    'nav.custody':'Custódia','nav.how':'Como liquida','nav.controls':'Controle','nav.timelock':'Timelock',
+    'a11y.table_region':'Comparison table, scrollable','a11y.skip':'Skip to content','a11y.nav_primary':'Primary','a11y.nav_menu':'Sections menu','a11y.nav_menu_label':'Sections','a11y.theme_toggle':'Toggle colour theme','a11y.col_criterion':'Criterion','a11y.copy_ok':'Bitmessage address copied to clipboard.','a11y.copy_fallback':'Bitmessage address selected. Copy it with your keyboard.','meta.title':'NightTrader — a Bitcoin order book you co-sign','meta.description':'A Bitcoin-native exchange with a full bid/ask order book. Accounts settle into multisig addresses you hold a key to, with a time-delayed recovery path.','nav.custody':'Custódia','nav.how':'Como liquida','nav.controls':'Controle','nav.timelock':'Timelock',
     'nav.fees':'Taxas','nav.privacy':'Privacidade','nav.tradeoffs':'Compromissos','nav.history':'História','nav.open':'Abrir exchange',
     'theme.to_dark':'Escuro','theme.to_light':'Claro',
     'hero.kicker':'Bitcoin-native · Co-custodial · Full bid / ask order book',
@@ -635,7 +635,7 @@
   };
 
   T.ar = {
-    'nav.custody':'الحضانة','nav.how':'آلية التسوية','nav.controls':'الصلاحيات','nav.timelock':'القفل الزمني',
+    'a11y.table_region':'Comparison table, scrollable','a11y.skip':'Skip to content','a11y.nav_primary':'Primary','a11y.nav_menu':'Sections menu','a11y.nav_menu_label':'Sections','a11y.theme_toggle':'Toggle colour theme','a11y.col_criterion':'Criterion','a11y.copy_ok':'Bitmessage address copied to clipboard.','a11y.copy_fallback':'Bitmessage address selected. Copy it with your keyboard.','meta.title':'NightTrader — a Bitcoin order book you co-sign','meta.description':'A Bitcoin-native exchange with a full bid/ask order book. Accounts settle into multisig addresses you hold a key to, with a time-delayed recovery path.','nav.custody':'الحضانة','nav.how':'آلية التسوية','nav.controls':'الصلاحيات','nav.timelock':'القفل الزمني',
     'nav.fees':'الرسوم','nav.privacy':'الخصوصية','nav.tradeoffs':'المقايضات','nav.history':'قصتنا','nav.open':'افتح المنصة',
     'theme.to_dark':'داكن','theme.to_light':'فاتح',
     'hero.kicker':'Bitcoin-native · Co-custodial · Full bid / ask order book',
@@ -740,7 +740,7 @@
   };
 
   T.fr = {
-    'nav.custody':'Garde','nav.how':'Comment ça règle','nav.controls':'Contrôle','nav.timelock':'Timelock',
+    'a11y.table_region':'Comparison table, scrollable','a11y.skip':'Skip to content','a11y.nav_primary':'Primary','a11y.nav_menu':'Sections menu','a11y.nav_menu_label':'Sections','a11y.theme_toggle':'Toggle colour theme','a11y.col_criterion':'Criterion','a11y.copy_ok':'Bitmessage address copied to clipboard.','a11y.copy_fallback':'Bitmessage address selected. Copy it with your keyboard.','meta.title':'NightTrader — a Bitcoin order book you co-sign','meta.description':'A Bitcoin-native exchange with a full bid/ask order book. Accounts settle into multisig addresses you hold a key to, with a time-delayed recovery path.','nav.custody':'Garde','nav.how':'Comment ça règle','nav.controls':'Contrôle','nav.timelock':'Timelock',
     'nav.fees':'Frais','nav.privacy':'Confidentialité','nav.tradeoffs':'Compromis','nav.history':'Histoire','nav.open':'Ouvrir l\'exchange',
     'theme.to_dark':'Sombre','theme.to_light':'Clair',
     'hero.kicker':'Bitcoin-native · Co-custodial · Full bid / ask order book',
@@ -845,7 +845,7 @@
   };
 
   T.de = {
-    'nav.custody':'Verwahrung','nav.how':'Wie abgerechnet wird','nav.controls':'Kontrolle','nav.timelock':'Timelock',
+    'a11y.table_region':'Comparison table, scrollable','a11y.skip':'Skip to content','a11y.nav_primary':'Primary','a11y.nav_menu':'Sections menu','a11y.nav_menu_label':'Sections','a11y.theme_toggle':'Toggle colour theme','a11y.col_criterion':'Criterion','a11y.copy_ok':'Bitmessage address copied to clipboard.','a11y.copy_fallback':'Bitmessage address selected. Copy it with your keyboard.','meta.title':'NightTrader — a Bitcoin order book you co-sign','meta.description':'A Bitcoin-native exchange with a full bid/ask order book. Accounts settle into multisig addresses you hold a key to, with a time-delayed recovery path.','nav.custody':'Verwahrung','nav.how':'Wie abgerechnet wird','nav.controls':'Kontrolle','nav.timelock':'Timelock',
     'nav.fees':'Gebühren','nav.privacy':'Datenschutz','nav.tradeoffs':'Kompromisse','nav.history':'Geschichte','nav.open':'Exchange öffnen',
     'theme.to_dark':'Dunkel','theme.to_light':'Hell',
     'hero.kicker':'Bitcoin-native · Co-custodial · Full bid / ask order book',
@@ -950,6 +950,10 @@
   };
 
   var SUPPORTED = ['en','zh','ru','es','pt','it','ar','fr','de'];
+  var OG_LOCALE = {
+    en:'en_US', zh:'zh_CN', ru:'ru_RU', es:'es_ES', pt:'pt_BR',
+    it:'it_IT', ar:'ar_AR', fr:'fr_FR', de:'de_DE'
+  };
   var RTL = ['ar'];
   var currentLang = (SUPPORTED.indexOf(window.__ntLang) !== -1) ? window.__ntLang : 'en';
 
@@ -984,6 +988,16 @@
       }
     });
 
+    // Translated accessible names (aria-label) for controls with no visible text.
+    document.querySelectorAll('[data-i18n-aria-label]').forEach(function (el) {
+      var k = el.getAttribute('data-i18n-aria-label');
+      var v = d[k] !== undefined ? d[k] : T.en[k];
+      if (v !== undefined) el.setAttribute('aria-label', v);
+    });
+
+    // Localised document metadata, so each language is described correctly.
+    setMeta(d);
+
     // Keep the redeem-script note panel in sync with whichever token is active.
     var active = document.querySelector('.tok[aria-pressed="true"]') || document.querySelector('.tok');
     var noteTag = document.getElementById('note-tag');
@@ -1003,6 +1017,24 @@
 
     var select = document.getElementById('lang-select');
     if (select) select.value = lang;
+  }
+
+  // Keep <title>, description and social metadata in the active language.
+  function setMeta(d) {
+    function put(sel, attr, key) {
+      var el = document.querySelector(sel);
+      var v = d[key] !== undefined ? d[key] : T.en[key];
+      if (el && v !== undefined) el.setAttribute(attr, v);
+    }
+    var title = d['meta.title'] !== undefined ? d['meta.title'] : T.en['meta.title'];
+    if (title) document.title = title;
+    put('meta[name="description"]', 'content', 'meta.description');
+    put('meta[property="og:title"]', 'content', 'meta.title');
+    put('meta[property="og:description"]', 'content', 'meta.description');
+    put('meta[name="twitter:title"]', 'content', 'meta.title');
+    put('meta[name="twitter:description"]', 'content', 'meta.description');
+    var ogLocale = document.querySelector('meta[property="og:locale"]');
+    if (ogLocale) ogLocale.setAttribute('content', OG_LOCALE[currentLang] || 'en_US');
   }
 
   function updateCustodySplitNote(sideEl) {
@@ -1056,6 +1088,43 @@
         try { localStorage.setItem('nt-lang', lang); } catch (e) {}
         applyTranslations(lang);
       });
+    }
+
+    // Mobile section menu: a real disclosure, not a display:none cliff.
+    var navToggle = document.getElementById('nav-toggle');
+    var navLinks = document.getElementById('nav-links');
+    if (navToggle && navLinks) {
+      var setMenu = function (open) {
+        navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        if (open) navLinks.setAttribute('data-open', 'true');
+        else navLinks.removeAttribute('data-open');
+      };
+      navToggle.addEventListener('click', function () {
+        setMenu(navToggle.getAttribute('aria-expanded') !== 'true');
+      });
+      // Choosing a destination closes the menu.
+      navLinks.addEventListener('click', function (e) {
+        if (e.target.closest('a')) setMenu(false);
+      });
+      // Escape closes and returns focus to the control that opened it.
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && navToggle.getAttribute('aria-expanded') === 'true') {
+          setMenu(false);
+          navToggle.focus();
+        }
+      });
+      // Clicking outside closes it.
+      document.addEventListener('click', function (e) {
+        if (navToggle.getAttribute('aria-expanded') !== 'true') return;
+        if (!navLinks.contains(e.target) && !navToggle.contains(e.target)) setMenu(false);
+      });
+      // Returning to desktop width must not leave a stale open panel.
+      if (window.matchMedia) {
+        var mq = window.matchMedia('(min-width: 641px)');
+        var onChange = function (ev) { if (ev.matches) setMenu(false); };
+        if (mq.addEventListener) mq.addEventListener('change', onChange);
+        else if (mq.addListener) mq.addListener(onChange);
+      }
     }
 
     // Custody split diagram: tap a side to pause both and inspect it.
@@ -1116,12 +1185,20 @@
     });
 
     // Bitmessage address: copy, with a select-all fallback.
+    // Outcome is announced via a live region, not just by mutating the label.
     var copy = document.getElementById('bm-copy');
+    var copyStatus = document.getElementById('copy-status');
     if (copy) {
+      var announce = function (key) {
+        var d = dict();
+        var msg = d[key] !== undefined ? d[key] : T.en[key];
+        if (copyStatus) copyStatus.textContent = msg || '';
+      };
       copy.addEventListener('click', function () {
         var addr = copy.dataset.addr;
         var done = function () {
           copy.textContent = dict()['node.copy_copied'];
+          announce('a11y.copy_ok');
           setTimeout(function () { copy.textContent = dict()['node.copy']; }, 1800);
         };
         if (navigator.clipboard && window.isSecureContext) {
@@ -1136,6 +1213,7 @@
           s.removeAllRanges();
           s.addRange(r);
           copy.textContent = dict()['node.copy_select'];
+          announce('a11y.copy_fallback');
           setTimeout(function () { copy.textContent = dict()['node.copy']; }, 1800);
         }
       });
