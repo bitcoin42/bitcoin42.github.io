@@ -33,6 +33,11 @@
     'custody.row5_th':'Chain cost per trade','custody.row5_us':'None — settlement is batched','custody.row5_cex':'None','custody.row5_wrapped':'Gas on every swap','custody.row5_atomic':'Multiple on-chain txs',
     'custody.row6_th':'Exposure while trading','custody.row6_us':'Only the amount you signed','custody.row6_cex':'Your entire balance','custody.row6_wrapped':'Your entire wrapped balance','custody.row6_atomic':'The trade amount',
     'custody.small':'Off-chain matching means the book moves at exchange speed; the chain only sees settlement. That is the whole trick, and it is built out of script primitives Bitcoin has had since 2009.',
+    'custody.viz_label_cex':'Custodial exchange','custody.viz_caption_cex':'Coins sit in one wallet. Custody — and control — is theirs.',
+    'custody.viz_note_cex':'A custodial exchange pools every user\'s coins into wallets it alone controls. It can freeze, lose, or drain them — nothing in the protocol stops that.',
+    'custody.viz_label_nt':'NightTrader','custody.viz_caption_nt':'Your key never leaves your device. Only the signed amount goes.',
+    'custody.viz_note_nt':'Your key is generated in your browser and never leaves your device. Each trade authorises one signed, size-limited amount — never your whole balance, never custody.',
+    'custody.viz_hint':'Tap a side to pause and inspect',
     'how.gut_b':'Settlement','how.gut_d':'In order','how.h2':'What actually happens when you place an order',
     'how.s1_h3':'Your key is generated client-side',
     'how.s1_p':'Your browser derives the key locally, or you keep it on an air-gapped signer and never expose it at all. It signs your deposit address into existence together with the node threshold key. The server never receives it, so there is nothing to breach and nothing to hand over.',
@@ -55,6 +60,11 @@
     'timelock.lede':'Servers seized, domain pulled, team unreachable, node operators gone. Under a custodial exchange that is the end of the story and the beginning of a creditors\' process. Here it is a waiting period.',
     'timelock.l1':'Deposit','timelock.l2':'Trade freely','timelock.l3':'Inactive','timelock.l4':'<em>Locktime → paid to your key</em>',
     'timelock.small':'The locktime is set per account and refreshed as you trade — the book will not fill an order that would leave you near expiry, and after a long dormancy you will be asked to roll to a new script and a current node set. The branch is enforced by consensus, not by us. We cannot switch it off, and neither can anyone who takes our servers.',
+    'timelock.step_deposit':'Coins arrive in the multisig address. The clock starts here — every account gets a fresh locktime the moment it\'s funded.',
+    'timelock.step_trade':'Every fill you make refreshes the locktime. As long as you\'re actively trading, you never get close to it.',
+    'timelock.step_inactive':'No trades, no refresh. This is the only phase where the countdown actually moves toward zero.',
+    'timelock.step_locktime':'OP_CHECKLOCKTIMEVERIFY fires on schedule. The address pays out to your key alone — no permission needed, no one to ask, nothing we can stop.',
+    'timelock.viz_hint':'Tap a step to pause and inspect',
     'fees.gut_b':'Fees','fees.gut_d':'All of them','fees.h2':'Three numbers. There is no fourth.',
     'fees.f1_l':'Per completed trade','fees.f2_l':'Transfer between accounts','fees.f3_l':'Withdrawal to your own wallet',
     'fees.p':'Fees pay the node operators who hold the other half of the signature. There is no NightTrader token, no pre-mine, no treasury taking a cut of your trade, and no yield being promised to anyone. The exchange was launched without issuing a coin on purpose.',
@@ -126,6 +136,11 @@
     'custody.row5_th':'每笔交易的链上成本','custody.row5_us':'无——结算被批量打包','custody.row5_cex':'无','custody.row5_wrapped':'每次兑换都要付 Gas','custody.row5_atomic':'多笔链上交易',
     'custody.row6_th':'交易中的风险敞口','custody.row6_us':'仅限你签署的金额','custody.row6_cex':'你的全部余额','custody.row6_wrapped':'你全部的包装资产余额','custody.row6_atomic':'该笔交易金额',
     'custody.small':'链下撮合意味着订单簿以交易所速度运转;链上只看到最终结算。这就是全部的诀窍,而且它完全建立在比特币自 2009 年就已具备的脚本原语之上。',
+    'custody.viz_label_cex':'托管型交易所','custody.viz_caption_cex':'资金全部放在同一个钱包里。托管权——也就是控制权——在他们手中。',
+    'custody.viz_note_cex':'托管型交易所把所有用户的资金汇集到它独自控制的钱包中。它可以冻结、丢失或卷走这些资金——协议本身没有任何机制能阻止这一点。',
+    'custody.viz_label_nt':'NightTrader','custody.viz_caption_nt':'你的密钥从不离开你的设备。离开的只有已签署的那笔金额。',
+    'custody.viz_note_nt':'你的密钥在浏览器中生成,从不离开你的设备。每笔交易只授权一个已签署、限定金额的操作——从不涉及你的全部余额,也从不构成托管。',
+    'custody.viz_hint':'点击任意一侧可暂停并查看详情',
     'how.gut_b':'结算流程','how.gut_d':'按顺序','how.h2':'下单之后究竟发生了什么',
     'how.s1_h3':'密钥在客户端生成',
     'how.s1_p':'你的浏览器在本地派生密钥,或者你把它保存在离线签名设备上,完全不对外暴露。它与节点门限密钥共同签署,生成你的存款地址。服务器从未收到过这把密钥,因此没有什么可被入侵,也没有什么可被交出。',
@@ -148,6 +163,11 @@
     'timelock.lede':'服务器被查封、域名被撤下、团队联系不上、节点运营者全部消失。在托管型交易所之下,这就是故事的终点,也是破产清算程序的起点。而在这里,这只是一段等待期。',
     'timelock.l1':'存入','timelock.l2':'自由交易','timelock.l3':'不活跃','timelock.l4':'<em>到期 → 资金支付给你的密钥</em>',
     'timelock.small':'到期时间按账户单独设置,并随着你的交易不断刷新——订单簿不会撮合任何会让你逼近到期的挂单;长期不活跃后,系统会要求你迁移到新脚本和当前节点集合。这个分支由共识强制执行,而非由我们决定。我们无法关闭它,任何拿下我们服务器的人也同样做不到。',
+    'timelock.step_deposit':'资金存入多重签名地址,倒计时从这一刻开始——每个账户在完成入金的瞬间就会获得一个全新的到期时间。',
+    'timelock.step_trade':'你的每一笔成交都会刷新到期时间。只要你在持续交易,就永远不会真正逼近它。',
+    'timelock.step_inactive':'没有交易,也就没有刷新。这是唯一一个倒计时会真正向零推进的阶段。',
+    'timelock.step_locktime':'OP_CHECKLOCKTIMEVERIFY 按计划触发。地址中的资金将只支付给你的密钥——无需任何许可,无需向任何人申请,我们也无法阻止。',
+    'timelock.viz_hint':'点击任意步骤可暂停并查看详情',
     'fees.gut_b':'费用','fees.gut_d':'全部费用,一览无余','fees.h2':'三个数字。没有第四个。',
     'fees.f1_l':'每笔成交交易','fees.f2_l':'账户间转账','fees.f3_l':'提现到你自己的钱包',
     'fees.p':'费用支付给持有另一半签名的节点运营者。没有 NightTrader 代币,没有预挖,没有金库从你的交易中抽成,也没有向任何人承诺过收益。这个交易所在启动时就刻意没有发行任何代币。',
@@ -219,6 +239,11 @@
     'custody.row5_th':'Комиссия сети за сделку','custody.row5_us':'Нет — расчёты идут пакетами','custody.row5_cex':'Нет','custody.row5_wrapped':'Газ на каждый своп','custody.row5_atomic':'Несколько ончейн-транзакций',
     'custody.row6_th':'Риск во время торговли','custody.row6_us':'Только сумма, которую ты подписал','custody.row6_cex':'Весь твой баланс','custody.row6_wrapped':'Весь твой wrapped-баланс','custody.row6_atomic':'Сумма сделки',
     'custody.small':'Офчейн-мэтчинг означает, что стакан работает со скоростью биржи, а сеть видит только расчёты. В этом весь трюк, и он полностью построен на скриптовых примитивах, которые есть в биткоине с 2009 года.',
+    'custody.viz_label_cex':'Кастодиальная биржа','custody.viz_caption_cex':'Монеты лежат в одном кошельке. Хранение — а значит и контроль — в чужих руках.',
+    'custody.viz_note_cex':'Кастодиальная биржа собирает монеты всех пользователей в кошельки, которые контролирует только она сама. Она может заморозить их, потерять или слить — ничто в протоколе этому не мешает.',
+    'custody.viz_label_nt':'NightTrader','custody.viz_caption_nt':'Твой ключ никогда не покидает твоё устройство. Уходит только подписанная сумма.',
+    'custody.viz_note_nt':'Твой ключ создаётся в браузере и никогда не покидает устройство. Каждая сделка авторизует одну подписанную сумму с ограниченным размером — никогда весь баланс, никогда не кастодия.',
+    'custody.viz_hint':'Нажми на сторону, чтобы поставить на паузу и рассмотреть',
     'how.gut_b':'Расчёт','how.gut_d':'По порядку','how.h2':'Что на самом деле происходит при размещении заявки',
     'how.s1_h3':'Ключ создаётся на стороне клиента',
     'how.s1_p':'Твой браузер создаёт ключ локально, либо ты хранишь его на офлайн-подписывающем устройстве и вообще не раскрываешь его. Он подписывает твой депозитный адрес вместе с пороговым ключом узлов. Сервер никогда его не получает, поэтому его нечем взломать и нечего передавать.',
@@ -241,6 +266,11 @@
     'timelock.lede':'Серверы изъяты, домен снят, команда недоступна, операторы узлов исчезли. На кастодиальной бирже это конец истории и начало процедуры банкротства. Здесь это просто период ожидания.',
     'timelock.l1':'Депозит','timelock.l2':'Свободная торговля','timelock.l3':'Неактивность','timelock.l4':'<em>Таймлок → выплата на твой ключ</em>',
     'timelock.small':'Таймлок задаётся индивидуально для каждого аккаунта и обновляется по мере торговли — стакан не исполнит заявку, которая приблизит тебя к истечению срока, а после долгого бездействия тебе предложат перейти на новый скрипт и актуальный набор узлов. Эта ветка обеспечивается консенсусом, а не нами. Мы не можем её отключить, и тот, кто заберёт наши серверы, тоже не сможет.',
+    'timelock.step_deposit':'Монеты поступают на мультиподписной адрес. Отсчёт начинается здесь — каждый аккаунт получает новый таймлок в момент пополнения.',
+    'timelock.step_trade':'Каждая твоя сделка обновляет таймлок. Пока ты активно торгуешь, ты никогда к нему не приближаешься.',
+    'timelock.step_inactive':'Нет сделок — нет обновления. Это единственная фаза, где обратный отсчёт действительно движется к нулю.',
+    'timelock.step_locktime':'OP_CHECKLOCKTIMEVERIFY срабатывает по расписанию. Адрес выплачивает средства единолично на твой ключ — без разрешений, без запросов к кому-либо, и мы не можем это остановить.',
+    'timelock.viz_hint':'Нажми на шаг, чтобы поставить на паузу и рассмотреть',
     'fees.gut_b':'Комиссии','fees.gut_d':'Все, без исключений','fees.h2':'Три числа. Четвёртого нет.',
     'fees.f1_l':'За каждую исполненную сделку','fees.f2_l':'Перевод между аккаунтами','fees.f3_l':'Вывод на собственный кошелёк',
     'fees.p':'Комиссии оплачивают операторов узлов, держащих вторую половину подписи. Токена NightTrader не существует, премайна нет, казна не забирает долю с твоей сделки, и никому не обещана доходность. Биржа была запущена намеренно без выпуска собственной монеты.',
@@ -312,6 +342,11 @@
     'custody.row5_th':'Costo en cadena por operación','custody.row5_us':'Ninguno — la liquidación se agrupa','custody.row5_cex':'Ninguno','custody.row5_wrapped':'Gas en cada intercambio','custody.row5_atomic':'Múltiples transacciones on-chain',
     'custody.row6_th':'Exposición mientras operas','custody.row6_us':'Solo el monto que firmaste','custody.row6_cex':'Todo tu saldo','custody.row6_wrapped':'Todo tu saldo envuelto','custody.row6_atomic':'El monto de la operación',
     'custody.small':'El casado fuera de la cadena significa que el libro se mueve a la velocidad de un exchange; la cadena solo ve la liquidación. Ese es todo el truco, y está construido con primitivas de script que Bitcoin tiene desde 2009.',
+    'custody.viz_label_cex':'Exchange custodial','custody.viz_caption_cex':'Las monedas están en una sola billetera. La custodia — y el control — es suya.',
+    'custody.viz_note_cex':'Un exchange custodial reúne las monedas de todos los usuarios en billeteras que solo él controla. Puede congelarlas, perderlas o drenarlas — nada en el protocolo lo impide.',
+    'custody.viz_label_nt':'NightTrader','custody.viz_caption_nt':'Tu clave nunca sale de tu dispositivo. Solo sale el monto firmado.',
+    'custody.viz_note_nt':'Tu clave se genera en tu navegador y nunca sale de tu dispositivo. Cada operación autoriza un único monto firmado y limitado — nunca tu saldo completo, nunca custodia.',
+    'custody.viz_hint':'Toca un lado para pausar e inspeccionar',
     'how.gut_b':'Liquidación','how.gut_d':'En orden','how.h2':'Qué sucede realmente cuando colocas una orden',
     'how.s1_h3':'Tu clave se genera del lado del cliente',
     'how.s1_p':'Tu navegador deriva la clave localmente, o la mantienes en un firmante air-gapped y nunca la expones. Firma tu dirección de depósito junto con la clave de umbral de los nodos. El servidor nunca la recibe, así que no hay nada que vulnerar ni nada que entregar.',
@@ -334,6 +369,11 @@
     'timelock.lede':'Servidores incautados, dominio retirado, equipo inalcanzable, operadores de nodos desaparecidos. Bajo un exchange custodial, ese es el final de la historia y el comienzo de un proceso de quiebra. Aquí es solo un período de espera.',
     'timelock.l1':'Depósito','timelock.l2':'Operar libremente','timelock.l3':'Inactivo','timelock.l4':'<em>Timelock → pagado a tu clave</em>',
     'timelock.small':'El timelock se fija por cuenta y se renueva mientras operas — el libro no ejecutará una orden que te deje cerca del vencimiento, y tras una larga inactividad se te pedirá migrar a un nuevo script y un conjunto de nodos vigente. La rama se hace cumplir por consenso, no por nosotros. No podemos desactivarla, y tampoco puede quien tome nuestros servidores.',
+    'timelock.step_deposit':'Las monedas llegan a la dirección multifirma. El reloj empieza aquí — cada cuenta recibe un timelock nuevo en el momento en que se financia.',
+    'timelock.step_trade':'Cada operación que completas renueva el timelock. Mientras operes activamente, nunca te acercas a él.',
+    'timelock.step_inactive':'Sin operaciones, sin renovación. Esta es la única fase en la que la cuenta regresiva realmente avanza hacia cero.',
+    'timelock.step_locktime':'OP_CHECKLOCKTIMEVERIFY se activa según lo programado. La dirección paga únicamente a tu clave — sin necesidad de permiso, sin nadie a quien pedírselo, nada que podamos detener.',
+    'timelock.viz_hint':'Toca un paso para pausar e inspeccionar',
     'fees.gut_b':'Comisiones','fees.gut_d':'Todas ellas','fees.h2':'Tres números. No hay un cuarto.',
     'fees.f1_l':'Por operación completada','fees.f2_l':'Transferencia entre cuentas','fees.f3_l':'Retiro a tu propia billetera',
     'fees.p':'Las comisiones pagan a los operadores de nodos que sostienen la otra mitad de la firma. No existe un token NightTrader, ni pre-minado, ni una tesorería que se quede con parte de tu operación, ni se promete rendimiento a nadie. El exchange se lanzó a propósito sin emitir una moneda propia.',
@@ -405,6 +445,11 @@
     'custody.row5_th':'Costo on-chain per trade','custody.row5_us':'Nessuno — la liquidazione è raggruppata','custody.row5_cex':'Nessuno','custody.row5_wrapped':'Gas ad ogni scambio','custody.row5_atomic':'Più transazioni on-chain',
     'custody.row6_th':'Esposizione durante il trading','custody.row6_us':'Solo l\'importo che hai firmato','custody.row6_cex':'Tutto il tuo saldo','custody.row6_wrapped':'Tutto il tuo saldo wrapped','custody.row6_atomic':'L\'importo del trade',
     'custody.small':'Il matching off-chain significa che il libro si muove alla velocità di un exchange; la chain vede solo la liquidazione. Questo è tutto il trucco, ed è costruito con primitive di script che Bitcoin possiede dal 2009.',
+    'custody.viz_label_cex':'Exchange custodial','custody.viz_caption_cex':'Le monete stanno in un unico wallet. La custodia — e il controllo — sono suoi.',
+    'custody.viz_note_cex':'Un exchange custodial raccoglie le monete di tutti gli utenti in wallet che controlla soltanto lui. Può congelarle, perderle o prosciugarle — nulla nel protocollo lo impedisce.',
+    'custody.viz_label_nt':'NightTrader','custody.viz_caption_nt':'La tua chiave non lascia mai il tuo dispositivo. A muoversi è solo l\'importo firmato.',
+    'custody.viz_note_nt':'La tua chiave viene generata nel browser e non lascia mai il tuo dispositivo. Ogni trade autorizza un unico importo firmato e limitato — mai il saldo intero, mai una custodia.',
+    'custody.viz_hint':'Tocca un lato per mettere in pausa e ispezionare',
     'how.gut_b':'Liquidazione','how.gut_d':'In ordine','how.h2':'Cosa succede davvero quando piazzi un ordine',
     'how.s1_h3':'La tua chiave è generata lato client',
     'how.s1_p':'Il tuo browser deriva la chiave localmente, oppure la mantieni su un firmatario air-gapped e non la esponi mai. Firma il tuo indirizzo di deposito insieme alla chiave a soglia dei nodi. Il server non la riceve mai, quindi non c\'è nulla da violare né nulla da consegnare.',
@@ -427,6 +472,11 @@
     'timelock.lede':'Server sequestrati, dominio ritirato, team irraggiungibile, operatori dei nodi spariti. Su un exchange custodial questa è la fine della storia e l\'inizio di una procedura fallimentare. Qui è solo un periodo di attesa.',
     'timelock.l1':'Deposito','timelock.l2':'Trading libero','timelock.l3':'Inattivo','timelock.l4':'<em>Timelock → pagato alla tua chiave</em>',
     'timelock.small':'Il timelock è impostato per singolo account e si rinnova mentre fai trading — il libro non eseguirà un ordine che ti lascerebbe vicino alla scadenza, e dopo una lunga inattività ti verrà chiesto di passare a un nuovo script e a un insieme di nodi aggiornato. Il ramo è imposto dal consenso, non da noi. Non possiamo disattivarlo, e non può farlo nemmeno chi si impossessa dei nostri server.',
+    'timelock.step_deposit':'Le monete arrivano all\'indirizzo multifirma. Il conto alla rovescia parte da qui — ogni account riceve un timelock nuovo nel momento in cui viene finanziato.',
+    'timelock.step_trade':'Ogni trade che completi rinnova il timelock. Finché fai trading attivamente, non te ne avvicini mai.',
+    'timelock.step_inactive':'Nessun trade, nessun rinnovo. Questa è l\'unica fase in cui il conto alla rovescia si muove davvero verso lo zero.',
+    'timelock.step_locktime':'OP_CHECKLOCKTIMEVERIFY scatta secondo programma. L\'indirizzo paga solo la tua chiave — senza permessi, senza dover chiedere a nessuno, nulla che possiamo fermare.',
+    'timelock.viz_hint':'Tocca un passaggio per mettere in pausa e ispezionare',
     'fees.gut_b':'Commissioni','fees.gut_d':'Tutte quante','fees.h2':'Tre numeri. Non ce n\'è un quarto.',
     'fees.f1_l':'Per ogni trade completato','fees.f2_l':'Trasferimento tra account','fees.f3_l':'Prelievo verso il tuo wallet',
     'fees.p':'Le commissioni pagano gli operatori dei nodi che detengono l\'altra metà della firma. Non esiste un token NightTrader, nessun pre-mine, nessuna tesoreria che trattiene una quota del tuo trade, e nessun rendimento promesso a nessuno. L\'exchange è stato lanciato apposta senza emettere una propria moneta.',
@@ -498,6 +548,11 @@
     'custody.row5_th':'Custo em cadeia por negociação','custody.row5_us':'Nenhum — a liquidação é feita em lote','custody.row5_cex':'Nenhum','custody.row5_wrapped':'Gas a cada troca','custody.row5_atomic':'Múltiplas transações on-chain',
     'custody.row6_th':'Exposição durante a negociação','custody.row6_us':'Somente o valor que você assinou','custody.row6_cex':'Todo o seu saldo','custody.row6_wrapped':'Todo o seu saldo empacotado','custody.row6_atomic':'O valor da negociação',
     'custody.small':'Casamento fora da cadeia significa que o livro se move na velocidade de uma exchange; a cadeia só vê a liquidação. Esse é todo o truque, e ele é construído com primitivas de script que o Bitcoin tem desde 2009.',
+    'custody.viz_label_cex':'Exchange custodial','custody.viz_caption_cex':'As moedas ficam em uma única carteira. A custódia — e o controle — é dela.',
+    'custody.viz_note_cex':'Uma exchange custodial reúne as moedas de todos os usuários em carteiras que só ela controla. Ela pode congelá-las, perdê-las ou drená-las — nada no protocolo impede isso.',
+    'custody.viz_label_nt':'NightTrader','custody.viz_caption_nt':'Sua chave nunca sai do seu dispositivo. Só sai o valor assinado.',
+    'custody.viz_note_nt':'Sua chave é gerada no seu navegador e nunca sai do seu dispositivo. Cada negociação autoriza um único valor assinado e limitado — nunca o seu saldo inteiro, nunca custódia.',
+    'custody.viz_hint':'Toque em um lado para pausar e inspecionar',
     'how.gut_b':'Liquidação','how.gut_d':'Em ordem','how.h2':'O que realmente acontece quando você faz um pedido',
     'how.s1_h3':'Sua chave é gerada no lado do cliente',
     'how.s1_p':'Seu navegador deriva a chave localmente, ou você a mantém em um assinador air-gapped e nunca a expõe. Ela assina seu endereço de depósito junto com a chave de limiar dos nós. O servidor nunca a recebe, então não há nada para violar nem nada para entregar.',
@@ -520,6 +575,11 @@
     'timelock.lede':'Servidores apreendidos, domínio retirado, equipe inacessível, operadores de nós somem. Em uma exchange custodial, esse é o fim da história e o início de um processo de falência. Aqui, é apenas um período de espera.',
     'timelock.l1':'Depósito','timelock.l2':'Negociar livremente','timelock.l3':'Inativo','timelock.l4':'<em>Timelock → pago para sua chave</em>',
     'timelock.small':'O timelock é definido por conta e renovado conforme você negocia — o livro não vai preencher um pedido que te deixaria perto do vencimento, e após uma longa inatividade você será convidado a migrar para um novo script e um conjunto de nós atual. O ramo é garantido por consenso, não por nós. Não podemos desligá-lo, e quem tomar nossos servidores também não conseguiria.',
+    'timelock.step_deposit':'As moedas chegam ao endereço multiassinatura. O relógio começa aqui — cada conta recebe um timelock novo no momento em que é financiada.',
+    'timelock.step_trade':'Cada negociação que você completa renova o timelock. Enquanto estiver negociando ativamente, você nunca chega perto dele.',
+    'timelock.step_inactive':'Sem negociações, sem renovação. Esta é a única fase em que a contagem regressiva realmente avança em direção a zero.',
+    'timelock.step_locktime':'O OP_CHECKLOCKTIMEVERIFY dispara conforme programado. O endereço paga somente para a sua chave — sem necessidade de permissão, sem ninguém a quem pedir, nada que possamos impedir.',
+    'timelock.viz_hint':'Toque em uma etapa para pausar e inspecionar',
     'fees.gut_b':'Taxas','fees.gut_d':'Todas elas','fees.h2':'Três números. Não existe um quarto.',
     'fees.f1_l':'Por negociação concluída','fees.f2_l':'Transferência entre contas','fees.f3_l':'Saque para sua própria carteira',
     'fees.p':'As taxas pagam os operadores de nós que seguram a outra metade da assinatura. Não existe token NightTrader, nem pré-mineração, nem tesouraria tirando uma parte da sua negociação, e nenhum rendimento é prometido a ninguém. A exchange foi lançada de propósito sem emitir uma moeda própria.',
@@ -591,6 +651,11 @@
     'custody.row5_th':'تكلفة السلسلة لكل صفقة','custody.row5_us':'لا شيء — التسوية مجمّعة','custody.row5_cex':'لا شيء','custody.row5_wrapped':'رسوم غاز مع كل تبادل','custody.row5_atomic':'عدة معاملات على السلسلة',
     'custody.row6_th':'التعرض أثناء التداول','custody.row6_us':'فقط المبلغ الذي وقّعته','custody.row6_cex':'رصيدك بالكامل','custody.row6_wrapped':'كامل رصيدك المغلّف','custody.row6_atomic':'مبلغ الصفقة',
     'custody.small':'المطابقة خارج السلسلة تعني أن الدفتر يعمل بسرعة منصة تداول؛ والسلسلة لا ترى سوى التسوية. هذه هي الحيلة بأكملها، وهي مبنية على عناصر سكربت يمتلكها البيتكوين منذ عام 2009.',
+    'custody.viz_label_cex':'منصة وصائية','custody.viz_caption_cex':'الأموال كلها في محفظة واحدة. الحضانة — أي السيطرة — بيدها.',
+    'custody.viz_note_cex':'تجمع المنصة الوصائية أموال جميع المستخدمين في محافظ لا تسيطر عليها سوى هي. يمكنها تجميدها أو فقدانها أو تفريغها — لا شيء في البروتوكول يمنع ذلك.',
+    'custody.viz_label_nt':'NightTrader','custody.viz_caption_nt':'مفتاحك لا يغادر جهازك أبداً. ما يغادر فقط هو المبلغ الموقَّع.',
+    'custody.viz_note_nt':'يُولَّد مفتاحك داخل متصفحك ولا يغادر جهازك أبداً. كل صفقة تُخوِّل مبلغاً واحداً موقَّعاً ومحدوداً — لا رصيدك بالكامل أبداً، ولا حضانة أبداً.',
+    'custody.viz_hint':'اضغط على أحد الجانبين للإيقاف المؤقت والمعاينة',
     'how.gut_b':'التسوية','how.gut_d':'بالترتيب','how.h2':'ما الذي يحدث فعلياً عند وضع أمر',
     'how.s1_h3':'يُولَّد مفتاحك من جهتك أنت',
     'how.s1_p':'يشتق متصفحك المفتاح محلياً، أو تحتفظ به على جهاز توقيع معزول عن الشبكة ولا تكشفه إطلاقاً. يوقّع عنوان إيداعك مع مفتاح عتبة العقد معاً. لا يستلمه الخادم أبداً، فلا يوجد ما يُخترَق ولا ما يُسلَّم.',
@@ -613,6 +678,11 @@
     'timelock.lede':'خوادم مصادَرة، نطاق مسحوب، فريق يتعذر الوصول إليه، مشغّلو عقد اختفوا. تحت منصة وصائية، هذه نهاية القصة وبداية إجراءات الإفلاس. هنا، إنها مجرد فترة انتظار.',
     'timelock.l1':'إيداع','timelock.l2':'تداول حر','timelock.l3':'غير نشط','timelock.l4':'<em>القفل الزمني ← يُدفع لمفتاحك</em>',
     'timelock.small':'يُحدَّد القفل الزمني لكل حساب على حدة ويتجدد أثناء تداولك — لن ينفّذ الدفتر أمراً قد يقربك من الانتهاء، وبعد فترة خمول طويلة سيُطلب منك الانتقال إلى سكربت جديد ومجموعة عقد حالية. هذا الفرع تفرضه توافقية الشبكة، لا نحن. لا نستطيع إيقافه، ولا يستطيع ذلك أيضاً من يستولي على خوادمنا.',
+    'timelock.step_deposit':'تصل الأموال إلى عنوان التوقيع المتعدد. تبدأ العدّادة من هنا — يحصل كل حساب على قفل زمني جديد لحظة تمويله.',
+    'timelock.step_trade':'كل صفقة تُنفّذها تجدّد القفل الزمني. طالما أنك تتداول بنشاط، لن تقترب منه أبداً.',
+    'timelock.step_inactive':'لا تداول، لا تجديد. هذه هي المرحلة الوحيدة التي يتحرك فيها العد التنازلي فعلياً نحو الصفر.',
+    'timelock.step_locktime':'يُفعَّل OP_CHECKLOCKTIMEVERIFY في موعده المحدد. يدفع العنوان لمفتاحك وحده — من دون الحاجة لإذن، من دون أن تطلب من أحد، ولا شيء يمكننا إيقافه.',
+    'timelock.viz_hint':'اضغط على خطوة للإيقاف المؤقت والمعاينة',
     'fees.gut_b':'الرسوم','fees.gut_d':'كل الرسوم، من دون استثناء','fees.h2':'ثلاثة أرقام. لا يوجد رقم رابع.',
     'fees.f1_l':'لكل صفقة مكتملة','fees.f2_l':'التحويل بين الحسابات','fees.f3_l':'السحب إلى محفظتك الخاصة',
     'fees.p':'تدفع الرسوم لمشغّلي العقد الذين يحملون النصف الآخر من التوقيع. لا يوجد عملة NightTrader، ولا تعدين مسبق، ولا خزينة تقتطع حصة من صفقتك، ولا عائد موعود لأي أحد. أُطلقت المنصة عمداً من دون إصدار عملتها الخاصة.',
@@ -684,6 +754,11 @@
     'custody.row5_th':'Coût on-chain par transaction','custody.row5_us':'Aucun — le règlement est groupé','custody.row5_cex':'Aucun','custody.row5_wrapped':'Du gas à chaque échange','custody.row5_atomic':'Plusieurs transactions on-chain',
     'custody.row6_th':'Exposition pendant le trading','custody.row6_us':'Seulement le montant que tu as signé','custody.row6_cex':'Tout ton solde','custody.row6_wrapped':'Tout ton solde wrapped','custody.row6_atomic':'Le montant de la transaction',
     'custody.small':'L\'appariement hors chaîne signifie que le carnet évolue à la vitesse d\'un exchange ; la chaîne ne voit que le règlement. C\'est là toute l\'astuce, et elle repose entièrement sur des primitives de script que Bitcoin possède depuis 2009.',
+    'custody.viz_label_cex':'Exchange custodial','custody.viz_caption_cex':'Les pièces sont dans un seul portefeuille. La garde — et le contrôle — leur appartient.',
+    'custody.viz_note_cex':'Un exchange custodial regroupe les pièces de tous les utilisateurs dans des portefeuilles qu\'il contrôle seul. Il peut les geler, les perdre ou les vider — rien dans le protocole ne l\'en empêche.',
+    'custody.viz_label_nt':'NightTrader','custody.viz_caption_nt':'Ta clé ne quitte jamais ton appareil. Seul le montant signé part.',
+    'custody.viz_note_nt':'Ta clé est générée dans ton navigateur et ne quitte jamais ton appareil. Chaque transaction autorise un seul montant signé et plafonné — jamais tout ton solde, jamais de garde.',
+    'custody.viz_hint':'Touche un côté pour mettre en pause et inspecter',
     'how.gut_b':'Règlement','how.gut_d':'Dans l\'ordre','how.h2':'Ce qui se passe réellement quand tu passes un ordre',
     'how.s1_h3':'Ta clé est générée côté client',
     'how.s1_p':'Ton navigateur dérive la clé localement, ou tu la gardes sur un signataire air-gapped sans jamais l\'exposer. Elle signe ton adresse de dépôt conjointement avec la clé à seuil des nœuds. Le serveur ne la reçoit jamais, donc il n\'y a rien à violer ni rien à livrer.',
@@ -706,6 +781,11 @@
     'timelock.lede':'Serveurs saisis, domaine retiré, équipe injoignable, opérateurs de nœuds disparus. Sous un exchange custodial, c\'est la fin de l\'histoire et le début d\'une procédure de faillite. Ici, ce n\'est qu\'une période d\'attente.',
     'timelock.l1':'Dépôt','timelock.l2':'Trading libre','timelock.l3':'Inactif','timelock.l4':'<em>Timelock → versé à ta clé</em>',
     'timelock.small':'Le timelock est fixé par compte et renouvelé au fil de tes transactions — le carnet n\'exécutera pas un ordre qui te rapprocherait de l\'échéance, et après une longue inactivité on te demandera de migrer vers un nouveau script et un ensemble de nœuds à jour. La branche est appliquée par le consensus, pas par nous. Nous ne pouvons pas la désactiver, et quiconque prendrait nos serveurs non plus.',
+    'timelock.step_deposit':'Les pièces arrivent sur l\'adresse multisignature. Le compte à rebours démarre ici — chaque compte reçoit un timelock neuf dès qu\'il est approvisionné.',
+    'timelock.step_trade':'Chaque transaction que tu effectues renouvelle le timelock. Tant que tu trades activement, tu ne t\'en approches jamais.',
+    'timelock.step_inactive':'Pas de transactions, pas de renouvellement. C\'est la seule phase où le compte à rebours avance réellement vers zéro.',
+    'timelock.step_locktime':'OP_CHECKLOCKTIMEVERIFY se déclenche comme prévu. L\'adresse paie uniquement ta clé — sans permission nécessaire, sans personne à qui demander, rien que nous puissions arrêter.',
+    'timelock.viz_hint':'Touche une étape pour mettre en pause et inspecter',
     'fees.gut_b':'Frais','fees.gut_d':'Tous, sans exception','fees.h2':'Trois chiffres. Il n\'y en a pas de quatrième.',
     'fees.f1_l':'Par transaction complétée','fees.f2_l':'Transfert entre comptes','fees.f3_l':'Retrait vers ton propre portefeuille',
     'fees.p':'Les frais rémunèrent les opérateurs de nœuds qui détiennent l\'autre moitié de la signature. Il n\'existe pas de jeton NightTrader, pas de pré-minage, pas de trésorerie qui prélève une part de ta transaction, et aucun rendement n\'est promis à qui que ce soit. L\'exchange a été lancé volontairement sans émettre sa propre monnaie.',
@@ -777,6 +857,11 @@
     'custody.row5_th':'On-Chain-Kosten pro Trade','custody.row5_us':'Keine — Abrechnung erfolgt gebündelt','custody.row5_cex':'Keine','custody.row5_wrapped':'Gas bei jedem Swap','custody.row5_atomic':'Mehrere On-Chain-Transaktionen',
     'custody.row6_th':'Risiko während des Handels','custody.row6_us':'Nur der Betrag, den du signiert hast','custody.row6_cex':'Dein gesamtes Guthaben','custody.row6_wrapped':'Dein gesamtes Wrapped-Guthaben','custody.row6_atomic':'Der Trade-Betrag',
     'custody.small':'Off-Chain-Matching bedeutet, dass das Orderbuch mit Exchange-Geschwindigkeit läuft; die Chain sieht nur die Abrechnung. Das ist der ganze Trick, und er basiert vollständig auf Skript-Primitiven, die Bitcoin seit 2009 besitzt.',
+    'custody.viz_label_cex':'Custodial Exchange','custody.viz_caption_cex':'Coins liegen in einer einzigen Wallet. Die Verwahrung — und die Kontrolle — liegt bei ihr.',
+    'custody.viz_note_cex':'Eine Custodial Exchange sammelt die Coins aller Nutzer in Wallets, die nur sie selbst kontrolliert. Sie kann sie einfrieren, verlieren oder abziehen — nichts im Protokoll verhindert das.',
+    'custody.viz_label_nt':'NightTrader','custody.viz_caption_nt':'Dein Key verlässt nie dein Gerät. Es geht nur der signierte Betrag hinaus.',
+    'custody.viz_note_nt':'Dein Key wird in deinem Browser erzeugt und verlässt dein Gerät nie. Jeder Trade autorisiert einen einzigen signierten, betragsbegrenzten Vorgang — nie dein gesamtes Guthaben, nie eine Verwahrung.',
+    'custody.viz_hint':'Tippe auf eine Seite, um zu pausieren und genauer hinzuschauen',
     'how.gut_b':'Abrechnung','how.gut_d':'Der Reihe nach','how.h2':'Was tatsächlich passiert, wenn du eine Order aufgibst',
     'how.s1_h3':'Dein Key wird clientseitig erzeugt',
     'how.s1_p':'Dein Browser leitet den Key lokal ab, oder du bewahrst ihn auf einem air-gapped Signiergerät auf und legst ihn nie offen. Er signiert deine Einzahlungsadresse gemeinsam mit dem Threshold-Key der Nodes. Der Server erhält ihn nie, also gibt es nichts zu kompromittieren und nichts herauszugeben.',
@@ -799,6 +884,11 @@
     'timelock.lede':'Server beschlagnahmt, Domain abgeschaltet, Team nicht erreichbar, Node-Betreiber verschwunden. Bei einer custodial Exchange ist das das Ende der Geschichte und der Anfang eines Insolvenzverfahrens. Hier ist es nur eine Wartezeit.',
     'timelock.l1':'Einzahlung','timelock.l2':'Frei handeln','timelock.l3':'Inaktiv','timelock.l4':'<em>Timelock → Auszahlung an deinen Key</em>',
     'timelock.small':'Der Timelock wird pro Konto festgelegt und mit jedem Trade erneuert — das Orderbuch führt keine Order aus, die dich nahe an den Ablauf bringen würde, und nach langer Inaktivität wirst du gebeten, auf ein neues Skript und ein aktuelles Node-Set umzusteigen. Der Zweig wird durch Konsens erzwungen, nicht durch uns. Wir können ihn nicht abschalten, und wer sich unserer Server bemächtigt, kann das ebenfalls nicht.',
+    'timelock.step_deposit':'Die Coins treffen an der Multisig-Adresse ein. Die Uhr beginnt hier zu laufen — jedes Konto erhält in dem Moment, in dem es finanziert wird, einen frischen Timelock.',
+    'timelock.step_trade':'Jeder Trade, den du abschließt, erneuert den Timelock. Solange du aktiv handelst, kommst du ihm nie nahe.',
+    'timelock.step_inactive':'Keine Trades, keine Erneuerung. Das ist die einzige Phase, in der der Countdown tatsächlich Richtung null läuft.',
+    'timelock.step_locktime':'OP_CHECKLOCKTIMEVERIFY löst planmäßig aus. Die Adresse zahlt ausschließlich an deinen Key aus — ohne dass jemand das erlauben muss, ohne dass du jemanden fragen musst, und ohne dass wir es aufhalten könnten.',
+    'timelock.viz_hint':'Tippe auf einen Schritt, um zu pausieren und genauer hinzuschauen',
     'fees.gut_b':'Gebühren','fees.gut_d':'Alle, ausnahmslos','fees.h2':'Drei Zahlen. Eine vierte gibt es nicht.',
     'fees.f1_l':'Pro abgeschlossenem Trade','fees.f2_l':'Übertragung zwischen Konten','fees.f3_l':'Auszahlung an deine eigene Wallet',
     'fees.p':'Die Gebühren bezahlen die Node-Betreiber, die die andere Hälfte der Signatur halten. Es gibt keinen NightTrader-Token, kein Pre-Mine, keine Treasury, die einen Anteil an deinem Trade einbehält, und niemandem wird eine Rendite versprochen. Die Exchange wurde absichtlich ohne eigenen Coin gestartet.',
@@ -863,13 +953,17 @@
       if (val !== undefined) el.innerHTML = val;
     });
 
-    document.querySelectorAll('[data-i18n-tag]').forEach(function (el) {
+    document.querySelectorAll('[data-i18n-tag], [data-i18n-note]').forEach(function (el) {
       var tagKey = el.getAttribute('data-i18n-tag');
       var noteKey = el.getAttribute('data-i18n-note');
-      var tagVal = d[tagKey] !== undefined ? d[tagKey] : T.en[tagKey];
-      var noteVal = d[noteKey] !== undefined ? d[noteKey] : T.en[noteKey];
-      if (tagVal !== undefined) el.setAttribute('data-tag', tagVal);
-      if (noteVal !== undefined) el.setAttribute('data-note', noteVal);
+      if (tagKey) {
+        var tagVal = d[tagKey] !== undefined ? d[tagKey] : T.en[tagKey];
+        if (tagVal !== undefined) el.setAttribute('data-tag', tagVal);
+      }
+      if (noteKey) {
+        var noteVal = d[noteKey] !== undefined ? d[noteKey] : T.en[noteKey];
+        if (noteVal !== undefined) el.setAttribute('data-note', noteVal);
+      }
     });
 
     // Keep the redeem-script note panel in sync with whichever token is active.
@@ -881,8 +975,38 @@
       noteBody.textContent = active.dataset.note;
     }
 
+    // Keep the custody split-diagram inspect note in sync, if a side is pinned.
+    var activeSide = document.querySelector('#custody-split .split-side[aria-pressed="true"]');
+    updateCustodySplitNote(activeSide);
+
+    // Keep the timelock inspect note in sync, if a step is pinned.
+    var activeStep = document.querySelector('.tl-step[aria-pressed="true"]');
+    updateTlStepNote(activeStep);
+
     var select = document.getElementById('lang-select');
     if (select) select.value = lang;
+  }
+
+  function updateCustodySplitNote(sideEl) {
+    var note = document.getElementById('custody-viz-note');
+    var body = document.getElementById('custody-viz-note-body');
+    if (!note || !body) return;
+    if (!sideEl) { note.hidden = true; return; }
+    var key = sideEl.id === 'split-cex' ? 'custody.viz_note_cex' : 'custody.viz_note_nt';
+    var d = dict();
+    body.textContent = (d[key] !== undefined ? d[key] : T.en[key]) || '';
+    note.hidden = false;
+  }
+
+  function updateTlStepNote(stepEl) {
+    var note = document.getElementById('tl-viz-note');
+    var body = document.getElementById('tl-viz-note-body');
+    if (!note || !body) return;
+    if (!stepEl) { note.hidden = true; return; }
+    var noteKey = stepEl.getAttribute('data-i18n-note');
+    var d = dict();
+    body.textContent = (d[noteKey] !== undefined ? d[noteKey] : T.en[noteKey]) || '';
+    note.hidden = false;
   }
 
   function setTheme(theme) {
@@ -913,6 +1037,50 @@
         var lang = langSelect.value;
         try { localStorage.setItem('nt-lang', lang); } catch (e) {}
         applyTranslations(lang);
+      });
+    }
+
+    // Custody split diagram: tap a side to pause both and inspect it.
+    var splitEl = document.getElementById('custody-split');
+    if (splitEl) {
+      var splitSides = splitEl.querySelectorAll('.split-side');
+      splitSides.forEach(function (side) {
+        side.addEventListener('click', function () {
+          var wasActive = side.getAttribute('aria-pressed') === 'true';
+          splitSides.forEach(function (s) { s.setAttribute('aria-pressed', 'false'); });
+          if (wasActive) {
+            splitEl.classList.remove('paused');
+            updateCustodySplitNote(null);
+          } else {
+            side.setAttribute('aria-pressed', 'true');
+            splitEl.classList.add('paused');
+            updateCustodySplitNote(side);
+          }
+        });
+      });
+    }
+
+    // Timelock dead-man's switch: tap a step to pause, jump there, and inspect it.
+    var dmsEl = document.getElementById('timelock-dms');
+    var tlMarker = document.getElementById('tl-marker');
+    if (dmsEl) {
+      var tlSteps = dmsEl.querySelectorAll('.tl-step');
+      tlSteps.forEach(function (step) {
+        step.addEventListener('click', function () {
+          var wasActive = step.getAttribute('aria-pressed') === 'true';
+          tlSteps.forEach(function (s) { s.setAttribute('aria-pressed', 'false'); s.classList.remove('active'); });
+          if (wasActive) {
+            dmsEl.classList.remove('paused');
+            if (tlMarker) tlMarker.style.left = '';
+            updateTlStepNote(null);
+          } else {
+            step.setAttribute('aria-pressed', 'true');
+            step.classList.add('active');
+            dmsEl.classList.add('paused');
+            if (tlMarker) tlMarker.style.left = step.getAttribute('data-step') + '%';
+            updateTlStepNote(step);
+          }
+        });
       });
     }
 
