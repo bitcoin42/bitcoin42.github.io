@@ -18,11 +18,11 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
 
       - name: Install dependencies
-        run: npm ci || npm install
+        run: npm ci
 
       - name: Install Chromium for browser tests
         run: npx playwright install --with-deps chromium
@@ -64,27 +64,31 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
-
-      # GitHub Pages publishes asynchronously after the push.
-      - name: Wait for deployment to propagate
-        run: sleep 60
+          node-version: 22
 
       - name: Smoke test the published site
         env:
           # The Pages mirror. The canonical host (bitcoin42.com) is served via
-          # Cloudflare and is not deployed by this workflow.
+          # Cloudflare and is NOT deployed by this workflow — see the note at the
+          # end of this job.
           SITE: https://bitcoin42.github.io
         run: |
           set -euo pipefail
 
-          echo "→ page reachable"
-          code=$(curl -sS -o /tmp/page.html -w '%{http_code}' -L --max-time 30 "$SITE/")
-          test "$code" = "200" || { echo "expected 200, got $code"; exit 1; }
-
-          echo "→ canonical points at bitcoin42.com"
-          grep -q 'rel="canonical" href="https://bitcoin42.com/"' /tmp/page.html \
-            || { echo "canonical missing or wrong"; exit 1; }
+          # Pages publishes asynchronously, so poll for the new content rather
+          # than guessing a fixed sleep.
+          echo "→ waiting for deployment to carry this commit"
+          for attempt in $(seq 1 20); do
+            code=$(curl -sS -o /tmp/page.html -w '%{http_code}' -L --max-time 30 "$SITE/" || echo 000)
+            if [ "$code" = "200" ] && grep -q 'rel="canonical" href="https://bitcoin42.com/"' /tmp/page.html; then
+              echo "   deployment live (attempt $attempt)"
+              break
+            fi
+            if [ "$attempt" = "20" ]; then
+              echo "timed out waiting for the deploy (last status $code)"; exit 1
+            fi
+            sleep 15
+          done
 
           echo "→ required assets served"
           for asset in /assets/site.css /assets/site.js /locales/en.json /locales/de.json \
@@ -97,6 +101,21 @@ jobs:
           echo "→ corrected timelock wording still in place"
           if grep -Eqi 'pays the address out|paid to your key|fires on schedule|since 2009' /tmp/page.html; then
             echo "published page contains wording that was corrected for accuracy"; exit 1
+          fi
+
+          # The canonical host is deployed separately (Cloudflare). If it lags,
+          # the two hosts disagree about which is canonical, which is worse for
+          # SEO than either answer alone. Warn rather than fail: this workflow
+          # does not control that deploy.
+          echo "→ canonical host agreement"
+          if curl -sS -o /tmp/canon.html -L --max-time 30 https://bitcoin42.com/ 2>/dev/null; then
+            if grep -q 'rel="canonical" href="https://bitcoin42.com/"' /tmp/canon.html; then
+              echo "   bitcoin42.com agrees it is canonical"
+            else
+              echo "::warning::bitcoin42.com is not serving the current canonical tag — its Cloudflare build may be stale or failing. The two hosts currently disagree about which is canonical."
+            fi
+          else
+            echo "::warning::could not reach bitcoin42.com to verify canonical agreement"
           fi
 
           echo "all post-deployment checks passed"

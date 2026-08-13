@@ -10,12 +10,12 @@ itself, and it is enforced by a test (see [Testing](#testing)).
 
 ## Domains and canonical URL
 
-| Domain | Role | Served by |
-|---|---|---|
-| **`bitcoin42.com`** | **Canonical.** The published address of this page. | Cloudflare |
-| `bitcoin42.github.io` | Mirror of the same content, from this repository. | GitHub Pages |
-| `nighttrader.exchange` | **A different site** — the NightTrader product site. Not this repo. | — |
-| `my.nighttrader.exchange` | The exchange application itself. Source is not public. | — |
+| Domain                    | Role                                                                | Served by    |
+| ------------------------- | ------------------------------------------------------------------- | ------------ |
+| **`bitcoin42.com`**       | **Canonical.** The published address of this page.                  | Cloudflare   |
+| `bitcoin42.github.io`     | Mirror of the same content, from this repository.                   | GitHub Pages |
+| `nighttrader.exchange`    | **A different site** — the NightTrader product site. Not this repo. | —            |
+| `my.nighttrader.exchange` | The exchange application itself. Source is not public.              | —            |
 
 `bitcoin42.com` is canonical. Every metadata surface points at it — `<link rel="canonical">`,
 `og:url`, `og:image`, `twitter:image`, JSON-LD `@id`/`url`, `manifest.webmanifest`
@@ -28,6 +28,19 @@ as duplicates.
 > **Note for maintainers.** There is intentionally **no `CNAME` file** in this repository.
 > `bitcoin42.com` is served through Cloudflare, not GitHub Pages. Adding a `CNAME` would make Pages
 > attempt to claim the domain and would conflict with the Cloudflare deployment.
+
+> ⚠️ **The canonical domain went stale, cause identified and fixed.** Adding `package.json` for
+> the CI quality gates made the Cloudflare Workers Build `afmhahn-bitcoin` install `node_modules`
+> inside the directory it uploads as static assets. Wrangler's own 144 MiB `workerd` runtime
+> binary ended up in that directory and exceeded the 25 MiB per-file asset limit, failing every
+> deploy. Two repo-side fixes were needed: `.assetsignore` (excludes `node_modules`, `.git`,
+> `.DS_Store` — what Cloudflare Pages does automatically and Workers does not), and
+> `wrangler.jsonc` (declares `assets.directory`, without which the project's deploy command had no
+> assets directory to apply `.assetsignore` to in the first place). Both fixes verified: the
+> Cloudflare build for this branch now succeeds and its preview deployment serves the corrected
+> content. **`bitcoin42.com` itself won't update until this branch merges to `master`** — Cloudflare
+> only promotes the production branch to the production domain; PR-branch builds are previews only.
+> See `AUDIT.md` finding D-7 for the full evidence trail, and re-verify `bitcoin42.com` after merge.
 
 ## Brand and entity relationships
 
@@ -52,7 +65,13 @@ AUDIT.md                   # technical/content audit
 CLAIMS.md                  # per-claim evidence matrix
 TRANSLATION_REVIEW.md      # locales/keys awaiting professional review
 SECURITY.md                # static-site security posture
+.assetsignore              # excludes node_modules/.git/.DS_Store from the Cloudflare asset upload
+wrangler.jsonc              # tells the Cloudflare Workers deploy command where the assets are
 ```
+
+`wrangler.jsonc` exists solely to point the already-configured Cloudflare deploy command at this
+repo's assets — it declares no routes, bindings, or Worker script, and does not change how
+`bitcoin42.com` is routed. See `AUDIT.md` finding D-7.
 
 ## Development
 
@@ -75,14 +94,14 @@ npm run test:links   # internal links + required assets
 ```
 
 **`test:claims` is a content guard, not a style check.** It fails the build if wording that was
-corrected for technical accuracy reappears in *any* locale — specifically any phrasing implying the
+corrected for technical accuracy reappears in _any_ locale — specifically any phrasing implying the
 timelock pays out automatically (it does not; see below), or the false claim that the construction
 uses primitives Bitcoin has had "since 2009".
 
 ### Accuracy rules that the tests enforce
 
 1. **The timelock does not pay anyone automatically.** `OP_CHECKLOCKTIMEVERIFY` makes a branch
-   *spendable* after a threshold. The user, or a recovery tool, must still construct and broadcast
+   _spendable_ after a threshold. The user, or a recovery tool, must still construct and broadcast
    the recovery transaction. Copy must never imply otherwise.
 2. **No false dating of primitives.** P2SH is BIP16 (2012); CLTV is BIP65 (activated December
    2015). Do not claim the construction predates them.
@@ -90,7 +109,7 @@ uses primitives Bitcoin has had "since 2009".
    as-of date, and the tier/product/pair assumptions — otherwise keep the comparison qualitative.
 4. **Security-critical strings are not machine-translated.** See `TRANSLATION_REVIEW.md`.
 
-Before changing any technical claim, read `CLAIMS.md`. Claims marked *unverified* there are not
+Before changing any technical claim, read `CLAIMS.md`. Claims marked _unverified_ there are not
 confirmed by any public source and must stay hedged until an owner confirms them.
 
 ## Contributing

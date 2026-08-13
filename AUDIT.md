@@ -15,12 +15,12 @@
 
 ### 1.1 What is actually deployed where
 
-| Host | Server | Content | Notes |
-|---|---|---|---|
-| `bitcoin42.github.io` | GitHub Pages | This landing page | No `CNAME` file in this repo |
-| `bitcoin42.com` | Cloudflare | **Byte-identical** to the above (md5 `c7742fa1…`) | Served via a Cloudflare Workers project (`afmhahn-bitcoin`) observed deploying on merge |
-| `nighttrader.exchange` | — | **Different site** — the production NightTrader marketing site from `NightTrader/nighttrader.github.io` (which contains `CNAME` = `nighttrader.exchange`) | Not this page |
-| `my.nighttrader.exchange` | — | The actual application. Returned **HTTP 451** from this environment | Source not public; see §1.2 |
+| Host                      | Server       | Content                                                                                                                                                      | Notes                                                       |
+| ------------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------- |
+| `bitcoin42.github.io`     | GitHub Pages | This landing page                                                                                                                                            | No `CNAME` file in this repo                                |
+| `bitcoin42.com`           | Cloudflare   | Was byte-identical to the above (md5 `c7742fa1…`) at audit time; went stale when the Workers build started failing — see D-7 (fix applied, pending redeploy) | Served via a Cloudflare Workers project (`afmhahn-bitcoin`) |
+| `nighttrader.exchange`    | —            | **Different site** — the production NightTrader marketing site from `NightTrader/nighttrader.github.io` (which contains `CNAME` = `nighttrader.exchange`)    | Not this page                                               |
+| `my.nighttrader.exchange` | —            | The actual application. Returned **HTTP 451** from this environment                                                                                          | Source not public; see §1.2                                 |
 
 **Finding D-1 (P0).** The same document is served from two hosts with no canonical
 differentiation between them. `<link rel="canonical">`, `og:url`, JSON-LD `@id`/`url`,
@@ -30,15 +30,17 @@ duplicate-content configuration and splits ranking signals.
 
 **Finding D-2 (P0) — OWNER DECISION REQUIRED.** The intended canonical domain cannot be
 determined from repository configuration:
+
 - This repo contains **no `CNAME`**, which would normally indicate GitHub Pages is the endpoint.
 - Yet `bitcoin42.com` (Cloudflare) serves identical content, implying an out-of-repo deployment.
-- The footer asserts *"Served from bitcoin42.com"* — which is **true**, but inconsistent with the
+- The footer asserts _"Served from bitcoin42.com"_ — which is **true**, but inconsistent with the
   canonical metadata pointing elsewhere.
 
 Three coherent options exist; they cannot be chosen safely without the owner:
+
 1. `bitcoin42.com` is canonical → update all metadata to it; keep Pages as an unindexed mirror.
 2. `bitcoin42.github.io` is canonical → stop serving `bitcoin42.com`, or mark it a mirror.
-3. This page is a *satellite* landing page for the product at `nighttrader.exchange` → canonical
+3. This page is a _satellite_ landing page for the product at `nighttrader.exchange` → canonical
    stays self-referential, but the relationship must be stated on-page.
 
 **Finding D-3 (P2).** No `CNAME` file is committed, so custom-domain configuration for Pages (if
@@ -50,6 +52,101 @@ parity or accessibility before deploy.
 **Finding D-5 (P2).** Neither host sets security headers (`Content-Security-Policy`,
 `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options`). GitHub Pages **cannot** set custom
 headers at all; Cloudflare can. See §9.
+
+**Finding D-7 (P0) — RESOLVED IN THIS REPOSITORY.** The canonical host stopped receiving
+deployments once this repository gained a `package.json`/`package-lock.json` (added for the CI
+quality gates, see commit `16ee21c`). This is a side effect of that addition, not a pre-existing
+misconfiguration — PR #15's Cloudflare failure, which predates any `package.json` in this repo,
+has a different cause than the one diagnosed here and was not separately root-caused.
+
+**Confirmed root cause (owner supplied the build log).** The Workers project has no
+`wrangler.toml` in this repository, so Cloudflare Workers Builds treats the entire repository
+checkout, `/opt/buildhome/repo`, as the static-assets directory. Once a `package.json` existed,
+the build step ran `npm install`/build tooling that populated `node_modules` inside that same
+directory — including `node_modules/workerd/bin/workerd`, Wrangler's bundled runtime binary, at
+144 MiB. Workers enforces a 25 MiB per-file limit on static assets, so the deploy failed:
+
+```
+✘ [ERROR] Asset too large.
+Cloudflare Workers supports assets with sizes of up to 25 MiB. We found a file
+/opt/buildhome/repo/node_modules/workerd/bin/workerd with a size of 144 MiB.
+```
+
+Per Cloudflare's own migration guidance, **Pages automatically excludes `node_modules`, `.git`,
+and `.DS_Store` from static-asset uploads; Workers does not** — that exclusion must be opted into
+with an `.assetsignore` file in the assets directory. Since this project's assets directory is
+implicitly the repo root, and no `.assetsignore` existed, nothing filtered `node_modules` out
+once it existed.
+
+**Fix, part 1:** `.assetsignore` added at the repository root, listing `node_modules`, `.git`,
+`.DS_Store` — mirroring exactly what Pages did automatically.
+
+That cleared the oversized-asset error but exposed a second, independent failure underneath it.
+The project's Cloudflare-side deploy command (dashboard configuration, not in this repository) is
+`npx wrangler versions upload`. With no Wrangler configuration file in the repo, Wrangler had
+nothing telling it where the assets directory even was — `.assetsignore` alone was never going to
+be sufficient, because there was no `assets.directory` for it to apply to:
+
+```
+✘ [ERROR] Missing entry-point to Worker script or to assets directory
+
+  If are uploading a directory of assets, you can either:
+  - Specify the path to the directory of assets via the command line: (ex: `npx wrangler versions upload --assets=./dist`)
+  - Or create a "wrangler.jsonc" file containing:
+  {
+    "name": "worker-name",
+    "compatibility_date": "2026-08-13",
+    "assets": { "directory": "./dist" }
+  }
+```
+
+**Fix, part 2:** `wrangler.jsonc` added at the repository root:
+
+```jsonc
+{
+  "name": "afmhahn-bitcoin",
+  "compatibility_date": "2026-08-13",
+  "assets": { "directory": "." },
+}
+```
+
+`name` matches the existing Worker script (confirmed via the Cloudflare API before writing this,
+so the upload targets the same script rather than creating a new one), and `assets.directory` is
+`.` — the repo root — matching the implicit behaviour the project already had. No `main` entry
+point is set: this is a static-assets-only Worker with no server-side script, which is the
+intended, documented configuration for a site like this one. No `routes`, `route`, or `zone_id`
+were added; those are unrelated to the failure and, if wrong, could conflict with whatever custom
+domain binding already exists for `bitcoin42.com` in the dashboard. Verified locally with the same
+Wrangler version the Cloudflare build used (`npx wrangler@4.123.0 versions upload --dry-run`):
+before this file existed, that command reproduced the exact "Missing entry-point" error; after,
+it completes cleanly and Wrangler's own diagnostics report `hasAssets: true`.
+
+**Together, both fixes were required** — `.assetsignore` alone stopped the build from tripping on
+`node_modules`, but it could not fix the underlying absence of an `assets.directory` declaration
+that made the deploy command fail regardless.
+
+Observed consequence while the build was failing, verified by fetching both hosts:
+
+| Host                  | `<link rel="canonical">`                | Corrected timelock wording present? |
+| --------------------- | --------------------------------------- | ----------------------------------- |
+| `bitcoin42.github.io` | `https://bitcoin42.com/` ✅ (current)   | Yes                                 |
+| `bitcoin42.com`       | `https://bitcoin42.github.io/` ❌ (old) | **No**                              |
+
+The two hosts named each other as canonical, and `bitcoin42.com` — the domain the owner
+designated canonical — was serving the **pre-correction safety wording**, including the
+description of the recovery timelock as paying out on schedule, which §7 records as factually
+wrong about Bitcoin.
+
+**Build now succeeds; production still pending merge.** The Cloudflare Workers Build for this
+branch (`claude/fix-ci-lockfile`, commit `0bcdae9`) completed successfully and produced working
+preview deployments. Fetching the commit preview URL directly confirms both fixes: canonical
+metadata points at `bitcoin42.com` and the corrected "becomes spendable" timelock wording is
+present. **This does not yet mean `bitcoin42.com` is fixed** — Cloudflare's Git integration
+promotes only the production branch (`master`) to the production domain; a PR-branch build
+produces preview URLs only (`*.workers.dev`), never production traffic. `bitcoin42.com` will pick
+up the fix once this PR merges to `master` and that build completes. Re-verify
+`bitcoin42.com`'s canonical tag and timelock wording after merge; do not consider D-7 closed until
+then.
 
 ### 1.2 The linked "source" repository does not contain the product
 
@@ -83,18 +180,18 @@ a reader. This is the single most serious trust finding in this audit.
 
 Three names appear with no explanation of how they relate:
 
-| Name | Role (as far as can be established) | Evidence |
-|---|---|---|
-| **NightTrader** | The product / exchange | `nighttrader.exchange`, press release |
-| **bitcoin42** | Historical team/operator identity; this page's host domain | History section; `bitcoin42.com` |
-| **NAOME SAPI DE CV** | Legal operator named in the footer legal notice | Footer `imp` block |
+| Name                 | Role (as far as can be established)                        | Evidence                              |
+| -------------------- | ---------------------------------------------------------- | ------------------------------------- |
+| **NightTrader**      | The product / exchange                                     | `nighttrader.exchange`, press release |
+| **bitcoin42**        | Historical team/operator identity; this page's host domain | History section; `bitcoin42.com`      |
+| **NAOME SAPI DE CV** | Legal operator named in the footer legal notice            | Footer `imp` block                    |
 
 **Finding B-1 (P1).** A reader cannot tell whether these are one company, a parent/subsidiary, or
 unrelated entities. The footer states NAOME SAPI DE CV is the operator; the History section implies
 bitcoin42 is the originating team; nothing ties either to NightTrader explicitly.
 
-**Finding B-2 (P1) — OWNER.** The relationship between NAOME SAPI DE CV (a Mexican *sociedad por
-acciones promotora de inversión*) and NightTrader must be stated accurately. The press release
+**Finding B-2 (P1) — OWNER.** The relationship between NAOME SAPI DE CV (a Mexican _sociedad por
+acciones promotora de inversión_) and NightTrader must be stated accurately. The press release
 describes NightTrader as **"based in Zug, Switzerland."** A Mexican legal operator and a Swiss
 operating base are not contradictory, but the page currently asserts neither clearly, and the
 discrepancy should be resolved by the owner rather than guessed.
@@ -109,13 +206,13 @@ as the company's own account, which is acceptable framing, but it remains owner-
 
 All outbound links were resolved. Results:
 
-| URL | Status | Note |
-|---|---|---|
-| `airgap.it`, `bitbay.market`, `bithalo.org`, `zk.me`, both CoinDesk articles, Bitcoinist | 200 | OK |
-| `nighttrader.exchange` | 200 | OK |
-| `bitcoin42.github.io` | 200 | OK |
-| `github.com/NightTrader/...` (repo + PDF) | 403 from this environment | Almost certainly egress filtering, **not** a broken link — the repo cloned successfully. Re-verify from a normal network. |
-| `globenewswire.com/...` | curl blocked | Bot protection; the article **was** successfully retrieved via a browser-style fetch. Not broken. |
+| URL                                                                                      | Status                    | Note                                                                                                                      |
+| ---------------------------------------------------------------------------------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `airgap.it`, `bitbay.market`, `bithalo.org`, `zk.me`, both CoinDesk articles, Bitcoinist | 200                       | OK                                                                                                                        |
+| `nighttrader.exchange`                                                                   | 200                       | OK                                                                                                                        |
+| `bitcoin42.github.io`                                                                    | 200                       | OK                                                                                                                        |
+| `github.com/NightTrader/...` (repo + PDF)                                                | 403 from this environment | Almost certainly egress filtering, **not** a broken link — the repo cloned successfully. Re-verify from a normal network. |
+| `globenewswire.com/...`                                                                  | curl blocked              | Bot protection; the article **was** successfully retrieved via a browser-style fetch. Not broken.                         |
 
 **Finding L-1 (P1).** The whitepaper is linked via a `github.com/.../blob/...` URL, which renders
 GitHub's HTML viewer for a 260 KB PDF rather than the document. A `raw.githubusercontent.com` or
@@ -139,6 +236,7 @@ have no in-page navigation whatsoever. This is both a UX failure and a WCAG 2.4.
 concern.
 
 **Finding A-2 (P0) — colour contrast, 10 elements.** Reproduces in every theme:
+
 - `.kicker`, `#note-tag`, timeline `<em>` labels: Bitcoin-orange `#F7931A` on near-white
   `#FCFCFB` → **2.23:1** (needs 4.5:1). Orange-on-white at small sizes is the systemic cause.
 - `.verify .k` labels and `.night .gut` detail: `#727B90` on `#0C1220` → **4.4:1** (needs 4.5:1) —
@@ -213,13 +311,13 @@ Detailed claim-by-claim evidence is in **[CLAIMS.md](./CLAIMS.md)**. Summary:
 
 **Finding C-1 (P0).** **Zero** of the cryptographic/custody claims can be verified from any source
 the page links to, because the linked repository contains no signing implementation (see D-6).
-Categorical wording — *never*, *cannot*, *only*, *nothing*, *every*, *strictly better*, *no exit to
-scam* — is therefore unsupported.
+Categorical wording — _never_, _cannot_, _only_, _nothing_, _every_, _strictly better_, _no exit to
+scam_ — is therefore unsupported.
 
 **Finding C-2 (P0) — technically incorrect timelock description.** The page says CLTV "fires on
 schedule" and "the address pays out to your key alone" / "automatically pays." **Bitcoin has no
 mechanism that spends an output automatically.** `OP_CHECKLOCKTIMEVERIFY` only makes a branch
-*spendable after* a time threshold; someone must still construct, sign and broadcast the recovery
+_spendable after_ a time threshold; someone must still construct, sign and broadcast the recovery
 transaction. This is not a nuance — it materially misstates what a user must do to recover funds,
 and it is the page's central safety promise.
 
@@ -265,6 +363,7 @@ framing should be promoted to the hero, not buried.
 disclosure. Its only "Legal" footer entry is an in-page anchor to the Tradeoffs section.
 
 **Finding LG-2 (P1).** Real documents **already exist** in production and are simply not linked:
+
 - `https://nighttrader.exchange/tandc.html`
 - `https://nighttrader.exchange/privacy.html`
 - `https://nighttrader.exchange/cookiepolicy.html`
@@ -306,44 +405,48 @@ says nothing about geographic availability.
 ## 10. Remediation list
 
 ### P0 — correctness, trust, and access
-| # | Item | Ref |
-|---|---|---|
-| P0-1 | Correct all timelock wording: CLTV makes a branch *spendable*; it does not auto-pay | C-2 |
-| P0-2 | Remove "since 2009"; name the actual primitives without a false date | C-3 |
-| P0-3 | Fix or remove the "read the signing logic / key derivation" invitation — the linked repo has none | D-6 |
-| P0-4 | Resolve the fee contradiction (0.125 % vs 0.25 %) — **OWNER** | C-6 |
-| P0-5 | Remove or source the competitor fee table | C-7 |
-| P0-6 | Soften unsupported absolutes (never/cannot/only/nothing/every/strictly better/no exit to scam) | C-1 |
-| P0-7 | Decide canonical domain and align every metadata surface — **OWNER** | D-1, D-2 |
-| P0-8 | Restore mobile navigation | A-1, M-1 |
-| P0-9 | Fix colour contrast (10 elements) | A-2 |
-| P0-10 | Label the architecture co-custodial near the hero | C-9 |
-| P0-11 | Link the existing Terms / Privacy / Cookie policies | LG-1, LG-2 |
+
+| #     | Item                                                                                                                                                                              | Ref        |
+| ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| P0-1  | Correct all timelock wording: CLTV makes a branch _spendable_; it does not auto-pay                                                                                               | C-2        |
+| P0-2  | Remove "since 2009"; name the actual primitives without a false date                                                                                                              | C-3        |
+| P0-3  | Fix or remove the "read the signing logic / key derivation" invitation — the linked repo has none                                                                                 | D-6        |
+| P0-4  | Resolve the fee contradiction (0.125 % vs 0.25 %) — **OWNER**                                                                                                                     | C-6        |
+| P0-5  | Remove or source the competitor fee table                                                                                                                                         | C-7        |
+| P0-6  | Soften unsupported absolutes (never/cannot/only/nothing/every/strictly better/no exit to scam)                                                                                    | C-1        |
+| P0-7  | Decide canonical domain and align every metadata surface — **OWNER**                                                                                                              | D-1, D-2   |
+| P0-8  | Restore mobile navigation                                                                                                                                                         | A-1, M-1   |
+| P0-9  | Fix colour contrast (10 elements)                                                                                                                                                 | A-2        |
+| P0-10 | Label the architecture co-custodial near the hero                                                                                                                                 | C-9        |
+| P0-11 | Link the existing Terms / Privacy / Cookie policies                                                                                                                               | LG-1, LG-2 |
+| P0-12 | Merge this PR to `master` and confirm `bitcoin42.com` serves current content — **OWNER** (build verified green on this branch's preview deploy; production only updates on merge) | D-7        |
 
 ### P1 — integrity, SEO, accessibility
-| # | Item | Ref |
-|---|---|---|
-| P1-1 | Represent language in the URL; add `hreflang`; localise `title`/meta/OG per locale | S-2, S-3 |
-| P1-2 | Skip link, `<nav>` accessible name, translated theme label, `aria-live` copy status, focusable scroll region | A-3…A-7 |
-| P1-3 | Bound the SIGHASH claim to the actual transaction template | C-4 |
-| P1-4 | Attribute third-party claims (AirGap, hardware wallets, zkMe) as vendor statements | C-5 |
-| P1-5 | Explain NightTrader / bitcoin42 / NAOME SAPI DE CV relationship — **OWNER** | B-1, B-2 |
-| P1-6 | Add CI: HTML validation, link check, locale parity, axe, claim-wording regression | D-4 |
-| P1-7 | Split CSS/JS/locales; stop using `innerHTML` for plain text | P-1, P-2, P-4 |
-| P1-8 | Publish/link AML-KYC and security disclosure policies — **OWNER** | LG-3 |
-| P1-9 | Confirm legal self-characterisation with counsel — **OWNER** | LG-4 |
-| P1-10 | Link whitepaper to a raw/hosted PDF, not the GitHub blob viewer | L-1 |
+
+| #     | Item                                                                                                         | Ref           |
+| ----- | ------------------------------------------------------------------------------------------------------------ | ------------- |
+| P1-1  | Represent language in the URL; add `hreflang`; localise `title`/meta/OG per locale                           | S-2, S-3      |
+| P1-2  | Skip link, `<nav>` accessible name, translated theme label, `aria-live` copy status, focusable scroll region | A-3…A-7       |
+| P1-3  | Bound the SIGHASH claim to the actual transaction template                                                   | C-4           |
+| P1-4  | Attribute third-party claims (AirGap, hardware wallets, zkMe) as vendor statements                           | C-5           |
+| P1-5  | Explain NightTrader / bitcoin42 / NAOME SAPI DE CV relationship — **OWNER**                                  | B-1, B-2      |
+| P1-6  | Add CI: HTML validation, link check, locale parity, axe, claim-wording regression                            | D-4           |
+| P1-7  | Split CSS/JS/locales; stop using `innerHTML` for plain text                                                  | P-1, P-2, P-4 |
+| P1-8  | Publish/link AML-KYC and security disclosure policies — **OWNER**                                            | LG-3          |
+| P1-9  | Confirm legal self-characterisation with counsel — **OWNER**                                                 | LG-4          |
+| P1-10 | Link whitepaper to a raw/hosted PDF, not the GitHub blob viewer                                              | L-1           |
 
 ### P2 — polish
-| # | Item | Ref |
-|---|---|---|
-| P2-1 | Remove `.DS_Store`; add `.gitignore` | P-3 |
-| P2-2 | Fix empty `<th>`, heading order, `scroll-margin-top` | A-8…A-10 |
-| P2-3 | Per-locale `og:locale`; generate `sitemap.xml` `lastmod` | S-4, S-5 |
-| P2-4 | Commit a `CNAME` if Pages uses a custom domain | D-3 |
-| P2-5 | Document GitHub Pages header limitations; add headers at Cloudflare if it is canonical | D-5 |
-| P2-6 | Provide a text-layer whitepaper PDF | L-2 |
-| P2-7 | Disclose geographic availability if restrictions exist — **OWNER** | LG-5 |
+
+| #    | Item                                                                                   | Ref      |
+| ---- | -------------------------------------------------------------------------------------- | -------- |
+| P2-1 | Remove `.DS_Store`; add `.gitignore`                                                   | P-3      |
+| P2-2 | Fix empty `<th>`, heading order, `scroll-margin-top`                                   | A-8…A-10 |
+| P2-3 | Per-locale `og:locale`; generate `sitemap.xml` `lastmod`                               | S-4, S-5 |
+| P2-4 | Commit a `CNAME` if Pages uses a custom domain                                         | D-3      |
+| P2-5 | Document GitHub Pages header limitations; add headers at Cloudflare if it is canonical | D-5      |
+| P2-6 | Provide a text-layer whitepaper PDF                                                    | L-2      |
+| P2-7 | Disclose geographic availability if restrictions exist — **OWNER**                     | LG-5     |
 
 ---
 
@@ -373,8 +476,8 @@ These block work and must not be answered by guessing:
 
 ## 12. Required human review
 
-| Area | Why |
-|---|---|
-| **Legal** | LG-4 (broker/custodian/investment-service characterisation), LG-2 applicability, LG-5 geo-disclosure |
-| **Cryptographic** | Every claim in CLAIMS.md marked *unverified*; the recovery flow in particular |
-| **Translation** | All security-critical wording changed in Phase 2, across 8 non-English locales |
+| Area              | Why                                                                                                  |
+| ----------------- | ---------------------------------------------------------------------------------------------------- |
+| **Legal**         | LG-4 (broker/custodian/investment-service characterisation), LG-2 applicability, LG-5 geo-disclosure |
+| **Cryptographic** | Every claim in CLAIMS.md marked _unverified_; the recovery flow in particular                        |
+| **Translation**   | All security-critical wording changed in Phase 2, across 8 non-English locales                       |

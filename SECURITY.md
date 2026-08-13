@@ -8,7 +8,7 @@ NightTrader exchange, whose implementation is not in this repository (see `AUDIT
 Security issues with **this page**: email `ceo@nighttrader.org`.
 
 > **TODO (owner):** no dedicated security/vulnerability disclosure policy or contact for the
-> *exchange* could be located. One should exist and be linked here. Tracked as AUDIT.md LG-3.
+> _exchange_ could be located. One should exist and be linked here. Tracked as AUDIT.md LG-3.
 
 ## What this site is
 
@@ -21,7 +21,7 @@ authentication, no user input, and no user data is collected or transmitted by t
 `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy` or `X-Frame-Options` can be
 applied to the `bitcoin42.github.io` mirror. This is a platform limitation with no workaround.
 
-The canonical host, **`bitcoin42.com`, is served through Cloudflare**, which *can* set headers.
+The canonical host, **`bitcoin42.com`, is served through Cloudflare**, which _can_ set headers.
 Recommended baseline there:
 
 ```
