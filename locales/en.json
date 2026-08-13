@@ -6,7 +6,7 @@
   "a11y.nav_menu_label": "Sections",
   "a11y.nav_primary": "Primary",
   "a11y.skip": "Skip to content",
-  "a11y.table_region": "Comparison table, scrollable",
+  "a11y.table_custody": "Comparison table, scrollable",
   "a11y.theme_toggle": "Toggle colour theme",
   "controls.c1_h3": "Sign from an air-gapped device",
   "controls.c1_p": "Your key does not have to live in a browser tab. Pair an offline signer — an air-gapped phone running <a href=\"https://airgap.it/\">AirGap Vault</a> or a compatible hardware wallet — and the key need never touch an internet-connected machine. Orders and withdrawals cross the gap as QR codes: unsigned request out, signature back in. Ask us which devices are supported before you rely on this.",

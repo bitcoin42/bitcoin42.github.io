@@ -196,7 +196,7 @@ pre.code{
 .split-side:hover,.split-side[aria-pressed="true"]{background:var(--highlight)}
 .split-rule{width:1px;background:var(--rule);flex:0 0 auto}
 .split-label{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey)}
-.split-stage{position:relative;width:100%;max-width:220px;height:150px}
+.split-stage{display:block;position:relative;width:100%;max-width:220px;height:150px}
 .split-caption{font-size:13.5px;color:var(--ink2);max-width:220px;line-height:1.5}
 
 .vault-icon,.key-icon{
