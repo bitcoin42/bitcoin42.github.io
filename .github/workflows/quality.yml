@@ -1,0 +1,102 @@
+name: Quality gates
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci || npm install
+
+      - name: Install Chromium for browser tests
+        run: npx playwright install --with-deps chromium
+
+      # Content correctness first: these are the cheapest and the most important.
+      # test:claims fails if wording corrected for technical accuracy regresses
+      # in any locale (e.g. "the timelock pays out automatically", which is false).
+      - name: Claim wording regression
+        run: npm run test:claims
+
+      - name: Locale parity
+        run: npm run test:locales
+
+      - name: Lint
+        run: npm run lint
+
+      - name: HTML validation
+        run: npm run test:html
+
+      # Verifies internal anchors, required assets, canonical/og/sitemap/robots/
+      # manifest agreement, hreflang completeness, https-only links, and that no
+      # third-party resource is requested in production.
+      - name: Links, assets and canonical consistency
+        run: npm run test:links
+
+      - name: Accessibility (axe-core)
+        run: npm run test:a11y
+
+      - name: End-to-end behaviour
+        run: npm run test:e2e
+
+  smoke-deployed:
+    name: Post-deployment smoke test
+    needs: validate
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # GitHub Pages publishes asynchronously after the push.
+      - name: Wait for deployment to propagate
+        run: sleep 60
+
+      - name: Smoke test the published site
+        env:
+          # The Pages mirror. The canonical host (bitcoin42.com) is served via
+          # Cloudflare and is not deployed by this workflow.
+          SITE: https://bitcoin42.github.io
+        run: |
+          set -euo pipefail
+
+          echo "→ page reachable"
+          code=$(curl -sS -o /tmp/page.html -w '%{http_code}' -L --max-time 30 "$SITE/")
+          test "$code" = "200" || { echo "expected 200, got $code"; exit 1; }
+
+          echo "→ canonical points at bitcoin42.com"
+          grep -q 'rel="canonical" href="https://bitcoin42.com/"' /tmp/page.html \
+            || { echo "canonical missing or wrong"; exit 1; }
+
+          echo "→ required assets served"
+          for asset in /assets/site.css /assets/site.js /locales/en.json /locales/de.json \
+                       /manifest.webmanifest /robots.txt /sitemap.xml /og-image.png; do
+            c=$(curl -sS -o /dev/null -w '%{http_code}' -L --max-time 30 "$SITE$asset")
+            test "$c" = "200" || { echo "$asset -> $c"; exit 1; }
+            echo "   $asset ok"
+          done
+
+          echo "→ corrected timelock wording still in place"
+          if grep -Eqi 'pays the address out|paid to your key|fires on schedule|since 2009' /tmp/page.html; then
+            echo "published page contains wording that was corrected for accuracy"; exit 1
+          fi
+
+          echo "all post-deployment checks passed"
