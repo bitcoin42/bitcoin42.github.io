@@ -36,9 +36,11 @@ as duplicates.
 > deploy. Two repo-side fixes were needed: `.assetsignore` (excludes `node_modules`, `.git`,
 > `.DS_Store` — what Cloudflare Pages does automatically and Workers does not), and
 > `wrangler.jsonc` (declares `assets.directory`, without which the project's deploy command had no
-> assets directory to apply `.assetsignore` to in the first place). See `AUDIT.md` finding D-7 for
-> the full build-log evidence. Confirm `bitcoin42.com` is serving current content after the next
-> deploy.
+> assets directory to apply `.assetsignore` to in the first place). Both fixes verified: the
+> Cloudflare build for this branch now succeeds and its preview deployment serves the corrected
+> content. **`bitcoin42.com` itself won't update until this branch merges to `master`** — Cloudflare
+> only promotes the production branch to the production domain; PR-branch builds are previews only.
+> See `AUDIT.md` finding D-7 for the full evidence trail, and re-verify `bitcoin42.com` after merge.
 
 ## Brand and entity relationships
 

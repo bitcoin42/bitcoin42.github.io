@@ -135,8 +135,18 @@ Observed consequence while the build was failing, verified by fetching both host
 The two hosts named each other as canonical, and `bitcoin42.com` — the domain the owner
 designated canonical — was serving the **pre-correction safety wording**, including the
 description of the recovery timelock as paying out on schedule, which §7 records as factually
-wrong about Bitcoin. This should resolve once the next Cloudflare build succeeds; re-verify both
-hosts' canonical tag and timelock wording after that build completes.
+wrong about Bitcoin.
+
+**Build now succeeds; production still pending merge.** The Cloudflare Workers Build for this
+branch (`claude/fix-ci-lockfile`, commit `0bcdae9`) completed successfully and produced working
+preview deployments. Fetching the commit preview URL directly confirms both fixes: canonical
+metadata points at `bitcoin42.com` and the corrected "becomes spendable" timelock wording is
+present. **This does not yet mean `bitcoin42.com` is fixed** — Cloudflare's Git integration
+promotes only the production branch (`master`) to the production domain; a PR-branch build
+produces preview URLs only (`*.workers.dev`), never production traffic. `bitcoin42.com` will pick
+up the fix once this PR merges to `master` and that build completes. Re-verify
+`bitcoin42.com`'s canonical tag and timelock wording after merge; do not consider D-7 closed until
+then.
 
 ### 1.2 The linked "source" repository does not contain the product
 
@@ -396,20 +406,20 @@ says nothing about geographic availability.
 
 ### P0 — correctness, trust, and access
 
-| #     | Item                                                                                                                                                                                               | Ref        |
-| ----- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
-| P0-1  | Correct all timelock wording: CLTV makes a branch _spendable_; it does not auto-pay                                                                                                                | C-2        |
-| P0-2  | Remove "since 2009"; name the actual primitives without a false date                                                                                                                               | C-3        |
-| P0-3  | Fix or remove the "read the signing logic / key derivation" invitation — the linked repo has none                                                                                                  | D-6        |
-| P0-4  | Resolve the fee contradiction (0.125 % vs 0.25 %) — **OWNER**                                                                                                                                      | C-6        |
-| P0-5  | Remove or source the competitor fee table                                                                                                                                                          | C-7        |
-| P0-6  | Soften unsupported absolutes (never/cannot/only/nothing/every/strictly better/no exit to scam)                                                                                                     | C-1        |
-| P0-7  | Decide canonical domain and align every metadata surface — **OWNER**                                                                                                                               | D-1, D-2   |
-| P0-8  | Restore mobile navigation                                                                                                                                                                          | A-1, M-1   |
-| P0-9  | Fix colour contrast (10 elements)                                                                                                                                                                  | A-2        |
-| P0-10 | Label the architecture co-custodial near the hero                                                                                                                                                  | C-9        |
-| P0-11 | Link the existing Terms / Privacy / Cookie policies                                                                                                                                                | LG-1, LG-2 |
-| P0-12 | Verify the Cloudflare Workers Build succeeds after the `.assetsignore` fix and confirm `bitcoin42.com` is serving current content — **OWNER** (repo-side fix applied; needs redeploy confirmation) | D-7        |
+| #     | Item                                                                                                                                                                              | Ref        |
+| ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| P0-1  | Correct all timelock wording: CLTV makes a branch _spendable_; it does not auto-pay                                                                                               | C-2        |
+| P0-2  | Remove "since 2009"; name the actual primitives without a false date                                                                                                              | C-3        |
+| P0-3  | Fix or remove the "read the signing logic / key derivation" invitation — the linked repo has none                                                                                 | D-6        |
+| P0-4  | Resolve the fee contradiction (0.125 % vs 0.25 %) — **OWNER**                                                                                                                     | C-6        |
+| P0-5  | Remove or source the competitor fee table                                                                                                                                         | C-7        |
+| P0-6  | Soften unsupported absolutes (never/cannot/only/nothing/every/strictly better/no exit to scam)                                                                                    | C-1        |
+| P0-7  | Decide canonical domain and align every metadata surface — **OWNER**                                                                                                              | D-1, D-2   |
+| P0-8  | Restore mobile navigation                                                                                                                                                         | A-1, M-1   |
+| P0-9  | Fix colour contrast (10 elements)                                                                                                                                                 | A-2        |
+| P0-10 | Label the architecture co-custodial near the hero                                                                                                                                 | C-9        |
+| P0-11 | Link the existing Terms / Privacy / Cookie policies                                                                                                                               | LG-1, LG-2 |
+| P0-12 | Merge this PR to `master` and confirm `bitcoin42.com` serves current content — **OWNER** (build verified green on this branch's preview deploy; production only updates on merge) | D-7        |
 
 ### P1 — integrity, SEO, accessibility
 
