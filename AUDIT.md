@@ -78,11 +78,52 @@ with an `.assetsignore` file in the assets directory. Since this project's asset
 implicitly the repo root, and no `.assetsignore` existed, nothing filtered `node_modules` out
 once it existed.
 
-**Fix applied:** `.assetsignore` added at the repository root, listing `node_modules`, `.git`,
-`.DS_Store` — mirroring exactly what Pages did automatically. This is deliberately **not** a
-`wrangler.toml`: it only filters which files are uploaded as static assets and cannot change
-routing, headers, or any other behaviour of the deployed Worker, so it carries none of the
-production risk a speculative Wrangler configuration would.
+**Fix, part 1:** `.assetsignore` added at the repository root, listing `node_modules`, `.git`,
+`.DS_Store` — mirroring exactly what Pages did automatically.
+
+That cleared the oversized-asset error but exposed a second, independent failure underneath it.
+The project's Cloudflare-side deploy command (dashboard configuration, not in this repository) is
+`npx wrangler versions upload`. With no Wrangler configuration file in the repo, Wrangler had
+nothing telling it where the assets directory even was — `.assetsignore` alone was never going to
+be sufficient, because there was no `assets.directory` for it to apply to:
+
+```
+✘ [ERROR] Missing entry-point to Worker script or to assets directory
+
+  If are uploading a directory of assets, you can either:
+  - Specify the path to the directory of assets via the command line: (ex: `npx wrangler versions upload --assets=./dist`)
+  - Or create a "wrangler.jsonc" file containing:
+  {
+    "name": "worker-name",
+    "compatibility_date": "2026-08-13",
+    "assets": { "directory": "./dist" }
+  }
+```
+
+**Fix, part 2:** `wrangler.jsonc` added at the repository root:
+
+```jsonc
+{
+  "name": "afmhahn-bitcoin",
+  "compatibility_date": "2026-08-13",
+  "assets": { "directory": "." },
+}
+```
+
+`name` matches the existing Worker script (confirmed via the Cloudflare API before writing this,
+so the upload targets the same script rather than creating a new one), and `assets.directory` is
+`.` — the repo root — matching the implicit behaviour the project already had. No `main` entry
+point is set: this is a static-assets-only Worker with no server-side script, which is the
+intended, documented configuration for a site like this one. No `routes`, `route`, or `zone_id`
+were added; those are unrelated to the failure and, if wrong, could conflict with whatever custom
+domain binding already exists for `bitcoin42.com` in the dashboard. Verified locally with the same
+Wrangler version the Cloudflare build used (`npx wrangler@4.123.0 versions upload --dry-run`):
+before this file existed, that command reproduced the exact "Missing entry-point" error; after,
+it completes cleanly and Wrangler's own diagnostics report `hasAssets: true`.
+
+**Together, both fixes were required** — `.assetsignore` alone stopped the build from tripping on
+`node_modules`, but it could not fix the underlying absence of an `assets.directory` declaration
+that made the deploy command fail regardless.
 
 Observed consequence while the build was failing, verified by fetching both hosts:
 

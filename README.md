@@ -31,12 +31,14 @@ as duplicates.
 
 > ⚠️ **The canonical domain went stale, cause identified and fixed.** Adding `package.json` for
 > the CI quality gates made the Cloudflare Workers Build `afmhahn-bitcoin` install `node_modules`
-> inside the directory it uploads as static assets (this project has no `wrangler.toml`, so the
-> whole repo checkout is the assets directory). Wrangler's own 144 MiB `workerd` runtime binary
-> ended up in that directory and exceeded the 25 MiB per-file asset limit, failing every deploy.
-> Fixed by committing `.assetsignore` (excludes `node_modules`, `.git`, `.DS_Store` — exactly what
-> Cloudflare Pages does automatically and Workers does not). See `AUDIT.md` finding D-7. Confirm
-> `bitcoin42.com` is serving current content after the next deploy.
+> inside the directory it uploads as static assets. Wrangler's own 144 MiB `workerd` runtime
+> binary ended up in that directory and exceeded the 25 MiB per-file asset limit, failing every
+> deploy. Two repo-side fixes were needed: `.assetsignore` (excludes `node_modules`, `.git`,
+> `.DS_Store` — what Cloudflare Pages does automatically and Workers does not), and
+> `wrangler.jsonc` (declares `assets.directory`, without which the project's deploy command had no
+> assets directory to apply `.assetsignore` to in the first place). See `AUDIT.md` finding D-7 for
+> the full build-log evidence. Confirm `bitcoin42.com` is serving current content after the next
+> deploy.
 
 ## Brand and entity relationships
 
@@ -61,7 +63,13 @@ AUDIT.md                   # technical/content audit
 CLAIMS.md                  # per-claim evidence matrix
 TRANSLATION_REVIEW.md      # locales/keys awaiting professional review
 SECURITY.md                # static-site security posture
+.assetsignore              # excludes node_modules/.git/.DS_Store from the Cloudflare asset upload
+wrangler.jsonc              # tells the Cloudflare Workers deploy command where the assets are
 ```
+
+`wrangler.jsonc` exists solely to point the already-configured Cloudflare deploy command at this
+repo's assets — it declares no routes, bindings, or Worker script, and does not change how
+`bitcoin42.com` is routed. See `AUDIT.md` finding D-7.
 
 ## Development
 
