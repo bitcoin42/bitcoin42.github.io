@@ -260,6 +260,72 @@ pre.code{
 .note p{margin:0}
 .hint{font-size:12.5px;color:var(--grey);margin-top:18px;font-family:var(--mono)}
 
+/* ---------- split diagram (custody) ---------- */
+.split{display:flex;align-items:stretch;gap:0;border:1px solid var(--rule);margin:8px 0 6px;background:var(--surface)}
+.split-side{
+  flex:1 1 0;display:flex;flex-direction:column;align-items:center;gap:14px;min-width:0;
+  padding:28px 18px 24px;background:none;border:0;cursor:pointer;text-align:center;
+  font-family:inherit;color:inherit;touch-action:manipulation;
+}
+.split-side:hover,.split-side[aria-pressed="true"]{background:var(--highlight)}
+.split-rule{width:1px;background:var(--rule);flex:0 0 auto}
+.split-label{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey)}
+.split-stage{position:relative;width:100%;max-width:220px;height:150px}
+.split-caption{font-size:13.5px;color:var(--ink2);max-width:220px;line-height:1.5}
+
+.vault-icon,.key-icon{
+  position:absolute;top:52%;left:50%;width:64px;height:64px;margin:-32px 0 0 -32px;border-radius:50%;
+  border:1.5px solid var(--rule);background:var(--surface);color:var(--grey);
+  display:flex;align-items:center;justify-content:center;
+}
+.vault-icon svg,.key-icon svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.vault-icon{animation:vault-pulse 12s ease-in-out infinite}
+@keyframes vault-pulse{
+  0%,40%{border-color:var(--rule);color:var(--grey);transform:scale(1)}
+  46%,64%{border-color:var(--orange);color:var(--ink);transform:scale(1.04)}
+  70%,100%{border-color:var(--rule);color:var(--grey);transform:scale(1)}
+}
+.coin-dot{
+  position:absolute;top:50%;left:50%;width:6px;height:6px;margin:-3px 0 0 -3px;border-radius:50%;
+  background:var(--grey);opacity:0;animation:coin-cycle 12s ease-in-out infinite;
+}
+@keyframes coin-cycle{
+  0%{transform:translate(var(--ix),var(--iy));opacity:0}
+  15%{opacity:.9}
+  38%,46%{transform:translate(0,0);opacity:.9}
+  70%{transform:translate(var(--ox),var(--oy));opacity:0}
+  100%{transform:translate(var(--ix),var(--iy));opacity:0}
+}
+.cd1{--ix:-34px;--iy:-38px;--ox:30px;--oy:-42px}
+.cd2{--ix:34px;--iy:-30px;--ox:-28px;--oy:-44px;animation-delay:.7s}
+.cd3{--ix:0px;--iy:44px;--ox:36px;--oy:30px;animation-delay:1.4s}
+
+.book-icon{
+  position:absolute;top:6%;left:50%;width:30px;height:30px;margin:0 0 0 -15px;border-radius:50%;
+  border:1.5px solid var(--rule);background:var(--surface);color:var(--grey);
+  display:flex;align-items:center;justify-content:center;
+}
+.book-icon svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.amt-dot{
+  position:absolute;top:50%;left:50%;width:14px;height:6px;margin:-3px 0 0 -7px;border-radius:3px;
+  background:var(--orange);opacity:0;animation:amt-cycle 12s ease-in-out infinite;
+}
+@keyframes amt-cycle{
+  0%,30%{transform:translate(0,0);opacity:0}
+  40%{transform:translate(0,0);opacity:1}
+  62%{transform:translate(0,-52px);opacity:1}
+  72%,100%{transform:translate(0,-52px);opacity:0}
+}
+.split.paused .vault-icon,.split.paused .coin-dot,.split.paused .amt-dot{animation:none}
+
+.viz-note{border:1px solid var(--rule);background:var(--surface);padding:16px 20px;margin:0 0 6px;font-size:14px;color:var(--ink2)}
+.viz-note p{margin:0}
+
+@media (max-width:640px){
+  .split{flex-direction:column}
+  .split-rule{width:100%;height:1px}
+}
+
 /* ---------- comparison table ---------- */
 .tbl{width:100%;border-collapse:collapse;font-size:14.5px;margin-top:8px}
 .tbl th,.tbl td{border-top:1px solid var(--rule);padding:14px 14px 14px 0;text-align:left;vertical-align:top}
@@ -296,9 +362,6 @@ pre.code{
   0%,100%{background:var(--rule)}
   50%{background:var(--orange)}
 }
-@media (prefers-reduced-motion:reduce){
-  .flow-icon,.flow-arrow{animation:none}
-}
 @media (max-width:640px){
   .flow{flex-wrap:wrap;justify-content:center;row-gap:22px}
   .flow-arrow{display:none}
@@ -321,7 +384,41 @@ ol.steps p{margin:0;color:var(--ink2);font-size:15.5px}
 .tl-bar span{position:absolute;top:-4px;width:1px;height:9px;background:var(--ink)}
 .tl-bar span:last-child{background:var(--orange);height:15px;top:-7px;width:2px}
 .tl-labels{display:flex;justify-content:space-between;gap:12px;font-family:var(--mono);font-size:11.5px;letter-spacing:.04em;color:var(--grey);text-transform:uppercase}
+.tl-labels>*{min-width:0;overflow-wrap:anywhere}
 .tl-labels em{font-style:normal;color:var(--orange)}
+.tl-labels button{font:inherit;letter-spacing:inherit;text-transform:inherit;color:inherit;background:none;border:0;padding:2px 0;margin:0;cursor:pointer;text-align:start}
+.tl-labels button:hover{color:var(--ink)}
+.tl-labels button.active{color:var(--orange)}
+.tl-labels button.active em{color:inherit}
+
+/* ---------- dead-man's switch (timelock) ---------- */
+.dms{display:flex;align-items:flex-start;gap:22px;margin-top:8px}
+.hourglass-icon{
+  flex:0 0 auto;width:52px;height:52px;margin-top:4px;border-radius:50%;
+  border:1.5px solid var(--rule);background:var(--surface);color:var(--grey);
+  display:flex;align-items:center;justify-content:center;
+  animation:hourglass-cycle 14s ease-in-out infinite;
+}
+.hourglass-icon svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+@keyframes hourglass-cycle{
+  0%,36%{transform:rotate(0deg);border-color:var(--rule);color:var(--grey)}
+  40%,44%{transform:rotate(180deg);border-color:var(--orange);color:var(--ink)}
+  48%,88%{transform:rotate(180deg);border-color:var(--rule);color:var(--grey)}
+  92%,100%{transform:rotate(180deg);border-color:var(--orange);color:var(--ink)}
+}
+.dms .tl{flex:1 1 0;min-width:0;margin-top:0}
+.tl-bar .tl-marker{
+  position:absolute;top:-4px;width:2px;height:9px;background:var(--orange);left:0;
+  animation:tl-marker-move 14s ease-in-out infinite;
+}
+@keyframes tl-marker-move{
+  0%{left:0%}
+  36%{left:74%}
+  40%,44%{left:0%}
+  88%{left:calc(100% - 2px)}
+  100%{left:calc(100% - 2px)}
+}
+.dms.paused .hourglass-icon,.dms.paused .tl-marker{animation:none}
 
 /* ---------- fees ---------- */
 .fees{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule);margin-bottom:26px}
@@ -447,10 +544,15 @@ footer li{margin-bottom:6px}
   .bm{flex-direction:column}
   .bm code{width:100%;flex:0 1 auto}
   .copy{border-left:0;border-top:1px solid #24304A;justify-content:center;display:flex}
+  .dms{flex-direction:column;gap:14px}
 }
 @media (prefers-reduced-motion:no-preference){
   .tok{transition:background .12s linear}
   .btn,a{transition:background .12s linear,color .12s linear}
+}
+@media (prefers-reduced-motion:reduce){
+  .flow-icon,.flow-arrow,.vault-icon,.coin-dot,.amt-dot,.hourglass-icon{animation:none}
+  .tl-bar .tl-marker{animation:none}
 }
 </style>
 </head>
@@ -542,6 +644,35 @@ OP_ENDIF</pre>
     <div class="col">
       <h2 data-i18n="custody.h2">Four ways to trade bitcoin. Only one of them leaves the key with you and still gives you a book.</h2>
       <p class="lede" data-i18n="custody.lede">Bisq and RoboSats are honest, non-custodial venues and we say so. The tradeoff they make is cost and speed: every trade is an on-chain event, and continuous depth is hard to build on top of that. We made a different tradeoff.</p>
+
+      <div class="split" id="custody-split">
+        <button type="button" class="split-side" id="split-cex" aria-pressed="false">
+          <span class="split-label" data-i18n="custody.viz_label_cex">Custodial exchange</span>
+          <div class="split-stage" aria-hidden="true">
+            <div class="vault-icon">
+              <svg viewBox="0 0 24 24" focusable="false"><rect x="4" y="5" width="16" height="15" rx="1.5"/><circle cx="12" cy="12.5" r="2.6"/><path d="M12 10.5v1M12 13.5v1"/></svg>
+            </div>
+            <span class="coin-dot cd1"></span><span class="coin-dot cd2"></span><span class="coin-dot cd3"></span>
+          </div>
+          <span class="split-caption" data-i18n="custody.viz_caption_cex">Coins sit in one wallet. Custody — and control — is theirs.</span>
+        </button>
+        <div class="split-rule" aria-hidden="true"></div>
+        <button type="button" class="split-side" id="split-nt" aria-pressed="false">
+          <span class="split-label" data-i18n="custody.viz_label_nt">NightTrader</span>
+          <div class="split-stage" aria-hidden="true">
+            <div class="key-icon">
+              <svg viewBox="0 0 24 24" focusable="false"><circle cx="7.5" cy="7.5" r="4"/><path d="M10.5 10.5 19 19M15.5 19 19 15.5M17.5 21 21 17.5"/></svg>
+            </div>
+            <span class="amt-dot"></span>
+            <div class="book-icon"><svg viewBox="0 0 24 24" focusable="false"><path d="M5 7h14M5 12h9M5 17h14"/></svg></div>
+          </div>
+          <span class="split-caption" data-i18n="custody.viz_caption_nt">Your key never leaves your device. Only the signed amount goes.</span>
+        </button>
+      </div>
+      <aside class="viz-note" id="custody-viz-note" aria-live="polite" hidden>
+        <p id="custody-viz-note-body"></p>
+      </aside>
+      <p class="hint" data-i18n="custody.viz_hint">Tap a side to pause and inspect</p>
 
       <div class="wide">
       <table class="tbl">
@@ -673,15 +804,28 @@ OP_ENDIF</pre>
       <h2 data-i18n="timelock.h2">Assume we get raided tonight.</h2>
       <p class="lede" data-i18n="timelock.lede">Servers seized, domain pulled, team unreachable, node operators gone. Under a custodial exchange that is the end of the story and the beginning of a creditors' process. Here it is a waiting period.</p>
 
-      <div class="tl">
-        <div class="tl-bar">
-          <span style="left:0"></span><span style="left:33%"></span><span style="left:66%"></span><span style="left:calc(100% - 2px)"></span>
+      <div class="dms" id="timelock-dms">
+        <div class="hourglass-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false"><path d="M6 4h12M6 20h12M6 4c0 5.5 5 6.5 6 8 1-1.5 6-2.5 6-8M6 20c0-5.5 5-6.5 6-8-1 1.5-6 2.5-6 8"/></svg>
         </div>
-        <div class="tl-labels">
-          <span data-i18n="timelock.l1">Deposit</span><span data-i18n="timelock.l2">Trade freely</span><span data-i18n="timelock.l3">Inactive</span><span data-i18n="timelock.l4"><em>Locktime → paid to your key</em></span>
+        <div class="tl">
+          <div class="tl-bar">
+            <span class="tl-marker" id="tl-marker" aria-hidden="true"></span>
+            <span style="left:0"></span><span style="left:33%"></span><span style="left:66%"></span><span style="left:calc(100% - 2px)"></span>
+          </div>
+          <div class="tl-labels">
+            <button type="button" class="tl-step" data-step="0" aria-pressed="false" data-i18n="timelock.l1" data-i18n-note="timelock.step_deposit">Deposit</button>
+            <button type="button" class="tl-step" data-step="33" aria-pressed="false" data-i18n="timelock.l2" data-i18n-note="timelock.step_trade">Trade freely</button>
+            <button type="button" class="tl-step" data-step="66" aria-pressed="false" data-i18n="timelock.l3" data-i18n-note="timelock.step_inactive">Inactive</button>
+            <button type="button" class="tl-step" data-step="100" aria-pressed="false" data-i18n="timelock.l4" data-i18n-note="timelock.step_locktime"><em>Locktime → paid to your key</em></button>
+          </div>
         </div>
       </div>
-      <p class="small" style="margin-top:22px" data-i18n="timelock.small">The locktime is set per account and refreshed as you trade — the book will not fill an order that would leave you near expiry, and after a long dormancy you will be asked to roll to a new script and a current node set. The branch is enforced by consensus, not by us. We cannot switch it off, and neither can anyone who takes our servers.</p>
+      <aside class="viz-note" id="tl-viz-note" aria-live="polite" hidden>
+        <p id="tl-viz-note-body"></p>
+      </aside>
+      <p class="hint" data-i18n="timelock.viz_hint">Tap a step to pause and inspect</p>
+      <p class="small" style="margin-top:10px" data-i18n="timelock.small">The locktime is set per account and refreshed as you trade — the book will not fill an order that would leave you near expiry, and after a long dormancy you will be asked to roll to a new script and a current node set. The branch is enforced by consensus, not by us. We cannot switch it off, and neither can anyone who takes our servers.</p>
     </div>
   </div>
 </section>
