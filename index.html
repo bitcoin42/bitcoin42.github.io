@@ -206,6 +206,11 @@ nav .btn.sm{margin-left:4px}
 }
 .hero-mark svg{display:block;width:100%;height:auto}
 .kicker{font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--orange);margin-bottom:26px}
+.arch-label{
+  display:inline-block;font-family:var(--mono);font-size:11.5px;line-height:1.5;
+  letter-spacing:.04em;color:var(--ink2);background:var(--highlight);
+  border:1px solid var(--rule);padding:7px 12px;margin:24px 0 0;
+}
 h1 .thin{color:var(--grey)}
 .hero .answer{
   font-family:var(--mono);font-size:clamp(13px,1.7vw,15.5px);letter-spacing:.02em;
@@ -596,20 +601,22 @@ footer li{margin-bottom:6px}
         <circle cx="32" cy="32" r="32" fill="currentColor" mask="url(#btc-cut)"/>
       </svg>
     </div>
-    <p class="kicker" data-i18n="hero.kicker">Bitcoin-native · Non-custodial · Full bid / ask order book</p>
+    <p class="kicker" data-i18n="hero.kicker">Bitcoin-native · Co-custodial · Full bid / ask order book</p>
     <h1 data-i18n="hero.h1">Not your keys,<br>not your coins.<br><span class="thin">So we gave you a key.</span></h1>
 
-    <p class="answer" data-i18n="hero.answer">Every NightTrader account is a 2-of-2 or 3-of-3 multisig address.<br>
-    One key is yours, generated in your browser. The exchange cannot spend without it.</p>
+    <p class="arch-label" data-i18n="hero.architecture">Co-custodial during trading, with a time-delayed user recovery path.</p>
 
-    <p class="lede" data-i18n="hero.lede">A real order book — limit bids, limit asks, tight spreads — without an omnibus wallet holding your stack. No wrapped BTC. No IOU balance in someone else's database. No exit to scam.</p>
+    <p class="answer" data-i18n="hero.answer">NightTrader accounts settle into 2-of-2 or 3-of-3 multisig addresses.<br>
+    One key is yours, generated in your browser. By design, the exchange cannot move funds without it.</p>
+
+    <p class="lede" data-i18n="hero.lede">A real order book — limit bids, limit asks, tight spreads — without an omnibus wallet holding your stack. No wrapped BTC. No IOU balance in someone else's database.</p>
 
     <div class="cta">
       <a class="btn" href="https://nighttrader.exchange" data-i18n="hero.cta_open">Open the exchange</a>
       <a class="btn ghost" href="https://github.com/NightTrader/nighttrader.github.io/blob/master/Nighttrader_A_Decentralized_Multisignature_Electronic_Cash_Wallet.pdf" data-i18n="hero.cta_paper">Read the paper</a>
       <a class="btn ghost" href="#verify" data-i18n="hero.cta_source">Read the source</a>
     </div>
-    <p class="cta-note" data-i18n="hero.cta_note">Non-custodial · No signup wall to browse the book · Withdraw whenever you want</p>
+    <p class="cta-note" data-i18n="hero.cta_note">Co-custodial · No signup wall to browse the book · Withdraw whenever you want</p>
 
     <!-- ===== SIGNATURE ELEMENT: the annotated redeem script ===== -->
     <div class="script">
@@ -624,7 +631,7 @@ footer li{margin-bottom:6px}
      data-note="A threshold signature held collectively by the node set. No single operator can reconstruct it; a supermajority must agree before the second signature exists at all.">&lt;node_threshold_pubkey&gt;</button> <span class="op">2 OP_CHECKMULTISIG</span>
 OP_ELSE
   <button class="tok" type="button" aria-pressed="false" data-i18n-tag="script.tag_exit" data-i18n-note="script.note_exit" data-tag="Force-majeure exit"
-     data-note="OP_CHECKLOCKTIMEVERIFY. If the nodes vanish, are seized, or simply stop answering, this branch activates on schedule and pays the address out to your key alone. No permission, no support queue, no recovery fee.">&lt;locktime&gt; OP_CHECKLOCKTIMEVERIFY</button> <span class="op">OP_DROP</span>
+     data-note="OP_CHECKLOCKTIMEVERIFY. If the nodes vanish, are seized, or simply stop answering, this branch becomes spendable with your key alone once the locktime passes. You (or a recovery tool) then construct and broadcast the recovery transaction yourself — no permission, no support queue, no recovery fee.">&lt;locktime&gt; OP_CHECKLOCKTIMEVERIFY</button> <span class="op">OP_DROP</span>
   <span class="op">&lt;your_pubkey&gt; OP_CHECKSIG</span>
 OP_ENDIF</pre>
         <aside class="note" id="note" aria-live="polite">
@@ -633,7 +640,7 @@ OP_ENDIF</pre>
         </aside>
       </div>
     </div>
-    <p class="hint" data-i18n="script.hint">Trades authorise a single amount with SIGHASH_SINGLE. Bid 0.2 BTC out of a 10 BTC balance and 0.2 BTC is all you have signed away.</p>
+    <p class="hint" data-i18n="script.hint">What you authorise is bounded by the transaction template and the signature-hash mode used: you sign a specific input and output rather than handing over your balance.</p>
   </div>
 </section>
 
@@ -642,7 +649,7 @@ OP_ENDIF</pre>
   <div class="wrap row">
     <div class="gut"><b data-i18n="custody.gut_b">Custody</b><span data-i18n="custody.gut_d">Who can move it</span></div>
     <div class="col">
-      <h2 data-i18n="custody.h2">Four ways to trade bitcoin. Only one of them leaves the key with you and still gives you a book.</h2>
+      <h2 data-i18n="custody.h2">Four ways to trade bitcoin. One of them leaves a key with you and still gives you a book.</h2>
       <p class="lede" data-i18n="custody.lede">Bisq and RoboSats are honest, non-custodial venues and we say so. The tradeoff they make is cost and speed: every trade is an on-chain event, and continuous depth is hard to build on top of that. We made a different tradeoff.</p>
 
       <div class="split" id="custody-split">
@@ -666,7 +673,7 @@ OP_ENDIF</pre>
             <span class="amt-dot"></span>
             <div class="book-icon"><svg viewBox="0 0 24 24" focusable="false"><path d="M5 7h14M5 12h9M5 17h14"/></svg></div>
           </div>
-          <span class="split-caption" data-i18n="custody.viz_caption_nt">Your key never leaves your device. Only the signed amount goes.</span>
+          <span class="split-caption" data-i18n="custody.viz_caption_nt">Your key is designed never to leave your device. Only the signed amount goes.</span>
         </button>
       </div>
       <aside class="viz-note" id="custody-viz-note" aria-live="polite" hidden>
@@ -690,7 +697,7 @@ OP_ENDIF</pre>
           </tr>
           <tr>
             <th scope="row" data-i18n="custody.row3_th">If the venue disappears</th>
-            <td class="us" data-i18n="custody.row3_us">Timelock returns your coins</td><td data-i18n="custody.row3_cex">Bankruptcy claim</td><td data-i18n="custody.row3_wrapped">Depends on the custodian</td><td data-i18n="custody.row3_atomic">You keep your coins</td>
+            <td class="us" data-i18n="custody.row3_us">Timelock lets you recover your coins</td><td data-i18n="custody.row3_cex">Bankruptcy claim</td><td data-i18n="custody.row3_wrapped">Depends on the custodian</td><td data-i18n="custody.row3_atomic">You keep your coins</td>
           </tr>
           <tr>
             <th scope="row" data-i18n="custody.row4_th">Order book</th>
@@ -702,12 +709,12 @@ OP_ENDIF</pre>
           </tr>
           <tr>
             <th scope="row" data-i18n="custody.row6_th">Exposure while trading</th>
-            <td class="us" data-i18n="custody.row6_us">Only the amount you signed</td><td data-i18n="custody.row6_cex">Your entire balance</td><td data-i18n="custody.row6_wrapped">Your entire wrapped balance</td><td data-i18n="custody.row6_atomic">The trade amount</td>
+            <td class="us" data-i18n="custody.row6_us">Bounded by the signed template</td><td data-i18n="custody.row6_cex">Your entire balance</td><td data-i18n="custody.row6_wrapped">Your entire wrapped balance</td><td data-i18n="custody.row6_atomic">The trade amount</td>
           </tr>
         </tbody>
       </table>
       </div>
-      <p class="small" style="margin-top:16px" data-i18n="custody.small">Off-chain matching means the book moves at exchange speed; the chain only sees settlement. That is the whole trick, and it is built out of script primitives Bitcoin has had since 2009.</p>
+      <p class="small" style="margin-top:16px" data-i18n="custody.small">Off-chain matching means the book moves at exchange speed; the chain only sees settlement. The design uses native Bitcoin transaction and script features, including multisig, signature-hash modes, and CHECKLOCKTIMEVERIFY.</p>
     </div>
   </div>
 </section>
@@ -756,15 +763,15 @@ OP_ENDIF</pre>
         </li>
         <li>
           <h3 data-i18n="how.s2_h3">You sign one amount, not your balance</h3>
-          <p data-i18n="how.s2_p">A bid is a signature hash authorising a specific input for a specific size — Bitcoin's original allowance mechanism. Your change output stays under your control. The nodes can only route the amount you signed.</p>
+          <p data-i18n="how.s2_p">A bid is a signature over a specific transaction template rather than a blanket authorisation over your balance. What you commit to is determined by that template and the signature-hash mode used, and the change output is designed to stay under your control.</p>
         </li>
         <li>
           <h3 data-i18n="how.s3_h3">The quorum counter-signs and the book fills</h3>
-          <p data-i18n="how.s3_p">Matching happens off-chain against a live bid/ask book. Settlement batches to the chain. No single node can produce the second signature alone; a threshold has to agree.</p>
+          <p data-i18n="how.s3_p">Matching happens off-chain against a live bid/ask book, and settlement is designed to batch to the chain. The second signature is held as a threshold signature across the node set, so no single operator is intended to be able to produce it alone.</p>
         </li>
         <li>
           <h3 data-i18n="how.s4_h3">The timelock is always sitting behind you</h3>
-          <p data-i18n="how.s4_p">Every applicable coin uses CHECKLOCKTIMEVERIFY. Refresh it while you trade and you never approach it. Stop trading and it eventually pays you out anyway.</p>
+          <p data-i18n="how.s4_p">Applicable coins use CHECKLOCKTIMEVERIFY. The locktime is designed to be refreshed while you trade, so in normal use you should not approach it. If you stop trading, the recovery branch eventually becomes spendable with your key alone — you construct and broadcast the recovery transaction yourself.</p>
         </li>
       </ol>
     </div>
@@ -780,7 +787,7 @@ OP_ENDIF</pre>
       <ul class="ctrl">
         <li>
           <h3 data-i18n="controls.c1_h3">Sign from an air-gapped device</h3>
-          <p data-i18n="controls.c1_p">Your key does not have to live in a browser tab. Pair an offline signer — an air-gapped phone running <a href="https://airgap.it/">AirGap Vault</a> or a compatible hardware wallet — and the key never touches an internet-connected machine. Orders and withdrawals cross the gap as QR codes: unsigned request out, signature back in. The exchange sees a signature and nothing else.</p>
+          <p data-i18n="controls.c1_p">Your key does not have to live in a browser tab. Pair an offline signer — an air-gapped phone running <a href="https://airgap.it/">AirGap Vault</a> or a compatible hardware wallet — and the key need never touch an internet-connected machine. Orders and withdrawals cross the gap as QR codes: unsigned request out, signature back in. Ask us which devices are supported before you rely on this.</a> or a compatible hardware wallet — and the key never touches an internet-connected machine. Orders and withdrawals cross the gap as QR codes: unsigned request out, signature back in. The exchange sees a signature and nothing else.</p>
           <span class="qr" data-i18n="controls.c1_qr">Unsigned request → QR → signature back</span>
         </li>
         <li>
@@ -817,7 +824,7 @@ OP_ENDIF</pre>
             <button type="button" class="tl-step" data-step="0" aria-pressed="false" data-i18n="timelock.l1" data-i18n-note="timelock.step_deposit">Deposit</button>
             <button type="button" class="tl-step" data-step="33" aria-pressed="false" data-i18n="timelock.l2" data-i18n-note="timelock.step_trade">Trade freely</button>
             <button type="button" class="tl-step" data-step="66" aria-pressed="false" data-i18n="timelock.l3" data-i18n-note="timelock.step_inactive">Inactive</button>
-            <button type="button" class="tl-step" data-step="100" aria-pressed="false" data-i18n="timelock.l4" data-i18n-note="timelock.step_locktime"><em>Locktime → paid to your key</em></button>
+            <button type="button" class="tl-step" data-step="100" aria-pressed="false" data-i18n="timelock.l4" data-i18n-note="timelock.step_locktime"><em>Locktime → recoverable with your key</em></button>
           </div>
         </div>
       </div>
@@ -825,7 +832,7 @@ OP_ENDIF</pre>
         <p id="tl-viz-note-body"></p>
       </aside>
       <p class="hint" data-i18n="timelock.viz_hint">Tap a step to pause and inspect</p>
-      <p class="small" style="margin-top:10px" data-i18n="timelock.small">The locktime is set per account and refreshed as you trade — the book will not fill an order that would leave you near expiry, and after a long dormancy you will be asked to roll to a new script and a current node set. The branch is enforced by consensus, not by us. We cannot switch it off, and neither can anyone who takes our servers.</p>
+      <p class="small" style="margin-top:10px" data-i18n="timelock.small">The locktime is set per account and designed to be refreshed as you trade — the book will not fill an order that would leave you near expiry, and after a long dormancy you will be asked to roll to a new script and a current node set. Once an output carrying this branch exists, the branch is enforced by consensus rather than by us: we cannot switch it off, and neither can anyone who takes our servers.</p>
     </div>
   </div>
 </section>
@@ -842,18 +849,8 @@ OP_ENDIF</pre>
         <div class="fee"><span class="n">0.5<span style="font-size:20px">%</span></span><span class="l" data-i18n="fees.f3_l">Withdrawal to your own wallet</span></div>
       </div>
       <p data-i18n="fees.p">Fees pay the node operators who hold the other half of the signature. There is no NightTrader token, no pre-mine, no treasury taking a cut of your trade, and no yield being promised to anyone. The exchange was launched without issuing a coin on purpose.</p>
-      <div class="wide">
-      <table class="tbl">
-        <thead><tr><th scope="col" data-i18n="fees.th1">Taker fee, for comparison</th><th scope="col"></th></tr></thead>
-        <tbody>
-          <tr><th scope="row">NightTrader</th><td class="us" data-i18n="fees.row_nt">0.125% — you hold a key</td></tr>
-          <tr><th scope="row">Uniswap</th><td data-i18n="fees.row_uniswap">0.30% + gas + slippage</td></tr>
-          <tr><th scope="row">Coinbase</th><td data-i18n="fees.row_coinbase">up to 0.40% — custodial</td></tr>
-          <tr><th scope="row">Kraken / Bitfinex</th><td data-i18n="fees.row_kraken">0.20% — custodial</td></tr>
-          <tr><th scope="row">Binance / KuCoin</th><td data-i18n="fees.row_binance">0.10% — custodial</td></tr>
-        </tbody>
-      </table>
-      </div>
+      <h3 data-i18n="fees.compare_h">How that compares</h3>
+      <p class="small" data-i18n="fees.compare_note">Fees at other venues vary by tier, product and pair, and change over time. Rather than publish a snapshot that quietly goes stale, we suggest comparing against each venue's current published schedule. Note that on an automated market maker you should also count gas and slippage, and on a custodial venue you are also accepting custody risk.</p>
       <p class="small" style="margin-top:16px" data-i18n="fees.small">Listing a coin costs the project, not the traders. Integration and contract auditing are quoted per project. Nothing on this page is a promise of returns, liquidity, or execution quality.</p>
     </div>
   </div>
@@ -867,9 +864,9 @@ OP_ENDIF</pre>
       <h2 data-i18n="verify.h2">Every claim above is checkable. Go check it.</h2>
       <p data-i18n="verify.p">A landing page is marketing. Script is not. If any line here disagrees with the code, the code is right and we have a bug to fix — tell us.</p>
       <ul class="verify">
-        <li><span class="k" data-i18n="verify.li_source_k">Source</span><span class="v" data-i18n="verify.li_source_v"><a href="https://github.com/NightTrader/nighttrader.github.io">github.com/NightTrader</a> — front end and signing logic. Read the key derivation before you deposit.</span></li>
+        <li><span class="k" data-i18n="verify.li_source_k">Source</span><span class="v" data-i18n="verify.li_source_v"><a href="https://github.com/NightTrader/nighttrader.github.io">github.com/NightTrader</a> — the public web front end. The signing and key-derivation implementation is not published in this repository; ask us for its status before you deposit.</a> — front end and signing logic. Read the key derivation before you deposit.</span></li>
         <li><span class="k" data-i18n="verify.li_local_k">Run it local</span><span class="v" data-i18n="verify.li_local_v">Clone the repo and serve it yourself. No packages to install, no need to visit this domain to trade.</span></li>
-        <li><span class="k" data-i18n="verify.li_paper_k">Paper</span><span class="v" id="paper" data-i18n="verify.li_paper_v"><a href="https://github.com/NightTrader/nighttrader.github.io/blob/master/Nighttrader_A_Decentralized_Multisignature_Electronic_Cash_Wallet.pdf">A Decentralized Multisignature Electronic Cash Wallet</a> — the full construction, including the Monero and EVM cases.</span></li>
+        <li><span class="k" data-i18n="verify.li_paper_k">Paper</span><span class="v" id="paper" data-i18n="verify.li_paper_v"><a href="https://github.com/NightTrader/nighttrader.github.io/blob/master/Nighttrader_A_Decentralized_Multisignature_Electronic_Cash_Wallet.pdf">A Decentralized Multisignature Electronic Cash Wallet</a> — the full construction, including the Monero and EVM cases.</a> — the full construction, including the Monero and EVM cases.</span></li>
         <li><span class="k" data-i18n="verify.li_script_k">Your script</span><span class="v" data-i18n="verify.li_script_v">Derived deterministically, and material changes are burned on-chain. You should be able to reconstruct your own redeem script without asking us for it.</span></li>
         <li><span class="k" data-i18n="verify.li_data_k">Data</span><span class="v" data-i18n="verify.li_data_v">We collect the minimum to operate and encrypt what we hold. This page loads no fonts, no analytics and no third-party scripts — check the network tab.</span></li>
       </ul>
@@ -877,8 +874,8 @@ OP_ENDIF</pre>
       <div class="priv" id="privacy">
         <div class="priv-l" data-i18n="privacy.label">Privacy</div>
         <p data-i18n="privacy.p1">We collect the minimum required to run an order book and encrypt what we hold. There is no advertising pixel, no session replay, no behavioural profile, and no data broker relationship. This page makes zero third-party requests — no fonts, no analytics, no CDN. Open the network tab and confirm it rather than believing us.</p>
-        <p data-i18n="privacy.p2">If we are ever compelled to verify a user, that process runs through <a href="https://www.zk.me/">zkMe</a>. Document checks happen on your own device — nothing is transmitted to us in the clear. What we receive is a zero-knowledge proof that you passed verification, not the underlying documents. NightTrader never sees or stores your identity data ourselves; zkMe's role is limited to that verification and proof generation.</p>
-        <p data-i18n="privacy.p3">And note what verification cannot do here: an account under review still has a timelock branch. Freezing an account does not freeze your coins, because the script pays you out whatever we decide.</p>
+        <p data-i18n="privacy.p2">If we are ever compelled to verify a user, that process runs through <a href="https://www.zk.me/">zkMe</a>. According to zkMe, document checks happen on your own device and nothing is transmitted to us in the clear: what we receive is a zero-knowledge proof that you passed verification rather than the underlying documents. On that basis NightTrader does not see or store your identity data; zkMe's role is limited to that verification and proof generation.</a>. Document checks happen on your own device — nothing is transmitted to us in the clear. What we receive is a zero-knowledge proof that you passed verification, not the underlying documents. NightTrader never sees or stores your identity data ourselves; zkMe's role is limited to that verification and proof generation.</p>
+        <p data-i18n="privacy.p3">And note what verification cannot do here: an account under review still has a timelock branch. Freezing an account does not put your coins beyond reach — once the locktime passes, the recovery branch is spendable with your key, whatever we decide.</p>
       </div>
 
       <div class="node" id="node">
@@ -902,7 +899,7 @@ OP_ENDIF</pre>
       <h2 data-i18n="tradeoffs.h2">The part other exchanges leave off the front page.</h2>
       <dl class="trade">
         <dt data-i18n="tradeoffs.t1_dt">This is not self-custody</dt>
-        <dd data-i18n="tradeoffs.t1_dd">It is co-custody with a timelocked exit. You hold one of two required keys, which is strictly better than an exchange balance and strictly worse than coins in your own cold storage. Trade here; do not store here.</dd>
+        <dd data-i18n="tradeoffs.t1_dd">It is co-custody with a timelocked recovery path. You hold one of two required keys, which is materially different from an exchange balance and materially weaker than coins in your own cold storage. Trade here; do not store here.</dd>
 
         <dt data-i18n="tradeoffs.t2_dt">Nodes can go offline</dt>
         <dd data-i18n="tradeoffs.t2_dd">If the quorum breaks mid-trade, half-signed transactions are simply never broadcast. You do not lose principal, but you can lose a fill and the profit that went with it.</dd>
@@ -935,7 +932,7 @@ OP_ENDIF</pre>
     <div class="col">
       <h2 data-i18n="history.h2">It started with an ATM on a street corner in Tijuana.</h2>
       <p class="lede" data-i18n="history.p1">bitcoin42 didn't begin as an exchange. It began as a bitcoin ATM operator — putting Genesis1 machines on the ground in Tijuana, Mexico in 2014, among the first of their kind anywhere.</p>
-      <p data-i18n="history.p2">The same team spent that year building <a href="https://bithalo.org/">BitHalo</a> — one of the first working smart-contract systems on Bitcoin, enforcing two-party agreements with multisig escrow and no trusted third party, years before Ethereum made "smart contract" a household word. <a href="https://bitbay.market/">BitBay</a> followed in 2015: a fully decentralized marketplace built around its own multisig wallet with contracts built in, still running today. Nobody else was doing multisig this seriously on Bitcoin back then.</p>
+      <p data-i18n="history.p2">The same team spent that year building <a href="https://bithalo.org/">BitHalo</a> — one of the first working smart-contract systems on Bitcoin, enforcing two-party agreements with multisig escrow and no trusted third party, years before Ethereum made "smart contract" a household word. <a href="https://bitbay.market/">BitBay</a> followed in 2015: a fully decentralized marketplace built around its own multisig wallet with contracts built in, still running today. Nobody else was doing multisig this seriously on Bitcoin back then.</a> — one of the first working smart-contract systems on Bitcoin, enforcing two-party agreements with multisig escrow and no trusted third party, years before Ethereum made "smart contract" a household word. <a href="https://bitbay.market/">BitBay</a> followed in 2015: a fully decentralized marketplace built around its own multisig wallet with contracts built in, still running today. Nobody else was doing multisig this seriously on Bitcoin back then.</p>
       <p data-i18n="history.p3">Running machines was never the point. The order book was the plan from day one: a real exchange that never took custody of your coins, at a time when every exchange did exactly that. It took over a decade of building non-custodial multisig systems — and watching custodian after custodian fail in the meantime — to get it right.</p>
 
       <div class="tl">
@@ -947,7 +944,7 @@ OP_ENDIF</pre>
         </div>
       </div>
 
-      <p class="small" style="margin-top:22px" data-i18n="history.citation">Coverage from the time: <a href="https://www.coindesk.com/markets/2014/03/28/money-spinners-genesis1-bitcoin-and-dogecoin-atms-arrive-in-tijuana-mexico">CoinDesk, March 2014</a> — Genesis1 bitcoin and dogecoin ATMs arrive in Tijuana. <a href="https://www.coindesk.com/markets/2014/08/08/bithalo-smart-contracts-without-the-block-chain-bloat">CoinDesk, August 2014</a> — BitHalo ships smart contracts without the blockchain bloat. <a href="https://bitcoinist.com/bitbay-decentralized-marketplace-and-the-internet-of-things/">Bitcoinist, November 2016</a> — BitBay's decentralized marketplace, explained. Eleven years later: <a href="https://www.globenewswire.com/news-release/2025/09/08/3145992/0/en/bitcoin-s-first-true-high-speed-dex-nighttrader-launches.html">GlobeNewswire, September 2025</a> — Bitcoin's first true high-speed DEX, NightTrader, launches.</p>
+      <p class="small" style="margin-top:22px" data-i18n="history.citation">Coverage from the time: <a href="https://www.coindesk.com/markets/2014/03/28/money-spinners-genesis1-bitcoin-and-dogecoin-atms-arrive-in-tijuana-mexico">CoinDesk, March 2014</a> — Genesis1 bitcoin and dogecoin ATMs arrive in Tijuana. <a href="https://www.coindesk.com/markets/2014/08/08/bithalo-smart-contracts-without-the-block-chain-bloat">CoinDesk, August 2014</a> — BitHalo ships smart contracts without the blockchain bloat. <a href="https://bitcoinist.com/bitbay-decentralized-marketplace-and-the-internet-of-things/">Bitcoinist, November 2016</a> — BitBay's decentralized marketplace, explained. Eleven years later: <a href="https://www.globenewswire.com/news-release/2025/09/08/3145992/0/en/bitcoin-s-first-true-high-speed-dex-nighttrader-launches.html">GlobeNewswire, September 2025</a> — Bitcoin's first true high-speed DEX, NightTrader, launches.</a> — Genesis1 bitcoin and dogecoin ATMs arrive in Tijuana. <a href="https://www.coindesk.com/markets/2014/08/08/bithalo-smart-contracts-without-the-block-chain-bloat">CoinDesk, August 2014</a> — BitHalo ships smart contracts without the blockchain bloat. <a href="https://bitcoinist.com/bitbay-decentralized-marketplace-and-the-internet-of-things/">Bitcoinist, November 2016</a> — BitBay's decentralized marketplace, explained. Eleven years later: <a href="https://www.globenewswire.com/news-release/2025/09/08/3145992/0/en/bitcoin-s-first-true-high-speed-dex-nighttrader-launches.html">GlobeNewswire, September 2025</a> — Bitcoin's first true high-speed DEX, NightTrader, launches.</p>
     </div>
   </div>
 </section>
