@@ -56,13 +56,20 @@ p.lede{font-size:19px;color:#2C2F34;max-width:62ch}
 .mono{font-family:var(--mono)}
 
 /* ---------- masthead ---------- */
-header{border-bottom:1px solid var(--rule);background:var(--paper)}
-.mast{display:flex;align-items:baseline;justify-content:space-between;gap:24px;padding:18px 0;flex-wrap:wrap}
+header{border-bottom:1px solid var(--rule);background:var(--paper);position:sticky;top:0;z-index:20}
+.mast{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:18px 0}
 .brand{font-family:var(--mono);font-size:13px;letter-spacing:.24em;font-weight:600;text-transform:uppercase;border:0}
 .brand:hover{background:none}
 .brand .dot{color:var(--orange)}
+.nav-toggle{
+  display:none;appearance:none;-webkit-appearance:none;background:none;border:1px solid var(--rule);
+  font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ink);padding:10px 12px;cursor:pointer;min-height:44px;min-width:44px;
+}
+.nav-toggle:hover{border-color:var(--ink)}
+.nav-toggle[aria-expanded="true"]{border-color:var(--ink);background:var(--ink);color:var(--paper)}
 nav{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;display:flex;gap:20px;flex-wrap:wrap}
-nav a{border-bottom:1px solid transparent;color:var(--grey)}
+nav a{border-bottom:1px solid transparent;color:var(--grey);padding:6px 0}
 nav a:hover{background:none;color:var(--ink);border-bottom-color:var(--orange)}
 
 /* ---------- hero ---------- */
@@ -225,9 +232,11 @@ footer li{margin-bottom:6px}
 .legal{margin-top:34px;padding-top:20px;border-top:1px solid var(--rule);font-size:12.5px;line-height:1.65;max-width:720px}
 
 /* ---------- responsive ---------- */
+html{scroll-padding-top:72px}
 @media (max-width:900px){
   :root{--gutter:0px;--pad:22px}
   .row,.fgrid{grid-template-columns:1fr;gap:0}
+  .row{padding:48px 0}
   .gut{padding:0 0 18px;border-bottom:1px solid var(--rule);margin-bottom:26px}
   .night .gut{border-bottom-color:#1E2739}
   .script-body{grid-template-columns:1fr}
@@ -235,6 +244,56 @@ footer li{margin-bottom:6px}
   .fees{grid-template-columns:1fr}
   .fcols{grid-template-columns:1fr 1fr}
   .verify li{grid-template-columns:1fr;gap:4px}
+  .hero{padding:52px 0 40px}
+  .hero .answer br{display:none}
+  .cta .btn{flex:1 1 auto;text-align:center;min-height:44px;display:inline-flex;align-items:center;justify-content:center}
+  .nav-toggle{display:inline-flex;align-items:center;justify-content:center}
+  .mast{flex-wrap:wrap;align-items:center}
+  nav{
+    display:none;flex-direction:column;gap:0;width:100%;
+    border-top:1px solid var(--rule);margin-top:4px;padding-top:8px;
+  }
+  nav.is-open{display:flex}
+  nav a{
+    display:block;padding:14px 0;border-bottom:1px solid var(--rule);color:var(--ink);
+    min-height:44px;
+  }
+  nav a:last-child{border-bottom:0}
+  nav a:hover{border-bottom-color:var(--rule)}
+  .tl-labels{flex-wrap:wrap;gap:10px 16px}
+  .tl-labels span{flex:1 1 40%}
+  .tl-labels span:last-child{flex-basis:100%}
+  pre.code{font-size:12.5px;padding:20px 14px;line-height:1.95}
+  .script-head{padding:12px 14px}
+  .note{padding:20px 16px}
+  .bm{flex-direction:column}
+  .bm code{flex:1 1 auto;white-space:normal;word-break:break-all;font-size:12px}
+  .copy{border-left:0;border-top:1px solid #24304A;width:100%;min-height:44px}
+  .tok{min-height:32px;padding:4px 6px}
+}
+@media (max-width:560px){
+  :root{--pad:16px}
+  body{font-size:16px}
+  h1{font-size:clamp(34px,11vw,48px)}
+  h2{font-size:clamp(24px,7vw,32px);margin-bottom:14px}
+  p.lede{font-size:17px}
+  .hero{padding:40px 0 32px}
+  .kicker{margin-bottom:18px;font-size:11px;letter-spacing:.14em}
+  .cta{flex-direction:column;align-items:stretch;gap:10px}
+  .cta .btn{width:100%}
+  .fcols{grid-template-columns:1fr;gap:22px}
+  .row{padding:40px 0}
+  .fees .fee{padding:18px 14px}
+  .fee .n{font-size:30px}
+  .tl-labels{flex-direction:column;gap:6px}
+  .tl-labels span{flex:none}
+  .tl-bar{margin:28px 0 16px}
+  .imp{padding:16px}
+  footer{padding:40px 0 48px}
+  .wide{margin:0 -16px;padding:0 16px}
+  .wide table{min-width:640px}
+  .hero-mark{width:min(280px,85vw);top:8%;right:-22%;opacity:.06}
+  ol.steps li{padding-left:48px}
 }
 @media (prefers-reduced-motion:no-preference){
   .tok{transition:background .12s linear}
@@ -247,7 +306,8 @@ footer li{margin-bottom:6px}
 <header>
   <div class="wrap mast">
     <a class="brand" href="#top">NightTrader<span class="dot">.</span>Exchange</a>
-    <nav>
+    <button class="nav-toggle" type="button" id="nav-toggle" aria-expanded="false" aria-controls="site-nav">Menu</button>
+    <nav id="site-nav" aria-label="Page">
       <a href="#custody">Custody</a>
       <a href="#how">How it settles</a>
       <a href="#controls">Controls</a>
@@ -605,6 +665,35 @@ OP_ENDIF</pre>
       body.textContent = t.dataset.note;
     });
   });
+
+  // Mobile nav: toggle, Esc, outside click, close on link.
+  var toggle = document.getElementById('nav-toggle');
+  var nav = document.getElementById('site-nav');
+  function setNav(open) {
+    if (!toggle || !nav) return;
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    toggle.textContent = open ? 'Close' : 'Menu';
+    nav.classList.toggle('is-open', open);
+  }
+  if (toggle && nav) {
+    toggle.addEventListener('click', function () {
+      setNav(toggle.getAttribute('aria-expanded') !== 'true');
+    });
+    nav.querySelectorAll('a').forEach(function (a) {
+      a.addEventListener('click', function () { setNav(false); });
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') setNav(false);
+    });
+    document.addEventListener('click', function (e) {
+      if (toggle.getAttribute('aria-expanded') !== 'true') return;
+      if (nav.contains(e.target) || toggle.contains(e.target)) return;
+      setNav(false);
+    });
+    window.addEventListener('resize', function () {
+      if (window.matchMedia('(min-width: 901px)').matches) setNav(false);
+    });
+  }
 
   // Bitmessage address: copy, with a select-all fallback.
   var copy = document.getElementById('bm-copy');
