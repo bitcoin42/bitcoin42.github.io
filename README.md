@@ -10,12 +10,12 @@ itself, and it is enforced by a test (see [Testing](#testing)).
 
 ## Domains and canonical URL
 
-| Domain | Role | Served by |
-|---|---|---|
-| **`bitcoin42.com`** | **Canonical.** The published address of this page. | Cloudflare |
-| `bitcoin42.github.io` | Mirror of the same content, from this repository. | GitHub Pages |
-| `nighttrader.exchange` | **A different site** — the NightTrader product site. Not this repo. | — |
-| `my.nighttrader.exchange` | The exchange application itself. Source is not public. | — |
+| Domain                    | Role                                                                | Served by    |
+| ------------------------- | ------------------------------------------------------------------- | ------------ |
+| **`bitcoin42.com`**       | **Canonical.** The published address of this page.                  | Cloudflare   |
+| `bitcoin42.github.io`     | Mirror of the same content, from this repository.                   | GitHub Pages |
+| `nighttrader.exchange`    | **A different site** — the NightTrader product site. Not this repo. | —            |
+| `my.nighttrader.exchange` | The exchange application itself. Source is not public.              | —            |
 
 `bitcoin42.com` is canonical. Every metadata surface points at it — `<link rel="canonical">`,
 `og:url`, `og:image`, `twitter:image`, JSON-LD `@id`/`url`, `manifest.webmanifest`
@@ -75,14 +75,14 @@ npm run test:links   # internal links + required assets
 ```
 
 **`test:claims` is a content guard, not a style check.** It fails the build if wording that was
-corrected for technical accuracy reappears in *any* locale — specifically any phrasing implying the
+corrected for technical accuracy reappears in _any_ locale — specifically any phrasing implying the
 timelock pays out automatically (it does not; see below), or the false claim that the construction
 uses primitives Bitcoin has had "since 2009".
 
 ### Accuracy rules that the tests enforce
 
 1. **The timelock does not pay anyone automatically.** `OP_CHECKLOCKTIMEVERIFY` makes a branch
-   *spendable* after a threshold. The user, or a recovery tool, must still construct and broadcast
+   _spendable_ after a threshold. The user, or a recovery tool, must still construct and broadcast
    the recovery transaction. Copy must never imply otherwise.
 2. **No false dating of primitives.** P2SH is BIP16 (2012); CLTV is BIP65 (activated December
    2015). Do not claim the construction predates them.
@@ -90,7 +90,7 @@ uses primitives Bitcoin has had "since 2009".
    as-of date, and the tier/product/pair assumptions — otherwise keep the comparison qualitative.
 4. **Security-critical strings are not machine-translated.** See `TRANSLATION_REVIEW.md`.
 
-Before changing any technical claim, read `CLAIMS.md`. Claims marked *unverified* there are not
+Before changing any technical claim, read `CLAIMS.md`. Claims marked _unverified_ there are not
 confirmed by any public source and must stay hedged until an owner confirms them.
 
 ## Contributing
