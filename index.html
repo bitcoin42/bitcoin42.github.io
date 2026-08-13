@@ -2,8 +2,46 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>
+/* Runs before first paint: pick theme + language with no flash. */
+(function () {
+  try {
+    var SUPPORTED = ['en','zh','ru','es','pt','it','ar','fr','de'];
+    var RTL = ['ar'];
+
+    var theme = localStorage.getItem('nt-theme');
+    if (theme !== 'light' && theme !== 'dark') theme = null;
+    if (!theme) theme = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', theme);
+    window.__ntTheme = theme;
+
+    var params = new URLSearchParams(location.search);
+    var lang = params.get('lang');
+    if (lang && SUPPORTED.indexOf(lang) === -1) lang = null;
+    if (lang) {
+      localStorage.setItem('nt-lang', lang);
+    }
+    if (!lang) {
+      lang = localStorage.getItem('nt-lang');
+      if (lang && SUPPORTED.indexOf(lang) === -1) lang = null;
+    }
+    if (!lang) {
+      var browserLangs = navigator.languages || [navigator.language || 'en'];
+      for (var i = 0; i < browserLangs.length; i++) {
+        var primary = String(browserLangs[i]).split('-')[0].toLowerCase();
+        if (SUPPORTED.indexOf(primary) !== -1) { lang = primary; break; }
+      }
+    }
+    if (!lang) lang = 'en';
+
+    window.__ntLang = lang;
+    document.documentElement.lang = lang;
+    document.documentElement.dir = RTL.indexOf(lang) !== -1 ? 'rtl' : 'ltr';
+  } catch (e) {}
+})();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#F7931A">
+<meta name="theme-color" id="theme-color-meta" content="#F7931A">
 <title>NightTrader — a Bitcoin order book you co-sign</title>
 <meta name="description" content="A Bitcoin-native exchange with a full bid/ask order book. Coins settle into a multisig you hold a key to — a timelock returns them if the nodes vanish.">
 <meta name="robots" content="index, follow">
@@ -72,15 +110,44 @@
 :root{
   --paper:#FCFCFB;
   --ink:#101114;
+  --ink2:#2C2F34;
   --grey:#6B7076;
   --rule:#E2E2DF;
   --orange:#F7931A;
   --night:#0C1220;
+  --surface:#fff;
+  --tokbg:#FDF1E0;
+  --highlight:#FFF8EF;
   --serif:"Times New Roman",Times,"Liberation Serif",serif;
   --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
   --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
   --gutter:150px;
   --pad:32px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#0B0C0F;
+    --ink:#F1F2F4;
+    --ink2:#C7CAD1;
+    --grey:#8A9099;
+    --rule:#262A33;
+    --surface:#15171C;
+    --tokbg:#3A2A12;
+    --highlight:rgba(247,147,26,.08);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0B0C0F;
+  --ink:#F1F2F4;
+  --ink2:#C7CAD1;
+  --grey:#8A9099;
+  --rule:#262A33;
+  --surface:#15171C;
+  --tokbg:#3A2A12;
+  --highlight:rgba(247,147,26,.08);
+  color-scheme:dark;
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
@@ -109,7 +176,7 @@ h1{font-size:clamp(40px,7.2vw,74px);line-height:.98}
 h2{font-size:clamp(28px,3.6vw,40px);line-height:1.08;margin-bottom:18px}
 h3{font-size:20px;line-height:1.25;margin-bottom:6px}
 p{margin:0 0 18px}
-p.lede{font-size:19px;color:#2C2F34;max-width:62ch}
+p.lede{font-size:19px;color:var(--ink2);max-width:62ch}
 .small{font-size:14px;color:var(--grey)}
 .mono{font-family:var(--mono)}
 
@@ -123,6 +190,9 @@ nav{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:u
 nav a:not(.btn){border-bottom:1px solid transparent;color:var(--grey);padding:8px 0}
 nav a:not(.btn):hover{background:none;color:var(--ink);border-bottom-color:var(--orange)}
 nav .btn.sm{margin-left:4px}
+#theme-toggle .tt-to-dark,#theme-toggle .tt-to-light{display:none}
+:root[data-theme="light"] #theme-toggle .tt-to-dark{display:inline}
+:root[data-theme="dark"] #theme-toggle .tt-to-light{display:inline}
 
 /* ---------- hero ---------- */
 .hero{padding:78px 0 56px;position:relative;overflow:hidden}
@@ -164,7 +234,7 @@ h1 .thin{color:var(--grey)}
 
 /* ---------- signature: the annotated redeem script ---------- */
 .script{
-  border:1px solid var(--rule);background:#fff;margin-top:52px;
+  border:1px solid var(--rule);background:var(--surface);margin-top:52px;
 }
 .script-head{
   display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
@@ -178,7 +248,7 @@ pre.code{
   overflow-x:auto;white-space:pre;
 }
 .tok{
-  font:inherit;background:#FDF1E0;border:0;border-bottom:1.5px solid var(--orange);
+  font:inherit;background:var(--tokbg);border:0;border-bottom:1.5px solid var(--orange);
   padding:2px 4px;cursor:pointer;color:var(--ink);
 }
 .tok:hover,.tok[aria-pressed="true"]{background:var(--orange)}
@@ -198,7 +268,7 @@ pre.code{
   font-size:11px;letter-spacing:.11em;text-transform:uppercase;padding-bottom:10px;
 }
 .tbl tbody th{font-weight:400;color:var(--grey);width:180px;font-size:13.5px}
-.tbl td.us{background:#FFF8EF}
+.tbl td.us{background:var(--highlight)}
 .wide{overflow-x:auto}
 .wide table{min-width:720px}
 
@@ -211,7 +281,7 @@ ol.steps li::before{
   content:counter(s,decimal-leading-zero);position:absolute;left:0;top:23px;
   font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:var(--orange);
 }
-ol.steps p{margin:0;color:#33363B;font-size:15.5px}
+ol.steps p{margin:0;color:var(--ink2);font-size:15.5px}
 
 /* ---------- timelock ---------- */
 .tl{margin:34px 0 8px;font-family:var(--mono);font-size:12px;color:var(--grey)}
@@ -244,7 +314,7 @@ ol.steps p{margin:0;color:#33363B;font-size:15.5px}
 ul.ctrl{list-style:none;margin:8px 0 0;padding:0}
 ul.ctrl li{border-top:1px solid var(--rule);padding:22px 0}
 ul.ctrl h3{margin-bottom:6px}
-ul.ctrl p{margin:0;color:#33363B;font-size:15.5px}
+ul.ctrl p{margin:0;color:var(--ink2);font-size:15.5px}
 .qr{
   display:inline-block;font-family:var(--mono);font-size:11px;letter-spacing:.11em;text-transform:uppercase;
   color:var(--grey);border:1px solid var(--rule);padding:4px 9px;margin-top:12px;
@@ -282,7 +352,7 @@ ul.ctrl p{margin:0;color:#33363B;font-size:15.5px}
 /* ---------- tradeoffs ---------- */
 dl.trade{margin:0}
 dl.trade dt{font-family:var(--mono);font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);border-top:1px solid var(--rule);padding-top:18px;margin-top:18px}
-dl.trade dd{margin:8px 0 0;color:#33363B;font-size:15.5px}
+dl.trade dd{margin:8px 0 0;color:var(--ink2);font-size:15.5px}
 
 /* ---------- footer ---------- */
 footer{padding:52px 0 64px;font-size:13.5px;color:var(--grey)}
@@ -293,6 +363,33 @@ footer h4{font-family:var(--mono);font-size:11px;letter-spacing:.13em;text-trans
 footer ul{list-style:none;margin:0;padding:0}
 footer li{margin-bottom:6px}
 .legal{margin-top:34px;padding-top:20px;border-top:1px solid var(--rule);font-size:12.5px;line-height:1.65;max-width:720px}
+
+/* ---------- language switcher ---------- */
+.lang-switch{margin-top:18px}
+.lang-switch label{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--grey);margin-bottom:8px}
+.lang-switch select{
+  font-family:var(--mono);font-size:12px;letter-spacing:.04em;
+  background:var(--paper);color:var(--ink);border:1px solid var(--rule);
+  padding:8px 10px;min-height:36px;width:100%;max-width:150px;cursor:pointer;
+}
+.lang-switch select:hover{border-color:var(--ink)}
+
+/* ---------- rtl (Arabic) ---------- */
+[dir="rtl"] .hero .answer{padding-left:0;padding-right:16px;border-left:0;border-right:2px solid var(--orange)}
+[dir="rtl"] .note{border-left:0;border-right:1px solid var(--rule)}
+[dir="rtl"] .tbl th,[dir="rtl"] .tbl td{padding:14px 0 14px 14px;text-align:right}
+[dir="rtl"] .copy{border-left:0;border-right:1px solid #24304A}
+[dir="rtl"] ol.steps li{padding:22px 62px 22px 0}
+[dir="rtl"] ol.steps li::before{left:auto;right:0}
+[dir="rtl"] .tl-bar{transform:scaleX(-1)}
+[dir="rtl"] .hero-mark{right:auto;left:-6%}
+[dir="rtl"] pre.code,[dir="rtl"] .bm code,[dir="rtl"] #bm-addr{direction:ltr;text-align:left}
+@media (max-width:900px){
+  [dir="rtl"] .hero-mark{right:auto;left:-18%}
+}
+@media (max-width:900px){
+  [dir="rtl"] .note{border-right:0;border-top:1px solid var(--rule)}
+}
 
 /* ---------- responsive ---------- */
 @media (max-width:900px){
@@ -331,15 +428,18 @@ footer li{margin-bottom:6px}
   <div class="wrap mast">
     <a class="brand" href="#top">NightTrader<span class="dot">.</span>Exchange</a>
     <nav>
-      <a href="#custody">Custody</a>
-      <a href="#how">How it settles</a>
-      <a href="#controls">Controls</a>
-      <a href="#timelock">Timelock</a>
-      <a href="#fees">Fees</a>
-      <a href="#privacy">Privacy</a>
-      <a href="#limits">Tradeoffs</a>
-      <a href="#history">History</a>
-      <a class="btn sm" href="https://nighttrader.exchange">Open exchange</a>
+      <a href="#custody" data-i18n="nav.custody">Custody</a>
+      <a href="#how" data-i18n="nav.how">How it settles</a>
+      <a href="#controls" data-i18n="nav.controls">Controls</a>
+      <a href="#timelock" data-i18n="nav.timelock">Timelock</a>
+      <a href="#fees" data-i18n="nav.fees">Fees</a>
+      <a href="#privacy" data-i18n="nav.privacy">Privacy</a>
+      <a href="#limits" data-i18n="nav.tradeoffs">Tradeoffs</a>
+      <a href="#history" data-i18n="nav.history">History</a>
+      <button id="theme-toggle" class="btn ghost sm" type="button" aria-label="Toggle color theme">
+        <span class="tt-to-dark" data-i18n="theme.to_dark">Dark</span><span class="tt-to-light" data-i18n="theme.to_light">Light</span>
+      </button>
+      <a class="btn sm" href="https://nighttrader.exchange" data-i18n="nav.open">Open exchange</a>
     </nav>
   </div>
 </header>
@@ -362,34 +462,34 @@ footer li{margin-bottom:6px}
         <circle cx="32" cy="32" r="32" fill="currentColor" mask="url(#btc-cut)"/>
       </svg>
     </div>
-    <p class="kicker">Bitcoin-native · Non-custodial · Full bid / ask order book</p>
-    <h1>Not your keys,<br>not your coins.<br><span class="thin">So we gave you a key.</span></h1>
+    <p class="kicker" data-i18n="hero.kicker">Bitcoin-native · Non-custodial · Full bid / ask order book</p>
+    <h1 data-i18n="hero.h1">Not your keys,<br>not your coins.<br><span class="thin">So we gave you a key.</span></h1>
 
-    <p class="answer">Every NightTrader account is a 2-of-2 or 3-of-3 multisig address.<br>
+    <p class="answer" data-i18n="hero.answer">Every NightTrader account is a 2-of-2 or 3-of-3 multisig address.<br>
     One key is yours, generated in your browser. The exchange cannot spend without it.</p>
 
-    <p class="lede">A real order book — limit bids, limit asks, tight spreads — without an omnibus wallet holding your stack. No wrapped BTC. No IOU balance in someone else's database. No exit to scam.</p>
+    <p class="lede" data-i18n="hero.lede">A real order book — limit bids, limit asks, tight spreads — without an omnibus wallet holding your stack. No wrapped BTC. No IOU balance in someone else's database. No exit to scam.</p>
 
     <div class="cta">
-      <a class="btn" href="https://nighttrader.exchange">Open the exchange</a>
-      <a class="btn ghost" href="https://github.com/NightTrader/nighttrader.github.io/blob/master/Nighttrader_A_Decentralized_Multisignature_Electronic_Cash_Wallet.pdf">Read the paper</a>
-      <a class="btn ghost" href="#verify">Read the source</a>
+      <a class="btn" href="https://nighttrader.exchange" data-i18n="hero.cta_open">Open the exchange</a>
+      <a class="btn ghost" href="https://github.com/NightTrader/nighttrader.github.io/blob/master/Nighttrader_A_Decentralized_Multisignature_Electronic_Cash_Wallet.pdf" data-i18n="hero.cta_paper">Read the paper</a>
+      <a class="btn ghost" href="#verify" data-i18n="hero.cta_source">Read the source</a>
     </div>
-    <p class="cta-note">Non-custodial · No signup wall to browse the book · Withdraw whenever you want</p>
+    <p class="cta-note" data-i18n="hero.cta_note">Non-custodial · No signup wall to browse the book · Withdraw whenever you want</p>
 
     <!-- ===== SIGNATURE ELEMENT: the annotated redeem script ===== -->
     <div class="script">
       <div class="script-head">
-        <span>P2SH redeem script · your account</span>
-        <span>Tap a highlighted term</span>
+        <span data-i18n="script.head_left">P2SH redeem script · your account</span>
+        <span data-i18n="script.head_right">Tap a highlighted term</span>
       </div>
       <div class="script-body">
 <pre class="code">OP_IF
-  <span class="op">2</span> <button class="tok" type="button" aria-pressed="true" data-tag="Your key"
-     data-note="Derived in your browser from your credentials and never transmitted. Nothing moves out of the address without a signature from this key — not a trade, not a withdrawal, not a support ticket.">&lt;your_pubkey&gt;</button> <button class="tok" type="button" aria-pressed="false" data-tag="The node key"
+  <span class="op">2</span> <button class="tok" type="button" aria-pressed="true" data-i18n-tag="script.tag_yourkey" data-i18n-note="script.note_yourkey" data-tag="Your key"
+     data-note="Derived in your browser from your credentials and never transmitted. Nothing moves out of the address without a signature from this key — not a trade, not a withdrawal, not a support ticket.">&lt;your_pubkey&gt;</button> <button class="tok" type="button" aria-pressed="false" data-i18n-tag="script.tag_nodekey" data-i18n-note="script.note_nodekey" data-tag="The node key"
      data-note="A threshold signature held collectively by the node set. No single operator can reconstruct it; a supermajority must agree before the second signature exists at all.">&lt;node_threshold_pubkey&gt;</button> <span class="op">2 OP_CHECKMULTISIG</span>
 OP_ELSE
-  <button class="tok" type="button" aria-pressed="false" data-tag="Force-majeure exit"
+  <button class="tok" type="button" aria-pressed="false" data-i18n-tag="script.tag_exit" data-i18n-note="script.note_exit" data-tag="Force-majeure exit"
      data-note="OP_CHECKLOCKTIMEVERIFY. If the nodes vanish, are seized, or simply stop answering, this branch activates on schedule and pays the address out to your key alone. No permission, no support queue, no recovery fee.">&lt;locktime&gt; OP_CHECKLOCKTIMEVERIFY</button> <span class="op">OP_DROP</span>
   <span class="op">&lt;your_pubkey&gt; OP_CHECKSIG</span>
 OP_ENDIF</pre>
@@ -399,52 +499,52 @@ OP_ENDIF</pre>
         </aside>
       </div>
     </div>
-    <p class="hint">Trades authorise a single amount with SIGHASH_SINGLE. Bid 0.2 BTC out of a 10 BTC balance and 0.2 BTC is all you have signed away.</p>
+    <p class="hint" data-i18n="script.hint">Trades authorise a single amount with SIGHASH_SINGLE. Bid 0.2 BTC out of a 10 BTC balance and 0.2 BTC is all you have signed away.</p>
   </div>
 </section>
 
 <!-- ============ CUSTODY ============ -->
 <section class="band" id="custody">
   <div class="wrap row">
-    <div class="gut"><b>Custody</b>Who can move it</div>
+    <div class="gut"><b data-i18n="custody.gut_b">Custody</b><span data-i18n="custody.gut_d">Who can move it</span></div>
     <div class="col">
-      <h2>Four ways to trade bitcoin. Only one of them leaves the key with you and still gives you a book.</h2>
-      <p class="lede">Bisq and RoboSats are honest, non-custodial venues and we say so. The tradeoff they make is cost and speed: every trade is an on-chain event, and continuous depth is hard to build on top of that. We made a different tradeoff.</p>
+      <h2 data-i18n="custody.h2">Four ways to trade bitcoin. Only one of them leaves the key with you and still gives you a book.</h2>
+      <p class="lede" data-i18n="custody.lede">Bisq and RoboSats are honest, non-custodial venues and we say so. The tradeoff they make is cost and speed: every trade is an on-chain event, and continuous depth is hard to build on top of that. We made a different tradeoff.</p>
 
       <div class="wide">
       <table class="tbl">
         <thead>
-          <tr><th scope="col"></th><th scope="col">NightTrader</th><th scope="col">Custodial CEX</th><th scope="col">Wrapped BTC on a DEX</th><th scope="col">Atomic swap DEX</th></tr>
+          <tr><th scope="col"></th><th scope="col" data-i18n="custody.th_nighttrader">NightTrader</th><th scope="col" data-i18n="custody.th_cex">Custodial CEX</th><th scope="col" data-i18n="custody.th_wrapped">Wrapped BTC on a DEX</th><th scope="col" data-i18n="custody.th_atomic">Atomic swap DEX</th></tr>
         </thead>
         <tbody>
           <tr>
-            <th scope="row">Who can move your coins</th>
-            <td class="us">You + node quorum, per trade</td><td>The exchange, unilaterally</td><td>The bridge custodian</td><td>You</td>
+            <th scope="row" data-i18n="custody.row1_th">Who can move your coins</th>
+            <td class="us" data-i18n="custody.row1_us">You + node quorum, per trade</td><td data-i18n="custody.row1_cex">The exchange, unilaterally</td><td data-i18n="custody.row1_wrapped">The bridge custodian</td><td data-i18n="custody.row1_atomic">You</td>
           </tr>
           <tr>
-            <th scope="row">What you hold</th>
-            <td class="us">A key in a multisig UTXO</td><td>A database row</td><td>A token claim on someone's reserve</td><td>A key</td>
+            <th scope="row" data-i18n="custody.row2_th">What you hold</th>
+            <td class="us" data-i18n="custody.row2_us">A key in a multisig UTXO</td><td data-i18n="custody.row2_cex">A database row</td><td data-i18n="custody.row2_wrapped">A token claim on someone's reserve</td><td data-i18n="custody.row2_atomic">A key</td>
           </tr>
           <tr>
-            <th scope="row">If the venue disappears</th>
-            <td class="us">Timelock returns your coins</td><td>Bankruptcy claim</td><td>Depends on the custodian</td><td>You keep your coins</td>
+            <th scope="row" data-i18n="custody.row3_th">If the venue disappears</th>
+            <td class="us" data-i18n="custody.row3_us">Timelock returns your coins</td><td data-i18n="custody.row3_cex">Bankruptcy claim</td><td data-i18n="custody.row3_wrapped">Depends on the custodian</td><td data-i18n="custody.row3_atomic">You keep your coins</td>
           </tr>
           <tr>
-            <th scope="row">Order book</th>
-            <td class="us">Full bid / ask, off-chain matching</td><td>Full bid / ask</td><td>AMM pool, no bids</td><td>Thin, slow to fill</td>
+            <th scope="row" data-i18n="custody.row4_th">Order book</th>
+            <td class="us" data-i18n="custody.row4_us">Full bid / ask, off-chain matching</td><td data-i18n="custody.row4_cex">Full bid / ask</td><td data-i18n="custody.row4_wrapped">AMM pool, no bids</td><td data-i18n="custody.row4_atomic">Thin, slow to fill</td>
           </tr>
           <tr>
-            <th scope="row">Chain cost per trade</th>
-            <td class="us">None — settlement is batched</td><td>None</td><td>Gas on every swap</td><td>Multiple on-chain txs</td>
+            <th scope="row" data-i18n="custody.row5_th">Chain cost per trade</th>
+            <td class="us" data-i18n="custody.row5_us">None — settlement is batched</td><td data-i18n="custody.row5_cex">None</td><td data-i18n="custody.row5_wrapped">Gas on every swap</td><td data-i18n="custody.row5_atomic">Multiple on-chain txs</td>
           </tr>
           <tr>
-            <th scope="row">Exposure while trading</th>
-            <td class="us">Only the amount you signed</td><td>Your entire balance</td><td>Your entire wrapped balance</td><td>The trade amount</td>
+            <th scope="row" data-i18n="custody.row6_th">Exposure while trading</th>
+            <td class="us" data-i18n="custody.row6_us">Only the amount you signed</td><td data-i18n="custody.row6_cex">Your entire balance</td><td data-i18n="custody.row6_wrapped">Your entire wrapped balance</td><td data-i18n="custody.row6_atomic">The trade amount</td>
           </tr>
         </tbody>
       </table>
       </div>
-      <p class="small" style="margin-top:16px">Off-chain matching means the book moves at exchange speed; the chain only sees settlement. That is the whole trick, and it is built out of script primitives Bitcoin has had since 2009.</p>
+      <p class="small" style="margin-top:16px" data-i18n="custody.small">Off-chain matching means the book moves at exchange speed; the chain only sees settlement. That is the whole trick, and it is built out of script primitives Bitcoin has had since 2009.</p>
     </div>
   </div>
 </section>
@@ -452,25 +552,25 @@ OP_ENDIF</pre>
 <!-- ============ HOW ============ -->
 <section class="band" id="how">
   <div class="wrap row">
-    <div class="gut"><b>Settlement</b>In order</div>
+    <div class="gut"><b data-i18n="how.gut_b">Settlement</b><span data-i18n="how.gut_d">In order</span></div>
     <div class="col">
-      <h2>What actually happens when you place an order</h2>
+      <h2 data-i18n="how.h2">What actually happens when you place an order</h2>
       <ol class="steps">
         <li>
-          <h3>Your key is generated client-side</h3>
-          <p>Your browser derives the key locally, or you keep it on an air-gapped signer and never expose it at all. It signs your deposit address into existence together with the node threshold key. The server never receives it, so there is nothing to breach and nothing to hand over.</p>
+          <h3 data-i18n="how.s1_h3">Your key is generated client-side</h3>
+          <p data-i18n="how.s1_p">Your browser derives the key locally, or you keep it on an air-gapped signer and never expose it at all. It signs your deposit address into existence together with the node threshold key. The server never receives it, so there is nothing to breach and nothing to hand over.</p>
         </li>
         <li>
-          <h3>You sign one amount, not your balance</h3>
-          <p>A bid is a signature hash authorising a specific input for a specific size — Bitcoin's original allowance mechanism. Your change output stays under your control. The nodes can only route the amount you signed.</p>
+          <h3 data-i18n="how.s2_h3">You sign one amount, not your balance</h3>
+          <p data-i18n="how.s2_p">A bid is a signature hash authorising a specific input for a specific size — Bitcoin's original allowance mechanism. Your change output stays under your control. The nodes can only route the amount you signed.</p>
         </li>
         <li>
-          <h3>The quorum counter-signs and the book fills</h3>
-          <p>Matching happens off-chain against a live bid/ask book. Settlement batches to the chain. No single node can produce the second signature alone; a threshold has to agree.</p>
+          <h3 data-i18n="how.s3_h3">The quorum counter-signs and the book fills</h3>
+          <p data-i18n="how.s3_p">Matching happens off-chain against a live bid/ask book. Settlement batches to the chain. No single node can produce the second signature alone; a threshold has to agree.</p>
         </li>
         <li>
-          <h3>The timelock is always sitting behind you</h3>
-          <p>Every applicable coin uses CHECKLOCKTIMEVERIFY. Refresh it while you trade and you never approach it. Stop trading and it eventually pays you out anyway.</p>
+          <h3 data-i18n="how.s4_h3">The timelock is always sitting behind you</h3>
+          <p data-i18n="how.s4_p">Every applicable coin uses CHECKLOCKTIMEVERIFY. Refresh it while you trade and you never approach it. Stop trading and it eventually pays you out anyway.</p>
         </li>
       </ol>
     </div>
@@ -480,22 +580,22 @@ OP_ENDIF</pre>
 <!-- ============ CONTROLS ============ -->
 <section class="band" id="controls">
   <div class="wrap row">
-    <div class="gut"><b>Controls</b>What you hold and watch</div>
+    <div class="gut"><b data-i18n="controls.gut_b">Controls</b><span data-i18n="controls.gut_d">What you hold and watch</span></div>
     <div class="col">
-      <h2>Three things the exchange hands you and cannot take back.</h2>
+      <h2 data-i18n="controls.h2">Three things the exchange hands you and cannot take back.</h2>
       <ul class="ctrl">
         <li>
-          <h3>Sign from an air-gapped device</h3>
-          <p>Your key does not have to live in a browser tab. Pair an offline signer — an air-gapped phone running <a href="https://airgap.it/">AirGap Vault</a> or a compatible hardware wallet — and the key never touches an internet-connected machine. Orders and withdrawals cross the gap as QR codes: unsigned request out, signature back in. The exchange sees a signature and nothing else.</p>
-          <span class="qr">Unsigned request → QR → signature back</span>
+          <h3 data-i18n="controls.c1_h3">Sign from an air-gapped device</h3>
+          <p data-i18n="controls.c1_p">Your key does not have to live in a browser tab. Pair an offline signer — an air-gapped phone running <a href="https://airgap.it/">AirGap Vault</a> or a compatible hardware wallet — and the key never touches an internet-connected machine. Orders and withdrawals cross the gap as QR codes: unsigned request out, signature back in. The exchange sees a signature and nothing else.</p>
+          <span class="qr" data-i18n="controls.c1_qr">Unsigned request → QR → signature back</span>
         </li>
         <li>
-          <h3>Your backup script, at signup</h3>
-          <p>The redeem script is shown to you when your account is created — not buried in a support article, not available on request. Save it. With that script and your key you can reconstruct and spend the timelock branch yourself, from any wallet that speaks Bitcoin script, with the exchange gone and this domain dead.</p>
+          <h3 data-i18n="controls.c2_h3">Your backup script, at signup</h3>
+          <p data-i18n="controls.c2_p">The redeem script is shown to you when your account is created — not buried in a support article, not available on request. Save it. With that script and your key you can reconstruct and spend the timelock branch yourself, from any wallet that speaks Bitcoin script, with the exchange gone and this domain dead.</p>
         </li>
         <li>
-          <h3>Node health, on screen</h3>
-          <p>Logged in, you see the live state of the node set holding the other signature — who is up, whether the quorum is intact. If the backend is degrading you find out from the interface, not from a status page written after the fact. A venue that hides its own health is telling you something.</p>
+          <h3 data-i18n="controls.c3_h3">Node health, on screen</h3>
+          <p data-i18n="controls.c3_p">Logged in, you see the live state of the node set holding the other signature — who is up, whether the quorum is intact. If the backend is degrading you find out from the interface, not from a status page written after the fact. A venue that hides its own health is telling you something.</p>
         </li>
       </ul>
     </div>
@@ -505,20 +605,20 @@ OP_ENDIF</pre>
 <!-- ============ TIMELOCK ============ -->
 <section class="band" id="timelock">
   <div class="wrap row">
-    <div class="gut"><b>Force majeure</b>The exit that doesn't need us</div>
+    <div class="gut"><b data-i18n="timelock.gut_b">Force majeure</b><span data-i18n="timelock.gut_d">The exit that doesn't need us</span></div>
     <div class="col">
-      <h2>Assume we get raided tonight.</h2>
-      <p class="lede">Servers seized, domain pulled, team unreachable, node operators gone. Under a custodial exchange that is the end of the story and the beginning of a creditors' process. Here it is a waiting period.</p>
+      <h2 data-i18n="timelock.h2">Assume we get raided tonight.</h2>
+      <p class="lede" data-i18n="timelock.lede">Servers seized, domain pulled, team unreachable, node operators gone. Under a custodial exchange that is the end of the story and the beginning of a creditors' process. Here it is a waiting period.</p>
 
       <div class="tl">
         <div class="tl-bar">
           <span style="left:0"></span><span style="left:33%"></span><span style="left:66%"></span><span style="left:calc(100% - 2px)"></span>
         </div>
         <div class="tl-labels">
-          <span>Deposit</span><span>Trade freely</span><span>Inactive</span><span><em>Locktime → paid to your key</em></span>
+          <span data-i18n="timelock.l1">Deposit</span><span data-i18n="timelock.l2">Trade freely</span><span data-i18n="timelock.l3">Inactive</span><span data-i18n="timelock.l4"><em>Locktime → paid to your key</em></span>
         </div>
       </div>
-      <p class="small" style="margin-top:22px">The locktime is set per account and refreshed as you trade — the book will not fill an order that would leave you near expiry, and after a long dormancy you will be asked to roll to a new script and a current node set. The branch is enforced by consensus, not by us. We cannot switch it off, and neither can anyone who takes our servers.</p>
+      <p class="small" style="margin-top:22px" data-i18n="timelock.small">The locktime is set per account and refreshed as you trade — the book will not fill an order that would leave you near expiry, and after a long dormancy you will be asked to roll to a new script and a current node set. The branch is enforced by consensus, not by us. We cannot switch it off, and neither can anyone who takes our servers.</p>
     </div>
   </div>
 </section>
@@ -526,28 +626,28 @@ OP_ENDIF</pre>
 <!-- ============ FEES ============ -->
 <section class="band" id="fees">
   <div class="wrap row">
-    <div class="gut"><b>Fees</b>All of them</div>
+    <div class="gut"><b data-i18n="fees.gut_b">Fees</b><span data-i18n="fees.gut_d">All of them</span></div>
     <div class="col">
-      <h2>Three numbers. There is no fourth.</h2>
+      <h2 data-i18n="fees.h2">Three numbers. There is no fourth.</h2>
       <div class="fees">
-        <div class="fee"><span class="n">0.125<span style="font-size:20px">%</span></span><span class="l">Per completed trade</span></div>
-        <div class="fee"><span class="n">0.1<span style="font-size:20px">%</span></span><span class="l">Transfer between accounts</span></div>
-        <div class="fee"><span class="n">0.5<span style="font-size:20px">%</span></span><span class="l">Withdrawal to your own wallet</span></div>
+        <div class="fee"><span class="n">0.125<span style="font-size:20px">%</span></span><span class="l" data-i18n="fees.f1_l">Per completed trade</span></div>
+        <div class="fee"><span class="n">0.1<span style="font-size:20px">%</span></span><span class="l" data-i18n="fees.f2_l">Transfer between accounts</span></div>
+        <div class="fee"><span class="n">0.5<span style="font-size:20px">%</span></span><span class="l" data-i18n="fees.f3_l">Withdrawal to your own wallet</span></div>
       </div>
-      <p>Fees pay the node operators who hold the other half of the signature. There is no NightTrader token, no pre-mine, no treasury taking a cut of your trade, and no yield being promised to anyone. The exchange was launched without issuing a coin on purpose.</p>
+      <p data-i18n="fees.p">Fees pay the node operators who hold the other half of the signature. There is no NightTrader token, no pre-mine, no treasury taking a cut of your trade, and no yield being promised to anyone. The exchange was launched without issuing a coin on purpose.</p>
       <div class="wide">
       <table class="tbl">
-        <thead><tr><th scope="col">Taker fee, for comparison</th><th scope="col"></th></tr></thead>
+        <thead><tr><th scope="col" data-i18n="fees.th1">Taker fee, for comparison</th><th scope="col"></th></tr></thead>
         <tbody>
-          <tr><th scope="row">NightTrader</th><td class="us">0.125% — you hold a key</td></tr>
-          <tr><th scope="row">Uniswap</th><td>0.30% + gas + slippage</td></tr>
-          <tr><th scope="row">Coinbase</th><td>up to 0.40% — custodial</td></tr>
-          <tr><th scope="row">Kraken / Bitfinex</th><td>0.20% — custodial</td></tr>
-          <tr><th scope="row">Binance / KuCoin</th><td>0.10% — custodial</td></tr>
+          <tr><th scope="row">NightTrader</th><td class="us" data-i18n="fees.row_nt">0.125% — you hold a key</td></tr>
+          <tr><th scope="row">Uniswap</th><td data-i18n="fees.row_uniswap">0.30% + gas + slippage</td></tr>
+          <tr><th scope="row">Coinbase</th><td data-i18n="fees.row_coinbase">up to 0.40% — custodial</td></tr>
+          <tr><th scope="row">Kraken / Bitfinex</th><td data-i18n="fees.row_kraken">0.20% — custodial</td></tr>
+          <tr><th scope="row">Binance / KuCoin</th><td data-i18n="fees.row_binance">0.10% — custodial</td></tr>
         </tbody>
       </table>
       </div>
-      <p class="small" style="margin-top:16px">Listing a coin costs the project, not the traders. Integration and contract auditing are quoted per project. Nothing on this page is a promise of returns, liquidity, or execution quality.</p>
+      <p class="small" style="margin-top:16px" data-i18n="fees.small">Listing a coin costs the project, not the traders. Integration and contract auditing are quoted per project. Nothing on this page is a promise of returns, liquidity, or execution quality.</p>
     </div>
   </div>
 </section>
@@ -555,33 +655,33 @@ OP_ENDIF</pre>
 <!-- ============ VERIFY (night band) ============ -->
 <section class="night" id="verify">
   <div class="wrap row">
-    <div class="gut"><b>Verify</b>Don't trust</div>
+    <div class="gut"><b data-i18n="verify.gut_b">Verify</b><span data-i18n="verify.gut_d">Don't trust</span></div>
     <div class="col">
-      <h2>Every claim above is checkable. Go check it.</h2>
-      <p>A landing page is marketing. Script is not. If any line here disagrees with the code, the code is right and we have a bug to fix — tell us.</p>
+      <h2 data-i18n="verify.h2">Every claim above is checkable. Go check it.</h2>
+      <p data-i18n="verify.p">A landing page is marketing. Script is not. If any line here disagrees with the code, the code is right and we have a bug to fix — tell us.</p>
       <ul class="verify">
-        <li><span class="k">Source</span><span class="v"><a href="https://github.com/NightTrader/nighttrader.github.io">github.com/NightTrader</a> — front end and signing logic. Read the key derivation before you deposit.</span></li>
-        <li><span class="k">Run it local</span><span class="v">Clone the repo and serve it yourself. No packages to install, no need to visit this domain to trade.</span></li>
-        <li><span class="k">Paper</span><span class="v" id="paper"><a href="https://github.com/NightTrader/nighttrader.github.io/blob/master/Nighttrader_A_Decentralized_Multisignature_Electronic_Cash_Wallet.pdf">A Decentralized Multisignature Electronic Cash Wallet</a> — the full construction, including the Monero and EVM cases.</span></li>
-        <li><span class="k">Your script</span><span class="v">Derived deterministically, and material changes are burned on-chain. You should be able to reconstruct your own redeem script without asking us for it.</span></li>
-        <li><span class="k">Data</span><span class="v">We collect the minimum to operate and encrypt what we hold. This page loads no fonts, no analytics and no third-party scripts — check the network tab.</span></li>
+        <li><span class="k" data-i18n="verify.li_source_k">Source</span><span class="v" data-i18n="verify.li_source_v"><a href="https://github.com/NightTrader/nighttrader.github.io">github.com/NightTrader</a> — front end and signing logic. Read the key derivation before you deposit.</span></li>
+        <li><span class="k" data-i18n="verify.li_local_k">Run it local</span><span class="v" data-i18n="verify.li_local_v">Clone the repo and serve it yourself. No packages to install, no need to visit this domain to trade.</span></li>
+        <li><span class="k" data-i18n="verify.li_paper_k">Paper</span><span class="v" id="paper" data-i18n="verify.li_paper_v"><a href="https://github.com/NightTrader/nighttrader.github.io/blob/master/Nighttrader_A_Decentralized_Multisignature_Electronic_Cash_Wallet.pdf">A Decentralized Multisignature Electronic Cash Wallet</a> — the full construction, including the Monero and EVM cases.</span></li>
+        <li><span class="k" data-i18n="verify.li_script_k">Your script</span><span class="v" data-i18n="verify.li_script_v">Derived deterministically, and material changes are burned on-chain. You should be able to reconstruct your own redeem script without asking us for it.</span></li>
+        <li><span class="k" data-i18n="verify.li_data_k">Data</span><span class="v" data-i18n="verify.li_data_v">We collect the minimum to operate and encrypt what we hold. This page loads no fonts, no analytics and no third-party scripts — check the network tab.</span></li>
       </ul>
 
       <div class="priv" id="privacy">
-        <div class="priv-l">Privacy</div>
-        <p>We collect the minimum required to run an order book and encrypt what we hold. There is no advertising pixel, no session replay, no behavioural profile, and no data broker relationship. This page makes zero third-party requests — no fonts, no analytics, no CDN. Open the network tab and confirm it rather than believing us.</p>
-        <p>If we are ever compelled to verify a user, that process runs through <a href="https://www.zk.me/">zkMe</a>. Document checks happen on your own device — nothing is transmitted to us in the clear. What we receive is a zero-knowledge proof that you passed verification, not the underlying documents. NightTrader never sees or stores your identity data ourselves; zkMe's role is limited to that verification and proof generation.</p>
-        <p>And note what verification cannot do here: an account under review still has a timelock branch. Freezing an account does not freeze your coins, because the script pays you out whatever we decide.</p>
+        <div class="priv-l" data-i18n="privacy.label">Privacy</div>
+        <p data-i18n="privacy.p1">We collect the minimum required to run an order book and encrypt what we hold. There is no advertising pixel, no session replay, no behavioural profile, and no data broker relationship. This page makes zero third-party requests — no fonts, no analytics, no CDN. Open the network tab and confirm it rather than believing us.</p>
+        <p data-i18n="privacy.p2">If we are ever compelled to verify a user, that process runs through <a href="https://www.zk.me/">zkMe</a>. Document checks happen on your own device — nothing is transmitted to us in the clear. What we receive is a zero-knowledge proof that you passed verification, not the underlying documents. NightTrader never sees or stores your identity data ourselves; zkMe's role is limited to that verification and proof generation.</p>
+        <p data-i18n="privacy.p3">And note what verification cannot do here: an account under review still has a timelock branch. Freezing an account does not freeze your coins, because the script pays you out whatever we decide.</p>
       </div>
 
       <div class="node" id="node">
-        <div class="node-l">Run a node</div>
-        <p>Node operators hold the other half of every signature and take a share of the fees. There is no signup form and no email list. Reach us over Bitmessage:</p>
+        <div class="node-l" data-i18n="node.label">Run a node</div>
+        <p data-i18n="node.p">Node operators hold the other half of every signature and take a share of the fees. There is no signup form and no email list. Reach us over Bitmessage:</p>
         <div class="bm">
           <code id="bm-addr">BM-2cU2YA1q5UEyxUedNkgKnLsn3jurKpzuWR</code>
-          <button class="copy" type="button" id="bm-copy" data-addr="BM-2cU2YA1q5UEyxUedNkgKnLsn3jurKpzuWR">Copy</button>
+          <button class="copy" type="button" id="bm-copy" data-addr="BM-2cU2YA1q5UEyxUedNkgKnLsn3jurKpzuWR" data-i18n="node.copy">Copy</button>
         </div>
-        <p class="node-f">If that channel is inconvenient for you, you are probably not the operator we are looking for.</p>
+        <p class="node-f" data-i18n="node.f">If that channel is inconvenient for you, you are probably not the operator we are looking for.</p>
       </div>
     </div>
   </div>
@@ -590,32 +690,32 @@ OP_ENDIF</pre>
 <!-- ============ TRADEOFFS ============ -->
 <section class="band" id="limits">
   <div class="wrap row">
-    <div class="gut"><b>Tradeoffs</b>What this is not</div>
+    <div class="gut"><b data-i18n="tradeoffs.gut_b">Tradeoffs</b><span data-i18n="tradeoffs.gut_d">What this is not</span></div>
     <div class="col">
-      <h2>The part other exchanges leave off the front page.</h2>
+      <h2 data-i18n="tradeoffs.h2">The part other exchanges leave off the front page.</h2>
       <dl class="trade">
-        <dt>This is not self-custody</dt>
-        <dd>It is co-custody with a timelocked exit. You hold one of two required keys, which is strictly better than an exchange balance and strictly worse than coins in your own cold storage. Trade here; do not store here.</dd>
+        <dt data-i18n="tradeoffs.t1_dt">This is not self-custody</dt>
+        <dd data-i18n="tradeoffs.t1_dd">It is co-custody with a timelocked exit. You hold one of two required keys, which is strictly better than an exchange balance and strictly worse than coins in your own cold storage. Trade here; do not store here.</dd>
 
-        <dt>Nodes can go offline</dt>
-        <dd>If the quorum breaks mid-trade, half-signed transactions are simply never broadcast. You do not lose principal, but you can lose a fill and the profit that went with it.</dd>
+        <dt data-i18n="tradeoffs.t2_dt">Nodes can go offline</dt>
+        <dd data-i18n="tradeoffs.t2_dd">If the quorum breaks mid-trade, half-signed transactions are simply never broadcast. You do not lose principal, but you can lose a fill and the profit that went with it.</dd>
 
-        <dt>The browser is the attack surface</dt>
-        <dd>Your key is derived from your credentials. A weak password, a compromised machine or a phished login is the realistic way to lose coins here — not a hack of our servers. Use a long passphrase and 2FA, and keep your backup off the machine you trade on.</dd>
+        <dt data-i18n="tradeoffs.t3_dt">The browser is the attack surface</dt>
+        <dd data-i18n="tradeoffs.t3_dd">Your key is derived from your credentials. A weak password, a compromised machine or a phished login is the realistic way to lose coins here — not a hack of our servers. Use a long passphrase and 2FA, and keep your backup off the machine you trade on.</dd>
 
-        <dt>We can be asked for KYC</dt>
-        <dd>We reserve the right to request verification, run through <a href="https://www.zk.me/">zkMe</a>. Documents are checked on your device and never reach us — we receive a zero-knowledge proof of a pass, not your identity data. Note what that cannot do: freezing an account does not freeze your funds forever, because the timelock branch still executes.</dd>
+        <dt data-i18n="tradeoffs.t4_dt">We can be asked for KYC</dt>
+        <dd data-i18n="tradeoffs.t4_dd">We reserve the right to request verification, run through <a href="https://www.zk.me/">zkMe</a>. Documents are checked on your device and never reach us — we receive a zero-knowledge proof of a pass, not your identity data. Note what that cannot do: freezing an account does not freeze your funds forever, because the timelock branch still executes.</dd>
 
-        <dt>Not everything here is bitcoin</dt>
-        <dd>Bitcoin is the base pair and the design target — the first integrations were chosen for CHECKLOCKTIMEVERIFY support. Other assets are listed where the same guarantees can be reproduced. If a coin cannot be secured this way, we would rather not list it.</dd>
+        <dt data-i18n="tradeoffs.t5_dt">Not everything here is bitcoin</dt>
+        <dd data-i18n="tradeoffs.t5_dd">Bitcoin is the base pair and the design target — the first integrations were chosen for CHECKLOCKTIMEVERIFY support. Other assets are listed where the same guarantees can be reproduced. If a coin cannot be secured this way, we would rather not list it.</dd>
 
-        <dt>Not Lightning, not a rollup</dt>
-        <dd>Different tool. Lightning is excellent for payments and awkward as a venue for a large order book; rollups and atomic swaps are the long-run answer and are still too expensive or too slow for daily bid/ask. We will move when they are ready.</dd>
+        <dt data-i18n="tradeoffs.t6_dt">Not Lightning, not a rollup</dt>
+        <dd data-i18n="tradeoffs.t6_dd">Different tool. Lightning is excellent for payments and awkward as a venue for a large order book; rollups and atomic swaps are the long-run answer and are still too expensive or too slow for daily bid/ask. We will move when they are ready.</dd>
       </dl>
 
       <div class="cta">
-        <a class="btn" href="https://nighttrader.exchange">Open the exchange</a>
-        <a class="btn ghost" href="#top">Back to the script</a>
+        <a class="btn" href="https://nighttrader.exchange" data-i18n="hero.cta_open">Open the exchange</a>
+        <a class="btn ghost" href="#top" data-i18n="tradeoffs.cta_back">Back to the script</a>
       </div>
     </div>
   </div>
@@ -624,22 +724,22 @@ OP_ENDIF</pre>
 <!-- ============ HISTORY ============ -->
 <section class="band" id="history">
   <div class="wrap row">
-    <div class="gut"><b>History</b>Since 2014</div>
+    <div class="gut"><b data-i18n="history.gut_b">History</b><span data-i18n="history.gut_d">Since 2014</span></div>
     <div class="col">
-      <h2>It started with an ATM on a street corner in Tijuana.</h2>
-      <p class="lede">bitcoin42 didn't begin as an exchange. It began as a bitcoin ATM operator — putting Genesis1 machines on the ground in Tijuana, Mexico in 2014, among the first of their kind anywhere.</p>
-      <p>Running machines was never the point. The order book was the plan from day one: a real exchange that never took custody of your coins, at a time when every exchange did exactly that. It took a decade — and watching custodian after custodian fail in the meantime — to build it right.</p>
+      <h2 data-i18n="history.h2">It started with an ATM on a street corner in Tijuana.</h2>
+      <p class="lede" data-i18n="history.p1">bitcoin42 didn't begin as an exchange. It began as a bitcoin ATM operator — putting Genesis1 machines on the ground in Tijuana, Mexico in 2014, among the first of their kind anywhere.</p>
+      <p data-i18n="history.p2">Running machines was never the point. The order book was the plan from day one: a real exchange that never took custody of your coins, at a time when every exchange did exactly that. It took a decade — and watching custodian after custodian fail in the meantime — to build it right.</p>
 
       <div class="tl">
         <div class="tl-bar">
           <span style="left:0"></span><span style="left:calc(100% - 2px)"></span>
         </div>
         <div class="tl-labels">
-          <span>2014 · Bitcoin ATMs, Tijuana</span><span><em>2024 · NightTrader launches</em></span>
+          <span data-i18n="history.tl1">2014 · Bitcoin ATMs, Tijuana</span><span data-i18n="history.tl2"><em>2024 · NightTrader launches</em></span>
         </div>
       </div>
 
-      <p class="small" style="margin-top:22px">Coverage from the time: <a href="https://www.coindesk.com/markets/2014/03/28/money-spinners-genesis1-bitcoin-and-dogecoin-atms-arrive-in-tijuana-mexico">CoinDesk, March 2014</a> — Genesis1 bitcoin and dogecoin ATMs arrive in Tijuana.</p>
+      <p class="small" style="margin-top:22px" data-i18n="history.citation">Coverage from the time: <a href="https://www.coindesk.com/markets/2014/03/28/money-spinners-genesis1-bitcoin-and-dogecoin-atms-arrive-in-tijuana-mexico">CoinDesk, March 2014</a> — Genesis1 bitcoin and dogecoin ATMs arrive in Tijuana.</p>
     </div>
   </div>
 </section>
@@ -648,93 +748,68 @@ OP_ENDIF</pre>
 
 <footer>
   <div class="wrap fgrid">
-    <div class="gut"><b>NightTrader</b>Exchange</div>
+    <div class="gut">
+      <b>NightTrader</b>Exchange
+      <div class="lang-switch">
+        <label for="lang-select" data-i18n="footer.lang_label">Language</label>
+        <select id="lang-select">
+          <option value="en">English</option>
+          <option value="zh">中文</option>
+          <option value="ru">Русский</option>
+          <option value="es">Español</option>
+          <option value="pt">Português</option>
+          <option value="it">Italiano</option>
+          <option value="ar">العربية</option>
+          <option value="fr">Français</option>
+          <option value="de">Deutsch</option>
+        </select>
+      </div>
+    </div>
     <div>
       <div class="fcols">
         <div>
-          <h4>Exchange</h4>
+          <h4 data-i18n="footer.col_exchange">Exchange</h4>
           <ul>
-            <li><a href="https://nighttrader.exchange">Trade</a></li>
-            <li><a href="#fees">Fees</a></li>
-            <li><a href="#node">Run a node</a></li>
-            <li><a href="mailto:ceo@nighttrader.org">List a coin</a></li>
+            <li><a href="https://nighttrader.exchange" data-i18n="footer.link_trade">Trade</a></li>
+            <li><a href="#fees" data-i18n="nav.fees">Fees</a></li>
+            <li><a href="#node" data-i18n="node.label">Run a node</a></li>
+            <li><a href="mailto:ceo@nighttrader.org" data-i18n="footer.link_list">List a coin</a></li>
           </ul>
         </div>
         <div>
-          <h4>Verify</h4>
+          <h4 data-i18n="verify.gut_b">Verify</h4>
           <ul>
-            <li><a href="https://github.com/NightTrader/nighttrader.github.io">Source</a></li>
-            <li><a href="https://github.com/NightTrader/nighttrader.github.io/blob/master/Nighttrader_A_Decentralized_Multisignature_Electronic_Cash_Wallet.pdf">Whitepaper</a></li>
-            <li><a href="#controls">Air-gapped signing</a></li>
-            <li><a href="#limits">Known tradeoffs</a></li>
+            <li><a href="https://github.com/NightTrader/nighttrader.github.io" data-i18n="verify.li_source_k">Source</a></li>
+            <li><a href="https://github.com/NightTrader/nighttrader.github.io/blob/master/Nighttrader_A_Decentralized_Multisignature_Electronic_Cash_Wallet.pdf" data-i18n="footer.link_whitepaper">Whitepaper</a></li>
+            <li><a href="#controls" data-i18n="footer.link_airgapped">Air-gapped signing</a></li>
+            <li><a href="#limits" data-i18n="footer.link_tradeoffs">Known tradeoffs</a></li>
           </ul>
         </div>
         <div>
-          <h4>Legal</h4>
+          <h4 data-i18n="footer.col_legal">Legal</h4>
           <ul>
-            <li><a href="#limits">Risk disclosure</a></li>
+            <li><a href="#limits" data-i18n="footer.link_risk">Risk disclosure</a></li>
           </ul>
         </div>
       </div>
 
       <div class="imp" id="impressum">
-        <h4>Legal notice · Operator</h4>
+        <h4 data-i18n="footer.imp_h4">Legal notice · Operator</h4>
         <address>
           NAOME SAPI DE CV<br>
-          E-Mail: <a href="mailto:ceo@nighttrader.org">ceo@nighttrader.org</a>
+          <span data-i18n="footer.imp_email_label">E-Mail:</span> <a href="mailto:ceo@nighttrader.org">ceo@nighttrader.org</a>
         </address>
         <p class="note-s" lang="es">Persona responsable del contenido: Alec Hahn, en representación de NAOME SAPI DE CV.</p>
       </div>
 
       <div class="legal">
-        <p style="margin:0 0 10px">NightTrader.Exchange is a non-custodial trading interface. It is not a bank, a broker, a custodian or an investment service, and nothing here is investment advice or a promise of yield, liquidity or execution. Trading digital assets can result in total loss. You are responsible for your own key and your own backups.</p>
-        <p class="mono" style="margin:0;font-size:11.5px;letter-spacing:.06em">Served from bitcoin42.com — registered 2014 · No third-party requests on this page.</p>
+        <p style="margin:0 0 10px" data-i18n="footer.legal_p1">NightTrader.Exchange is a non-custodial trading interface. It is not a bank, a broker, a custodian or an investment service, and nothing here is investment advice or a promise of yield, liquidity or execution. Trading digital assets can result in total loss. You are responsible for your own key and your own backups.</p>
+        <p class="mono" style="margin:0;font-size:11.5px;letter-spacing:.06em" data-i18n="footer.legal_p2">Served from bitcoin42.com — registered 2014 · No third-party requests on this page.</p>
       </div>
     </div>
   </div>
 </footer>
 
-<script>
-// Annotated script: click a token, the margin note changes.
-(function () {
-  var toks = document.querySelectorAll('.tok');
-  var tag = document.getElementById('note-tag');
-  var body = document.getElementById('note-body');
-  toks.forEach(function (t) {
-    t.addEventListener('click', function () {
-      toks.forEach(function (o) { o.setAttribute('aria-pressed', 'false'); });
-      t.setAttribute('aria-pressed', 'true');
-      tag.textContent = t.dataset.tag;
-      body.textContent = t.dataset.note;
-    });
-  });
-
-  // Bitmessage address: copy, with a select-all fallback.
-  var copy = document.getElementById('bm-copy');
-  if (copy) {
-    copy.addEventListener('click', function () {
-      var addr = copy.dataset.addr;
-      var done = function () {
-        copy.textContent = 'Copied';
-        setTimeout(function () { copy.textContent = 'Copy'; }, 1800);
-      };
-      if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(addr).then(done, select);
-      } else {
-        select();
-      }
-      function select() {
-        var r = document.createRange();
-        r.selectNodeContents(document.getElementById('bm-addr'));
-        var s = window.getSelection();
-        s.removeAllRanges();
-        s.addRange(r);
-        copy.textContent = 'Select all';
-        setTimeout(function () { copy.textContent = 'Copy'; }, 1800);
-      }
-    });
-  }
-})();
-</script>
+<script src="/i18n.js" defer></script>
 </body>
 </html>
