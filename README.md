@@ -29,13 +29,14 @@ as duplicates.
 > `bitcoin42.com` is served through Cloudflare, not GitHub Pages. Adding a `CNAME` would make Pages
 > attempt to claim the domain and would conflict with the Cloudflare deployment.
 
-> ⚠️ **The canonical domain is currently stale.** The Cloudflare Workers Build `afmhahn-bitcoin`
-> is failing, so `bitcoin42.com` still serves a pre-August-2026 copy of this page — including
-> wording about the recovery timelock that was corrected as factually wrong. This repository
-> contains no Cloudflare configuration (no `wrangler.toml`, `_headers` or `_redirects`); the build
-> is configured in the Cloudflare dashboard and must be fixed there. See `AUDIT.md` finding D-7.
-> **There is no build step here** — the site is served straight from the committed files, so the
-> Workers project should have an empty build command.
+> ⚠️ **The canonical domain went stale, cause identified and fixed.** Adding `package.json` for
+> the CI quality gates made the Cloudflare Workers Build `afmhahn-bitcoin` install `node_modules`
+> inside the directory it uploads as static assets (this project has no `wrangler.toml`, so the
+> whole repo checkout is the assets directory). Wrangler's own 144 MiB `workerd` runtime binary
+> ended up in that directory and exceeded the 25 MiB per-file asset limit, failing every deploy.
+> Fixed by committing `.assetsignore` (excludes `node_modules`, `.git`, `.DS_Store` — exactly what
+> Cloudflare Pages does automatically and Workers does not). See `AUDIT.md` finding D-7. Confirm
+> `bitcoin42.com` is serving current content after the next deploy.
 
 ## Brand and entity relationships
 

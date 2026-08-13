@@ -15,12 +15,12 @@
 
 ### 1.1 What is actually deployed where
 
-| Host                      | Server       | Content                                                                                                                                                   | Notes                                                                              |
-| ------------------------- | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| `bitcoin42.github.io`     | GitHub Pages | This landing page                                                                                                                                         | No `CNAME` file in this repo                                                       |
-| `bitcoin42.com`           | Cloudflare   | Was byte-identical to the above (md5 `c7742fa1…`) at audit time; **now stale** — see D-7                                                                  | Served via a Cloudflare Workers project (`afmhahn-bitcoin`) whose build is failing |
-| `nighttrader.exchange`    | —            | **Different site** — the production NightTrader marketing site from `NightTrader/nighttrader.github.io` (which contains `CNAME` = `nighttrader.exchange`) | Not this page                                                                      |
-| `my.nighttrader.exchange` | —            | The actual application. Returned **HTTP 451** from this environment                                                                                       | Source not public; see §1.2                                                        |
+| Host                      | Server       | Content                                                                                                                                                      | Notes                                                       |
+| ------------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------- |
+| `bitcoin42.github.io`     | GitHub Pages | This landing page                                                                                                                                            | No `CNAME` file in this repo                                |
+| `bitcoin42.com`           | Cloudflare   | Was byte-identical to the above (md5 `c7742fa1…`) at audit time; went stale when the Workers build started failing — see D-7 (fix applied, pending redeploy) | Served via a Cloudflare Workers project (`afmhahn-bitcoin`) |
+| `nighttrader.exchange`    | —            | **Different site** — the production NightTrader marketing site from `NightTrader/nighttrader.github.io` (which contains `CNAME` = `nighttrader.exchange`)    | Not this page                                               |
+| `my.nighttrader.exchange` | —            | The actual application. Returned **HTTP 451** from this environment                                                                                          | Source not public; see §1.2                                 |
 
 **Finding D-1 (P0).** The same document is served from two hosts with no canonical
 differentiation between them. `<link rel="canonical">`, `og:url`, JSON-LD `@id`/`url`,
@@ -53,56 +53,49 @@ parity or accessibility before deploy.
 `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options`). GitHub Pages **cannot** set custom
 headers at all; Cloudflare can. See §9.
 
-**Finding D-7 (P0) — OWNER ACTION REQUIRED, OUTSIDE THIS REPOSITORY.** The canonical host is
-**not receiving deployments**. The Cloudflare Workers Build `afmhahn-bitcoin` reports
-`conclusion: failure` on every commit checked. This is **not** caused by the changes in this
-audit: the same failure is recorded on PR #15, before any CI workflow, `package.json` or
-`package-lock.json` existed in this repository.
+**Finding D-7 (P0) — RESOLVED IN THIS REPOSITORY.** The canonical host stopped receiving
+deployments once this repository gained a `package.json`/`package-lock.json` (added for the CI
+quality gates, see commit `16ee21c`). This is a side effect of that addition, not a pre-existing
+misconfiguration — PR #15's Cloudflare failure, which predates any `package.json` in this repo,
+has a different cause than the one diagnosed here and was not separately root-caused.
 
-> **Do not read build duration from the GitHub check run.** Cloudflare posts the check only on
-> completion and stamps `started_at` and `completed_at` with the same value, so every one of these
-> checks appears to take zero seconds. That is a reporting artifact, **not** evidence that the
-> build fails immediately. The real duration is visible in the `cloudflare-workers-and-pages[bot]`
-> PR comment, which transitions "In progress" → "Deployment failed": for build `bd7e8d0a` that was
-> 16:44:17 → 16:44:36 UTC, roughly **19 seconds**. The build does run, and then fails.
+**Confirmed root cause (owner supplied the build log).** The Workers project has no
+`wrangler.toml` in this repository, so Cloudflare Workers Builds treats the entire repository
+checkout, `/opt/buildhome/repo`, as the static-assets directory. Once a `package.json` existed,
+the build step ran `npm install`/build tooling that populated `node_modules` inside that same
+directory — including `node_modules/workerd/bin/workerd`, Wrangler's bundled runtime binary, at
+144 MiB. Workers enforces a 25 MiB per-file limit on static assets, so the deploy failed:
 
-Because the build genuinely executes, the cause cannot be narrowed to project configuration from
-the outside. **The build log is the only thing that identifies it**, and it is reachable only from
-the Cloudflare dashboard — the GitHub check exposes no `output.text`, and no Cloudflare credential
-is available to this repository's tooling. Note that this repository commits no Wrangler
-configuration, which is one candidate cause among several (`wrangler deploy` needs a
-`wrangler.toml`/`wrangler.jsonc` or equivalent arguments), but that is a hypothesis, not a finding.
+```
+✘ [ERROR] Asset too large.
+Cloudflare Workers supports assets with sizes of up to 25 MiB. We found a file
+/opt/buildhome/repo/node_modules/workerd/bin/workerd with a size of 144 MiB.
+```
 
-Observed consequences, verified by fetching both hosts:
+Per Cloudflare's own migration guidance, **Pages automatically excludes `node_modules`, `.git`,
+and `.DS_Store` from static-asset uploads; Workers does not** — that exclusion must be opted into
+with an `.assetsignore` file in the assets directory. Since this project's assets directory is
+implicitly the repo root, and no `.assetsignore` existed, nothing filtered `node_modules` out
+once it existed.
+
+**Fix applied:** `.assetsignore` added at the repository root, listing `node_modules`, `.git`,
+`.DS_Store` — mirroring exactly what Pages did automatically. This is deliberately **not** a
+`wrangler.toml`: it only filters which files are uploaded as static assets and cannot change
+routing, headers, or any other behaviour of the deployed Worker, so it carries none of the
+production risk a speculative Wrangler configuration would.
+
+Observed consequence while the build was failing, verified by fetching both hosts:
 
 | Host                  | `<link rel="canonical">`                | Corrected timelock wording present? |
 | --------------------- | --------------------------------------- | ----------------------------------- |
 | `bitcoin42.github.io` | `https://bitcoin42.com/` ✅ (current)   | Yes                                 |
 | `bitcoin42.com`       | `https://bitcoin42.github.io/` ❌ (old) | **No**                              |
 
-Two things follow, and both matter:
-
-1. The two hosts now **contradict each other about which is canonical**, each naming the other.
-   Until the Cloudflare build succeeds this is worse for search consolidation than the original
-   D-1 state, not better.
-2. More seriously, the domain the owner designated canonical is still serving the **pre-correction
-   safety wording** — including the description of the recovery timelock as paying out on
-   schedule, which §7 records as factually wrong about Bitcoin.
-
-> **Recommended owner action.** Open the failing build from the `details_url` on the GitHub check
-> and read the log **before** changing anything in this repository. Two constraints should shape
-> whatever fix follows:
->
-> 1. This repository has **no build step** — the site is served directly from the committed files.
->    Whatever the Workers project is currently trying to build, it should not need to.
-> 2. The `afmhahn-bitcoin` Worker is **currently serving traffic** on the canonical domain, albeit
->    stale content. Adding a Wrangler configuration here would change how that domain is served
->    and could replace behaviour (routing, redirects, headers) that exists only in the deployed
->    Worker. Its code could not be retrieved for inspection, so that risk is unquantified.
->
-> Do **not** add a placeholder `build` script, or a speculative `wrangler.toml`, merely to turn the
-> check green. Either would hide the real misconfiguration, and the second could take the canonical
-> domain down.
+The two hosts named each other as canonical, and `bitcoin42.com` — the domain the owner
+designated canonical — was serving the **pre-correction safety wording**, including the
+description of the recovery timelock as paying out on schedule, which §7 records as factually
+wrong about Bitcoin. This should resolve once the next Cloudflare build succeeds; re-verify both
+hosts' canonical tag and timelock wording after that build completes.
 
 ### 1.2 The linked "source" repository does not contain the product
 
@@ -362,20 +355,20 @@ says nothing about geographic availability.
 
 ### P0 — correctness, trust, and access
 
-| #     | Item                                                                                                                                                     | Ref        |
-| ----- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
-| P0-1  | Correct all timelock wording: CLTV makes a branch _spendable_; it does not auto-pay                                                                      | C-2        |
-| P0-2  | Remove "since 2009"; name the actual primitives without a false date                                                                                     | C-3        |
-| P0-3  | Fix or remove the "read the signing logic / key derivation" invitation — the linked repo has none                                                        | D-6        |
-| P0-4  | Resolve the fee contradiction (0.125 % vs 0.25 %) — **OWNER**                                                                                            | C-6        |
-| P0-5  | Remove or source the competitor fee table                                                                                                                | C-7        |
-| P0-6  | Soften unsupported absolutes (never/cannot/only/nothing/every/strictly better/no exit to scam)                                                           | C-1        |
-| P0-7  | Decide canonical domain and align every metadata surface — **OWNER**                                                                                     | D-1, D-2   |
-| P0-8  | Restore mobile navigation                                                                                                                                | A-1, M-1   |
-| P0-9  | Fix colour contrast (10 elements)                                                                                                                        | A-2        |
-| P0-10 | Label the architecture co-custodial near the hero                                                                                                        | C-9        |
-| P0-11 | Link the existing Terms / Privacy / Cookie policies                                                                                                      | LG-1, LG-2 |
-| P0-12 | Repair the failing Cloudflare Workers Build so the canonical domain stops serving the pre-correction safety wording — **OWNER**, outside this repository | D-7        |
+| #     | Item                                                                                                                                                                                               | Ref        |
+| ----- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| P0-1  | Correct all timelock wording: CLTV makes a branch _spendable_; it does not auto-pay                                                                                                                | C-2        |
+| P0-2  | Remove "since 2009"; name the actual primitives without a false date                                                                                                                               | C-3        |
+| P0-3  | Fix or remove the "read the signing logic / key derivation" invitation — the linked repo has none                                                                                                  | D-6        |
+| P0-4  | Resolve the fee contradiction (0.125 % vs 0.25 %) — **OWNER**                                                                                                                                      | C-6        |
+| P0-5  | Remove or source the competitor fee table                                                                                                                                                          | C-7        |
+| P0-6  | Soften unsupported absolutes (never/cannot/only/nothing/every/strictly better/no exit to scam)                                                                                                     | C-1        |
+| P0-7  | Decide canonical domain and align every metadata surface — **OWNER**                                                                                                                               | D-1, D-2   |
+| P0-8  | Restore mobile navigation                                                                                                                                                                          | A-1, M-1   |
+| P0-9  | Fix colour contrast (10 elements)                                                                                                                                                                  | A-2        |
+| P0-10 | Label the architecture co-custodial near the hero                                                                                                                                                  | C-9        |
+| P0-11 | Link the existing Terms / Privacy / Cookie policies                                                                                                                                                | LG-1, LG-2 |
+| P0-12 | Verify the Cloudflare Workers Build succeeds after the `.assetsignore` fix and confirm `bitcoin42.com` is serving current content — **OWNER** (repo-side fix applied; needs redeploy confirmation) | D-7        |
 
 ### P1 — integrity, SEO, accessibility
 
