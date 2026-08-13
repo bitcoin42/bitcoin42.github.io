@@ -1019,6 +1019,18 @@
     if (select) select.value = lang;
   }
 
+  // Reflect the active language in the URL so a translated page can be linked
+  // and shared. English is the canonical bare URL and carries no parameter.
+  function syncLangUrl(lang) {
+    if (!window.history || !window.history.replaceState) return;
+    try {
+      var url = new URL(window.location.href);
+      if (lang === 'en') url.searchParams.delete('lang');
+      else url.searchParams.set('lang', lang);
+      window.history.replaceState(null, '', url.pathname + url.search + url.hash);
+    } catch (e) { /* non-fatal: the page still works, the URL just will not update */ }
+  }
+
   // Keep <title>, description and social metadata in the active language.
   function setMeta(d) {
     function put(sel, attr, key) {
@@ -1087,6 +1099,7 @@
         var lang = langSelect.value;
         try { localStorage.setItem('nt-lang', lang); } catch (e) {}
         applyTranslations(lang);
+        syncLangUrl(lang);
       });
     }
 

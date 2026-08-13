@@ -76,6 +76,21 @@ These describe what a user must actually **do** to recover funds. Translate mean
 | `controls.c1_p` | Hardware-wallet support qualified; users told to ask which devices are supported. |
 | `fees.compare_h`, `fees.compare_note` | **New strings** replacing the unsourced competitor fee table. |
 
+### Tier 3 — added during Phases 3–5 (English placeholders)
+
+New strings introduced after the original corrections. Same rule: English placeholder until
+reviewed.
+
+| Key | Notes for translator |
+|---|---|
+| `meta.title`, `meta.description` | **Page `<title>` and meta description**, now swapped per language. These are what search engines and social cards show — worth translating well rather than literally. Keep the title under ~60 characters. |
+| `footer.entities` | Explains that NightTrader is the exchange, bitcoin42 the team, NAOME SAPI DE CV the legal operator. Keep entity names untranslated. |
+| `footer.link_terms`, `footer.link_privacy`, `footer.link_cookies` | Footer link labels. The linked documents themselves are English-only — consider noting that in-language if your locale expects it. |
+| `fees.asof` | "Fees shown as of August 2026…" — the date must stay accurate; update it when fees are re-confirmed. |
+| `footer.legal_p1` | **Legal disclaimer.** Now says *co-custodial*, not *non-custodial*. Do not soften that back. Pending counsel review (CLAIMS.md G1) — translate only after the English is signed off. |
+| `a11y.skip`, `a11y.nav_primary`, `a11y.nav_menu`, `a11y.nav_menu_label`, `a11y.theme_toggle`, `a11y.col_criterion`, `a11y.table_region` | **Screen-reader labels.** Never displayed visually. Use the conventional phrasing your locale's screen-reader users expect, not a literal translation. |
+| `a11y.copy_ok`, `a11y.copy_fallback` | Announced after the copy button is pressed. Keep short. |
+
 ---
 
 ## Instructions for the translator
