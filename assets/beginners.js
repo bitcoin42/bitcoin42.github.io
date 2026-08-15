@@ -61,3 +61,99 @@
     render();
   }
 })();
+
+/* ---- figure: the recovery timer, stage by stage ------------------------- */
+(function () {
+  'use strict';
+
+  var fig = document.getElementById('viz-timer');
+  if (!fig) return;
+  var fill = document.getElementById('gauge-fill');
+  var state = document.getElementById('gauge-state');
+  var who = document.getElementById('gauge-who');
+  var note = document.getElementById('gauge-note');
+  var steps = fig.querySelectorAll('.bgv-step');
+  if (!fill || !state || !who || !note || !steps.length) return;
+
+  function t(key, fallback) {
+    var api = window.ntI18n;
+    var v = api && typeof api.t === 'function' ? api.t(key) : undefined;
+    return v === undefined || v === null ? fallback : v;
+  }
+
+  // level is how much time is left before the recovery branch opens.
+  // Stage 4 is the only one where the user's key alone suffices — and even
+  // there the copy must say they still have to move the coins themselves.
+  var STAGES = {
+    1: { level: 100, state: 'bg.viz_timer_state_1', who: 'bg.viz_timer_who_both', note: 'bg.viz_timer_note_1' },
+    2: { level: 100, state: 'bg.viz_timer_state_2', who: 'bg.viz_timer_who_both', note: 'bg.viz_timer_note_2' },
+    3: { level: 38, state: 'bg.viz_timer_state_3', who: 'bg.viz_timer_who_both', note: 'bg.viz_timer_note_3' },
+    4: { level: 0, state: 'bg.viz_timer_state_4', who: 'bg.viz_timer_who_you', note: 'bg.viz_timer_note_4' }
+  };
+
+  function current() {
+    for (var i = 0; i < steps.length; i++) {
+      if (steps[i].getAttribute('aria-pressed') === 'true') return steps[i].getAttribute('data-stage');
+    }
+    return '1';
+  }
+
+  function render() {
+    var s = STAGES[current()] || STAGES['1'];
+    fill.style.setProperty('--level', s.level + '%');
+    fill.classList.toggle('is-empty', s.level === 0);
+    state.textContent = t(s.state, state.textContent);
+    who.textContent = t(s.who, who.textContent);
+    note.textContent = t(s.note, note.textContent);
+  }
+
+  steps.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      steps.forEach(function (o) { o.setAttribute('aria-pressed', 'false'); });
+      btn.setAttribute('aria-pressed', 'true');
+      render();
+    });
+  });
+
+  if (window.ntI18n && typeof window.ntI18n.onChange === 'function') window.ntI18n.onChange(render);
+  else render();
+})();
+
+/* ---- figure: how much of your balance one order touches ----------------- */
+(function () {
+  'use strict';
+
+  var track = document.getElementById('abar-track');
+  if (!track) return;
+  var signed = document.getElementById('abar-signed');
+  var rest = document.getElementById('abar-rest');
+  var note = document.getElementById('abar-note');
+  var btnNt = document.getElementById('abar-nt');
+  var btnCex = document.getElementById('abar-cex');
+  if (!signed || !rest || !note || !btnNt || !btnCex) return;
+
+  function t(key, fallback) {
+    var api = window.ntI18n;
+    var v = api && typeof api.t === 'function' ? api.t(key) : undefined;
+    return v === undefined || v === null ? fallback : v;
+  }
+
+  function render() {
+    var custodial = btnCex.getAttribute('aria-pressed') === 'true';
+    track.classList.toggle('is-custodial', custodial);
+    signed.textContent = t(custodial ? 'bg.viz_appr_seg_cex_a' : 'bg.viz_appr_seg_signed', signed.textContent);
+    rest.textContent = t(custodial ? 'bg.viz_appr_seg_cex_b' : 'bg.viz_appr_seg_rest', rest.textContent);
+    note.textContent = t(custodial ? 'bg.viz_appr_note_cex' : 'bg.viz_appr_note_nt', note.textContent);
+  }
+
+  [btnNt, btnCex].forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      btnNt.setAttribute('aria-pressed', btn === btnNt ? 'true' : 'false');
+      btnCex.setAttribute('aria-pressed', btn === btnCex ? 'true' : 'false');
+      render();
+    });
+  });
+
+  if (window.ntI18n && typeof window.ntI18n.onChange === 'function') window.ntI18n.onChange(render);
+  else render();
+})();

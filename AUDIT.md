@@ -499,6 +499,21 @@ safety-critical glossary entries. This follows the standing rule against machine
 corrected security wording, but it means the page written for the least experienced readers is
 partly untranslated for them. This raises the professional-translation backlog from 33 keys to 69. See TRANSLATION_REVIEW.md Tier 4.
 
+**Finding BG-5 (P2, resolved 2026-08-15).** The beginner's guide was originally text-only apart
+from the hero safe demo, which left its hardest ideas — what the recovery timer actually changes,
+how much of a balance one order touches, and where pooled coins physically sit — carried entirely
+by prose. Six explainer figures were added (`bg.viz_*`, 59 keys, translated into all eight
+locales). Two are interactive.
+
+The recovery-timer figure is the one that matters for accuracy. It draws the timer as a gauge that
+refills on each trade and drains only during inactivity, and its fourth stage empties the gauge —
+which is exactly the moment a reader is most likely to infer an automatic payout. The copy at that
+stage therefore states that nothing has been sent and the coins are still at the same address, and
+`tests/e2e.test.js` asserts both halves of that: no payout verbs, and an explicit statement that
+the user builds and broadcasts the transaction. All figures are pure CSS with no images or
+third-party requests, and axe-core now covers them in their engaged state in both themes
+(15 contexts total).
+
 **Finding BG-4 (P2, resolved).** English fallback strings inside an RTL page had their trailing
 punctuation reordered by the bidi algorithm. `applyTranslations` now marks untranslated runs
 `dir="ltr"`, clearing the attribute as soon as a translation lands. This also improves the landing

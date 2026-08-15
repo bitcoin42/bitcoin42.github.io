@@ -195,7 +195,44 @@
       <p class="bg-pull" data-i18n="bg.problem_quote">"Not your keys, not your coins."</p>
       <p class="bg-small" style="margin-top:10px" data-i18n="bg.problem_quote_note">Meaning: if you don't hold the key that moves the bitcoin, you don't really have the bitcoin. You have someone's word.</p>
     </div>
-    <p data-i18n="bg.problem_p3">We built NightTrader so you can trade without handing over the key.</p>
+    <!-- ===== figure: pooled wallet vs a key of your own ===== -->
+    <figure class="bgv">
+      <div class="bgv-head" data-i18n="bg.viz_pool_head">Where the coins actually sit</div>
+      <div class="bgv-body">
+        <div class="pool">
+          <div class="pool-side">
+            <p class="pool-h" data-i18n="bg.viz_pool_cex_h">A normal exchange</p>
+            <div class="pool-people" aria-hidden="true">
+              <span class="pool-person">👤</span><span class="pool-person">👤</span><span class="pool-person">👤</span><span class="pool-person">👤</span>
+            </div>
+            <p class="pool-arrow" aria-hidden="true">↓</p>
+            <div class="pool-vault is-pot">
+              <span class="pool-coins" aria-hidden="true">₿₿₿₿</span>
+              <span data-i18n="bg.viz_pool_cex_pot">Everyone's coins, one wallet, their key</span>
+            </div>
+            <p class="pool-slip" data-i18n="bg.viz_pool_cex_slip">What you hold: a number on their screen</p>
+          </div>
+          <div class="pool-side is-ours">
+            <p class="pool-h" data-i18n="bg.viz_pool_nt_h">NightTrader</p>
+            <div class="pool-people" aria-hidden="true">
+              <span class="pool-person is-you">👤</span>
+            </div>
+            <p class="pool-arrow" aria-hidden="true">↓</p>
+            <div class="pool-vault">
+              <span class="pool-coins" aria-hidden="true">₿</span>
+              <span data-i18n="bg.viz_pool_nt_pot">Your coins, your own address</span>
+            </div>
+            <div class="pool-keyrow" aria-hidden="true">
+              <span class="pool-key is-yours">🔑</span><span class="pool-key">🔑</span>
+            </div>
+            <p class="pool-slip" data-i18n="bg.viz_pool_nt_slip">What you hold: one of the two keys that open it</p>
+          </div>
+        </div>
+      </div>
+      <figcaption data-i18n="bg.viz_pool_cap">On the left, your coins are mixed into one pot the company controls, and your balance is an entry in their database. On the right, the coins sit at an address that needs your key before anything can move.</figcaption>
+    </figure>
+
+    <p style="margin-top:26px" data-i18n="bg.problem_p3">We built NightTrader so you can trade without handing over the key.</p>
   </div>
 </section>
 
@@ -247,6 +284,26 @@
       <li>
         <h3 data-i18n="bg.how_s3_h">You place an order, and approve only that amount</h3>
         <p data-i18n="bg.how_s3_p">Say you have 1 bitcoin here and you want to sell 0.2. You approve 0.2 — and only 0.2. What you approve is bounded by the transaction you sign. Compare that to a normal exchange, where your whole balance is always in their hands.</p>
+
+        <!-- ===== figure: how much of your balance a single order touches ===== -->
+        <figure class="bgv" id="viz-approve">
+          <div class="bgv-head" data-i18n="bg.viz_appr_head">Your balance: 1 BTC. You want to sell 0.2.</div>
+          <div class="bgv-body">
+            <div class="abar-track" id="abar-track">
+              <span class="abar-seg abar-signed" id="abar-signed" data-i18n="bg.viz_appr_seg_signed">0.2 signed</span>
+              <span class="abar-seg abar-rest" id="abar-rest" data-i18n="bg.viz_appr_seg_rest">0.8 untouched</span>
+            </div>
+            <div class="abar-labels">
+              <span data-i18n="bg.viz_appr_axis_0">0 BTC</span>
+              <span data-i18n="bg.viz_appr_axis_1">1 BTC</span>
+            </div>
+            <div class="bgv-steps" role="group" data-i18n-aria-label="bg.viz_appr_group" aria-label="Compare who can reach your balance">
+              <button type="button" class="bgv-step" id="abar-nt" aria-pressed="true" data-i18n="bg.viz_appr_btn_nt">Here</button>
+              <button type="button" class="bgv-step" id="abar-cex" aria-pressed="false" data-i18n="bg.viz_appr_btn_cex">A normal exchange</button>
+            </div>
+            <p class="bgv-note" id="abar-note" aria-live="polite" data-i18n="bg.viz_appr_note_nt">Orange is what your signature covers. The other 0.8 is not part of this transaction, so it cannot move with it.</p>
+          </div>
+        </figure>
       </li>
       <li>
         <h3 data-i18n="bg.how_s4_h">Both keys sign, and the trade goes through</h3>
@@ -268,6 +325,38 @@
     </div>
     <p data-i18n="bg.net_p3">This rule isn't a promise on a website. Once your coins sit in such a safe, the rule is enforced by the bitcoin network itself, in the same place the coins live. We can't switch it off after the fact, and neither can anyone who takes over our company, buys us, sues us, or shuts us down.</p>
     <p data-i18n="bg.net_p4">While you're actively trading, the timer is designed to keep getting pushed back, so you never bump into it by accident. It's there for the bad day, not the normal one.</p>
+
+    <!-- ===== figure: the recovery timer, stage by stage =====
+         The gauge shows how much time is left before the recovery branch
+         becomes spendable. Trading refills it; inactivity drains it. The
+         final stage must never read as an automatic payout — it grants
+         permission, and the user still broadcasts. Guarded by tests/e2e. -->
+    <figure class="bgv" id="viz-timer">
+      <div class="bgv-head" data-i18n="bg.viz_timer_head">The recovery timer, step by step</div>
+      <div class="bgv-body">
+        <div class="gauge-scale" aria-hidden="true">
+          <span data-i18n="bg.viz_timer_scale_lock">Locktime</span>
+          <span data-i18n="bg.viz_timer_scale_full">Full timer</span>
+        </div>
+        <div class="gauge-track">
+          <div class="gauge-fill" id="gauge-fill" style="--level: 100%"></div>
+          <span class="gauge-zero" aria-hidden="true"></span>
+        </div>
+        <div class="gauge-legend">
+          <span class="gauge-state" id="gauge-state" data-i18n="bg.viz_timer_state_1">Timer set</span>
+          <span id="gauge-who" data-i18n="bg.viz_timer_who_both">Needs both keys</span>
+        </div>
+
+        <div class="bgv-steps" role="group" data-i18n-aria-label="bg.viz_timer_group" aria-label="Recovery timer stages">
+          <button type="button" class="bgv-step" data-stage="1" aria-pressed="true" data-i18n="bg.viz_timer_btn_1">1 · You deposit</button>
+          <button type="button" class="bgv-step" data-stage="2" aria-pressed="false" data-i18n="bg.viz_timer_btn_2">2 · You trade</button>
+          <button type="button" class="bgv-step" data-stage="3" aria-pressed="false" data-i18n="bg.viz_timer_btn_3">3 · You stop</button>
+          <button type="button" class="bgv-step" data-stage="4" aria-pressed="false" data-i18n="bg.viz_timer_btn_4">4 · Timer runs out</button>
+        </div>
+        <p class="bgv-note" id="gauge-note" aria-live="polite" data-i18n="bg.viz_timer_note_1">Your coins arrive and the timer is set. From here on, moving them needs your key and ours together.</p>
+      </div>
+      <figcaption data-i18n="bg.viz_timer_cap">Step through it. Notice what stage 4 does and does not do: it changes who is allowed to spend, not where the coins are. Nothing is sent to you — you go and claim them.</figcaption>
+    </figure>
   </div>
 </section>
 
@@ -291,7 +380,22 @@
       </div>
     </div>
     <p data-i18n="bg.fees_p">No monthly fee, no account fee, no hidden spread markup. There's also no NightTrader coin or token — we never made one, on purpose. Nobody here is selling you an investment.</p>
-    <p class="bg-small" data-i18n="bg.fees_asof">Fees shown as of August 2026. Bitcoin network fees for moving coins on-chain are separate and go to miners, not to us. Check the exchange for the current schedule.</p>
+    <!-- ===== figure: 0.125% drawn to scale ===== -->
+    <figure class="bgv">
+      <div class="bgv-head" data-i18n="bg.viz_fee_head">0.125%, drawn to scale</div>
+      <div class="bgv-body">
+        <div class="fscale-track">
+          <div class="fscale-cut"></div>
+        </div>
+        <div class="fscale-labels">
+          <span><b>€1.25</b> <span data-i18n="bg.viz_fee_lbl_fee">fee</span></span>
+          <span><b>€998.75</b> <span data-i18n="bg.viz_fee_lbl_keep">stays yours</span></span>
+        </div>
+      </div>
+      <figcaption data-i18n="bg.viz_fee_cap">The orange sliver on a €1,000 trade is the whole trading fee. It is drawn at its real width — that is how thin 0.125% is.</figcaption>
+    </figure>
+
+    <p class="bg-small" style="margin-top:22px" data-i18n="bg.fees_asof">Fees shown as of August 2026. Bitcoin network fees for moving coins on-chain are separate and go to miners, not to us. Check the exchange for the current schedule.</p>
   </div>
 </section>
 
@@ -303,6 +407,28 @@
 
     <h3 style="margin-top:26px" data-i18n="bg.extra_1_h">Keep your key on a device that never touches the internet</h3>
     <p data-i18n="bg.extra_1_p">Advanced, but worth knowing about: you can keep your key on a separate offline device — an old phone that's never online, or a hardware wallet — using something like <a href="https://airgap.it/">AirGap</a>. To approve a trade, the two devices show each other QR codes through the camera. Nothing electronic passes between them. Ask us which devices are supported before you rely on this.</p>
+
+    <!-- ===== figure: what crosses the air gap ===== -->
+    <figure class="bgv">
+      <div class="bgv-head" data-i18n="bg.viz_gap_head">What crosses the gap</div>
+      <div class="bgv-body">
+        <div class="gap-row">
+          <div class="gap-dev is-offline">
+            <b data-i18n="bg.viz_gap_off_h">Offline device</b>
+            <span data-i18n="bg.viz_gap_off_p">Holds your key. Never connected to anything.</span>
+          </div>
+          <div class="gap-void">
+            <span class="gap-qr" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+            <span data-i18n="bg.viz_gap_void">Camera only</span>
+          </div>
+          <div class="gap-dev">
+            <b data-i18n="bg.viz_gap_on_h">Online device</b>
+            <span data-i18n="bg.viz_gap_on_p">Talks to the exchange. Never sees your key.</span>
+          </div>
+        </div>
+      </div>
+      <figcaption data-i18n="bg.viz_gap_cap">The two devices only ever show each other pictures on a screen. There is no cable and no network between them, so there is no path for anything to reach the key over the internet.</figcaption>
+    </figure>
 
     <h3 style="margin-top:26px" data-i18n="bg.extra_2_h">Your recovery details, given up front</h3>
     <p data-i18n="bg.extra_2_p">We hand them to you at signup rather than burying them in a help page. With them, you can rebuild and spend the recovery branch yourself even if this website never loads again.</p>
@@ -322,6 +448,31 @@
     <div class="bg-card">
       <p data-i18n="bg.priv_card">And here's the part that matters most: even if an account is being checked or frozen, the timer in your safe keeps running. Being under review does not put your coins beyond your reach for good — the recovery branch stays spendable with your key.</p>
     </div>
+
+    <!-- ===== figure: what an ID check actually sends ===== -->
+    <figure class="bgv bgv-night">
+      <div class="bgv-head" data-i18n="bg.viz_proof_head">What an ID check sends us</div>
+      <div class="bgv-body">
+        <div class="proof-row">
+          <div class="proof-box is-device">
+            <p class="proof-h" data-i18n="bg.viz_proof_dev_h">Your device</p>
+            <p class="proof-doc">
+              <span data-i18n="bg.viz_proof_dev_p">Passport, selfie, address — checked right here</span>
+              <span class="proof-stays" data-i18n="bg.viz_proof_dev_stays">↑ never leaves this box</span>
+            </p>
+          </div>
+          <div class="proof-wire">
+            <span class="proof-token" data-i18n="bg.viz_proof_token">✓ passed</span>
+            <span data-i18n="bg.viz_proof_wire">only this travels</span>
+          </div>
+          <div class="proof-box">
+            <p class="proof-h" data-i18n="bg.viz_proof_us_h">NightTrader</p>
+            <p class="proof-doc" data-i18n="bg.viz_proof_us_p">Sees a yes-or-no answer. No documents, no name, no face.</p>
+          </div>
+        </div>
+      </div>
+      <figcaption data-i18n="bg.viz_proof_cap">This is how zkMe describes their process. We are showing you their design, not something we can verify from our side — and it is worth understanding what it means before you rely on it.</figcaption>
+    </figure>
   </div>
 </section>
 
