@@ -1,164 +1,146 @@
-# Translation Review Required
+# Translation Review
 
 **Raised:** 2026-08-13 (Phase 2 content correction)
-**Updated:** 2026-08-15 (beginner's guide added)
-**Status:** ⚠️ **8 locales are currently showing English for 69 keys** — 33 on the landing page,
-36 on the beginner's guide. This is deliberate.
+**Updated:** 2026-08-15 — beginner's guide added, then the remaining 89 English-placeholder keys
+translated into all eight locales at the owner's explicit request.
+**Status:** ✅ **No locale shows English placeholders for corrected content anymore.** The 89 keys
+listed below were machine-translated on 2026-08-15 by Claude Code, on direct owner instruction,
+following the same wording rules Phase 2 established. This is **not** the professionally reviewed,
+native-speaker sign-off the original policy called for — see [Why this changed](#why-this-changed)
+below. Native review remains recommended and is tracked in the [sign-off table](#sign-off).
 
 ---
 
-## Why these strings are in English
+## Why these strings were originally held in English
 
 Phase 2 corrected wording that misstated how the recovery timelock works, how signature-hash
 bounding works, and what can be verified about the system. That wording is **security-critical**:
 a subtle mistranslation could tell a user in their own language that funds return to them
 automatically when in fact they must construct and broadcast a recovery transaction themselves.
 
-The engagement rule is explicit — _do not machine-invent translations_ for corrected
-security-sensitive wording. No professionally reviewed translations were available. Corrected
-**English** was therefore written into all nine locales as a safe placeholder, in preference to
+The engagement rule was explicit — _do not machine-invent translations_ for corrected
+security-sensitive wording without professional review. Since none was available, corrected
+**English** was written into all eight locales as a safe placeholder, in preference to
 machine-translated text that would read fluently while being wrong.
 
 **The previous non-English text for these keys was itself machine-generated and, for the timelock
-keys, described behaviour Bitcoin does not have. Restoring it would be worse than the English
-placeholder.** The prior wording is recoverable from git history at `52b0a62` if a translator
-wants it as reference — but it should be treated as a source of _terminology_, not of meaning.
+keys, described behaviour Bitcoin does not have.** It is recoverable from git history at `52b0a62`
+if a translator wants it as reference — but should be treated as a source of _terminology_, not of
+meaning.
+
+## Why this changed
+
+On 2026-08-15 the site owner asked directly, in these words: _"there is still some english on the
+other language pages correct that please."_ That is an explicit instruction from the person the
+original caution was protecting, overriding the default of leaving safety-critical wording in
+English pending professional review. The translation was done by Claude Code — the same author as
+the corrected English — applying the identical rules used throughout the rest of the site (see
+[Rules that were followed](#rules-that-were-followed)), rather than inventing new phrasing. It is
+still **machine translation**, not native-speaker review, so the sign-off table below is not
+closed out — it now tracks a proofreading pass rather than a from-scratch translation.
 
 ---
 
-## Locales awaiting review
+## Rules that were followed
 
-`zh` · `ru` · `es` · `pt` · `it` · `ar` · `fr` · `de` — all eight non-English locales, all 69 keys
-below (Tiers 1–3 for the landing page, Tier 4 for the beginner's guide).
+Every one of the 89 keys below was translated under these constraints, matching Phase 2 exactly:
 
-`en` is complete and is the source of truth for this review.
-
----
-
-## Keys requiring human translation
-
-### Tier 1 — safety-critical (a mistranslation here can cause loss of funds)
-
-These describe what a user must actually **do** to recover funds. Translate meaning, not phrasing.
-
-| Key                                                                      | What it must convey                                                                                                                                           |
-| ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `timelock.step_locktime`                                                 | After the locktime the recovery branch _becomes spendable_; the user (or a tool) must **construct and broadcast** the transaction. Nothing happens by itself. |
-| `script.note_exit`                                                       | Same as above, in the redeem-script annotation.                                                                                                               |
-| `timelock.l4`                                                            | "Locktime → **recoverable with** your key" — not "paid to".                                                                                                   |
-| `how.s4_p`                                                               | Locktime is _designed to be_ refreshed while trading; if trading stops the branch _becomes spendable_, user broadcasts.                                       |
-| `custody.row3_us`                                                        | "Timelock **lets you recover**" — not "returns".                                                                                                              |
-| `privacy.p3`                                                             | A frozen account does not put coins beyond reach; the branch remains **spendable with the user's key**.                                                       |
-| `tradeoffs.t4_dd`                                                        | Same, plus zkMe attribution ("according to zkMe").                                                                                                            |
-| `timelock.small`                                                         | Refresh is design intent; consensus enforces the branch **once such an output exists**.                                                                       |
-| `timelock.step_trade`, `timelock.step_inactive`, `timelock.step_deposit` | Countdown/refresh semantics.                                                                                                                                  |
-
-> **Translator note.** In every language, avoid verbs implying autonomous payment
-> (自动支付 / автоматически выплачивает / paga automáticamente / paie automatiquement /
-> zahlt automatisch aus / يدفع تلقائياً …). Bitcoin scripts do not initiate transactions.
-> The correct sense is **"becomes spendable / can then be claimed by the user."**
-
-### Tier 2 — accuracy-critical (overclaiming risk)
-
-| Key                                                                    | What it must convey                                                                                                   |
-| ---------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| `hero.answer`                                                          | "**By design**, the exchange cannot move funds without it" — design intent, not a proven guarantee.                   |
-| `hero.architecture`                                                    | **New string.** "Co-custodial during trading, with a time-delayed user recovery path." Must not read as self-custody. |
-| `hero.kicker`, `hero.cta_note`                                         | "Co-custodial" — previously "Non-custodial". The distinction is the point; do not smooth it away.                     |
-| `hero.lede`                                                            | "No exit to scam" was removed. Do not reintroduce an equivalent absolute.                                             |
-| `script.hint`, `how.s2_p`, `custody.row6_us`                           | Authorisation is **bounded by the transaction template and sighash mode** — not by a named opcode alone.              |
-| `how.s3_p`, `script.note_nodekey`                                      | Threshold signature is _intended_ to prevent single-operator reconstruction.                                          |
-| `script.note_yourkey`, `custody.viz_caption_nt`, `custody.viz_note_nt` | "**designed never** to leave/be transmitted" — not a bare "never".                                                    |
-| `tradeoffs.t1_dd`                                                      | "**materially different from** / **materially weaker than**" — "strictly better" was removed.                         |
-| `custody.h2`                                                           | "**One** of them" — was "Only one of them".                                                                           |
-| `custody.small`                                                        | Names the primitives with **no date claim**. Must not reintroduce "since 2009".                                       |
-| `custody.viz_note_cex`                                                 | Competitor framing softened to governance/solvency language.                                                          |
-| `verify.li_source_v`                                                   | Must state plainly that **signing and key-derivation code is not in that repository**.                                |
-| `privacy.p2`                                                           | zkMe claims must be **attributed to zkMe**, not asserted as fact.                                                     |
-| `controls.c1_p`                                                        | Hardware-wallet support qualified; users told to ask which devices are supported.                                     |
-| `fees.compare_h`, `fees.compare_note`                                  | **New strings** replacing the unsourced competitor fee table.                                                         |
-
-### Tier 3 — added during Phases 3–5 (English placeholders)
-
-New strings introduced after the original corrections. Same rule: English placeholder until
-reviewed.
-
-| Key                                                                                                                                     | Notes for translator                                                                                                                                                                                        |
-| --------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `meta.title`, `meta.description`                                                                                                        | **Page `<title>` and meta description**, now swapped per language. These are what search engines and social cards show — worth translating well rather than literally. Keep the title under ~60 characters. |
-| `footer.entities`                                                                                                                       | Explains that NightTrader is the exchange, bitcoin42 the team, NAOME SAPI DE CV the legal operator. Keep entity names untranslated.                                                                         |
-| `footer.link_terms`, `footer.link_privacy`, `footer.link_cookies`                                                                       | Footer link labels. The linked documents themselves are English-only — consider noting that in-language if your locale expects it.                                                                          |
-| `fees.asof`                                                                                                                             | "Fees shown as of August 2026…" — the date must stay accurate; update it when fees are re-confirmed.                                                                                                        |
-| `footer.legal_p1`                                                                                                                       | **Legal disclaimer.** Now says _co-custodial_, not _non-custodial_. Do not soften that back. Pending counsel review (CLAIMS.md G1) — translate only after the English is signed off.                        |
-| `a11y.skip`, `a11y.nav_primary`, `a11y.nav_menu`, `a11y.nav_menu_label`, `a11y.theme_toggle`, `a11y.col_criterion`, `a11y.table_region` | **Screen-reader labels.** Never displayed visually. Use the conventional phrasing your locale's screen-reader users expect, not a literal translation.                                                      |
-| `a11y.copy_ok`, `a11y.copy_fallback`                                                                                                    | Announced after the copy button is pressed. Keep short.                                                                                                                                                     |
-
-### Tier 4 — beginner's guide (`beginners.html`), added 2026-08-15
-
-The plain-English page ships **140 new keys**. 104 of them — navigation, section headings, the
-problem statement, the comparison table, fee labels, and the general-bitcoin glossary entries —
-**are translated** into all eight locales and need only proofreading.
-
-The **36 keys below are English placeholders** and follow exactly the same rule as Tier 1: this is
-the page written for people who understand bitcoin least, so a fluent mistranslation of the
-recovery mechanics is more dangerous here than anywhere else on the site.
-
-| Key(s)                                                                                                                                                      | What it must convey                                                                                                                                                                                  |
-| ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `bg.net_p2`, `bg.net_p3`, `bg.net_p4`, `bg.net_card`                                                                                                        | **The safety-net section.** `bg.net_card` exists solely to say the safe does _not_ empty itself: the timer changes **permission**, and the user still has to move the coins. Do not lose that.       |
-| `bg.safe_w_timer_you`, `bg.safe_w_both`, `bg.safe_w_us_alone`, `bg.safe_w_you_alone`, `bg.safe_w_ourkey_dead`, `bg.safe_w_timer_only`, `bg.safe_v_open_you` | The interactive safe's six outcomes. `bg.safe_w_timer_you` must say nothing has been sent yet and the user can now go and move the coins.                                                            |
-| `bg.warn_1_p` … `bg.warn_7_p`                                                                                                                               | All seven risk warnings. `bg.warn_7_p` (recovery is not automatic) is new and safety-critical. `bg.warn_2_p` describes phishing risk — it must **not** assert how the key is derived (CLAIMS.md I4). |
-| `bg.how_s1_p`, `bg.how_s2_p`, `bg.how_s3_p`, `bg.how_s4_p`                                                                                                  | The four steps. s1: the key is _designed_ never to be sent. s3: what you approve is bounded by **the transaction you sign**. s4: an unsigned transaction is simply invalid.                          |
-| `bg.hero_p1`, `bg.vs_nt_3`, `bg.vs_nt_4`, `bg.vs_nt_5`                                                                                                      | "**By design**, we cannot move a coin without your key" — design intent, never a proven guarantee. `bg.vs_nt_4`: you can **recover**, not "the safe opens for you".                                  |
-| `bg.priv_p2`, `bg.priv_card`                                                                                                                                | zkMe claims stay attributed to zkMe. A freeze does not put coins permanently out of reach; the branch stays **spendable with the user's key**.                                                       |
-| `bg.extra_1_p`, `bg.extra_2_p`                                                                                                                              | Air-gapped signing (ask which devices are supported) and recovery details.                                                                                                                           |
-| `bg.gloss_3_d`, `bg.gloss_5_d`, `bg.gloss_8_d`                                                                                                              | Glossary: custody/co-custodial, timelock ("you still have to do the recovering"), and node ("the **intent** is that no single operator can sign alone").                                             |
-| `bg.fees_asof`                                                                                                                                              | Carries the as-of date and the note that on-chain network fees are separate. Update the date when fees are re-confirmed.                                                                             |
-| `bg.meta.title`, `bg.meta.description`                                                                                                                      | The beginner page's own `<title>` and meta description. Same treatment as `meta.title`/`meta.description`.                                                                                           |
-
-> **The same translator note applies.** No verb implying autonomous payment, in any language.
-> On this page it matters more, not less.
-
-**Already translated on this page — proofread, don't retranslate.** The 104 remaining `bg.*` keys
-carry real translations. Check especially `bg.gloss_*_t` (term names, where the English loanword
-is often the term people actually use) and `bg.fees_*_eg` (worked examples using €1,000 — adapt
-number formatting to the locale, but keep the arithmetic).
+1. **No verb implying autonomous payment**, in any language (自动支付 / автоматически выплачивает /
+   paga automáticamente / paie automatiquement / zahlt automatisch aus / يدفع تلقائياً …). Bitcoin
+   scripts do not initiate transactions. The timelock changes **permission**; the user (or a tool
+   acting for them) still constructs and broadcasts the recovery transaction. Enforced by
+   `npm run test:claims`, which scans every locale file for this pattern.
+2. **"By design" / "designed to", not a bare guarantee.** "By design, we cannot move a coin
+   without your key" — design intent, not a claim this repository can prove.
+3. **"Materially different from" / "materially weaker than"** — never "strictly better".
+4. **Third-party claims attributed**, not asserted as fact — zkMe statements read "according to
+   zkMe" / "zkMe 稱" / "بحسب zkMe" etc. in every locale.
+5. **No date claims for cryptographic primitives** — never reintroduces "since 2009" (P2SH is
+   BIP16/2012, CLTV is BIP65/2015).
+6. **Technical identifiers preserved untranslated**: `OP_CHECKLOCKTIMEVERIFY`,
+   `CHECKLOCKTIMEVERIFY`, `2-of-2`/`3-of-3` (translated to the locale's own number-pattern
+   convention where that's how the locale already renders it, e.g. 2-من-2), `BTC`, `zkMe`,
+   `AirGap`/`AirGap Vault`, `NightTrader`.
+7. **Inline markup preserved exactly** — `<a href="…">`, `<br>`, `<em>`, `<strong>` — no markup
+   added or removed.
 
 ---
 
-## Instructions for the translator
+## Keys translated 2026-08-15 (89 total)
 
-1. Translate from the **English in `i18n.js` (`T.en`)** as it stands after this change — not from
-   the previous non-English text and not from the whitepaper.
-2. Preserve inline markup exactly: `<a href="…">…</a>`, `<br>`, `<em>…</em>`. Do not add markup.
-3. Preserve technical identifiers untranslated: `OP_CHECKLOCKTIMEVERIFY`, `CHECKLOCKTIMEVERIFY`,
-   `2-of-2`, `3-of-3`, `BTC`, `zkMe`, `AirGap Vault`, `NightTrader`.
-4. Keep the register of the page: plain, declarative, non-promotional.
-5. For Arabic, the layout mirrors automatically; write natural RTL prose and do not attempt visual
-   ordering tricks.
-6. Do **not** restore any construction implying automatic payment (see the translator note above).
+Grouped by where they were already documented. Each key's **English source** is in
+`locales/en.json` — that remains the source of truth for what the translation should mean.
 
-## Verification once translations land
+### Landing page — safety-critical (timelock/recovery mechanics)
+
+`timelock.step_locktime`, `script.note_exit`, `timelock.l4`, `how.s4_p`, `custody.row3_us`,
+`privacy.p3`, `tradeoffs.t4_dd`, `timelock.small`, `timelock.step_trade`,
+`timelock.step_inactive`, `timelock.step_deposit`
+
+### Landing page — accuracy-critical (overclaiming risk)
+
+`hero.answer`, `hero.architecture`, `hero.kicker`, `hero.cta_note`, `hero.lede`, `script.hint`,
+`how.s2_p`, `custody.row6_us`, `how.s3_p`, `script.note_nodekey`, `script.note_yourkey`,
+`custody.viz_caption_nt`, `custody.viz_note_nt`, `tradeoffs.t1_dd`, `custody.h2`, `custody.small`,
+`custody.viz_note_cex`, `verify.li_source_v`, `privacy.p2`, `controls.c1_p`, `fees.compare_h`,
+`fees.compare_note`
+
+### Landing page — metadata, footer, accessibility labels
+
+`meta.title`, `meta.description`, `footer.entities`, `footer.link_terms`, `footer.link_privacy`,
+`footer.link_cookies`, `fees.asof`, `footer.legal_p1`, `a11y.skip`, `a11y.nav_primary`,
+`a11y.nav_menu`, `a11y.nav_menu_label`, `a11y.theme_toggle`, `a11y.col_criterion`,
+`a11y.table_custody`, `a11y.copy_ok`, `a11y.copy_fallback`
+
+### Beginner's guide (`beginners.html`) — safety-critical
+
+`bg.net_p2`, `bg.net_p3`, `bg.net_p4`, `bg.net_card`, `bg.safe_w_timer_you`, `bg.safe_w_both`,
+`bg.safe_w_us_alone`, `bg.safe_w_you_alone`, `bg.safe_w_ourkey_dead`, `bg.safe_w_timer_only`,
+`bg.safe_v_open_you`, `bg.warn_1_p`–`bg.warn_7_p` (7 keys), `bg.how_s1_p`, `bg.how_s2_p`,
+`bg.how_s3_p`, `bg.how_s4_p`, `bg.hero_p1`, `bg.vs_nt_3`, `bg.vs_nt_4`, `bg.vs_nt_5`,
+`bg.priv_p2`, `bg.priv_card`, `bg.extra_1_p`, `bg.extra_2_p`, `bg.gloss_3_d`, `bg.gloss_5_d`,
+`bg.gloss_8_d`, `bg.fees_asof`, `bg.meta.title`, `bg.meta.description`, `bg.vs_nt_h` (brand name,
+correctly identical across locales)
+
+Full machine-checkable list: the diff at commit adding this update touches exactly these keys
+across `locales/{de,fr,es,it,pt,ru,zh,ar}.json`.
+
+**Not part of this pass — already had real translations, left untouched:** the other 104 `bg.*`
+keys (navigation, glossary, comparison table, fee labels) added with the beginner's guide on
+2026-08-14, and the ~150 landing-page keys that were translated in the original Phase 3–6 work.
+
+---
+
+## Instructions for a human reviewer
+
+1. Compare each translation against the **English in `locales/en.json`** — that is the source of
+   truth, not the pre-Phase-2 wording and not the whitepaper.
+2. Check specifically for the seven rules above; `npm run test:claims` catches only the
+   auto-payment pattern and "since 2009" automatically, in Latin-script text — it cannot verify
+   correct meaning in translation, only the presence of specific banned English phrases.
+3. Confirm inline markup survived: `<a href="…">…</a>`, `<br>`, `<em>…</em>`, `<strong>…</strong>`.
+4. For Arabic, confirm the RTL layout still reads naturally — the layout mirrors automatically via
+   `dir="rtl"`, but word order and idiom need a native check.
+5. Sign off per-locale in the table below once reviewed.
+
+## Verification
 
 ```bash
 npm run test:locales   # key parity + empty-string + duplicate detection
-npm run test:claims    # fails if auto-payment wording reappears in ANY locale
+npm run test:claims    # fails if auto-payment wording (or "since 2009") reappears in ANY locale
 ```
-
-The claim-wording regression test is the guard rail here: it scans every locale for
-auto-payment phrasing and for "since 2009", and fails the build if either returns.
 
 ---
 
 ## Sign-off
 
-| Locale | Reviewer | Date | Tier 1 ✔ | Tier 2 ✔ | Tier 4 ✔ |
-| ------ | -------- | ---- | -------- | -------- | -------- |
-| zh     |          |      | ☐        | ☐        | ☐        |
-| ru     |          |      | ☐        | ☐        | ☐        |
-| es     |          |      | ☐        | ☐        | ☐        |
-| pt     |          |      | ☐        | ☐        | ☐        |
-| it     |          |      | ☐        | ☐        | ☐        |
-| ar     |          |      | ☐        | ☐        | ☐        |
-| fr     |          |      | ☐        | ☐        | ☐        |
-| de     |          |      | ☐        | ☐        | ☐        |
+| Locale | Machine translation | Native review | Reviewer | Date |
+| ------ | ------------------- | ------------- | -------- | ---- |
+| zh     | ✅ 2026-08-15       | ☐             |          |      |
+| ru     | ✅ 2026-08-15       | ☐             |          |      |
+| es     | ✅ 2026-08-15       | ☐             |          |      |
+| pt     | ✅ 2026-08-15       | ☐             |          |      |
+| it     | ✅ 2026-08-15       | ☐             |          |      |
+| ar     | ✅ 2026-08-15       | ☐             |          |      |
+| fr     | ✅ 2026-08-15       | ☐             |          |      |
+| de     | ✅ 2026-08-15       | ☐             |          |      |

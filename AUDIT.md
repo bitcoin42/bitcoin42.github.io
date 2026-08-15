@@ -406,20 +406,20 @@ says nothing about geographic availability.
 
 ### P0 — correctness, trust, and access
 
-| #     | Item                                                                                                                                                                              | Ref        |
-| ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
-| P0-1  | Correct all timelock wording: CLTV makes a branch _spendable_; it does not auto-pay                                                                                               | C-2        |
-| P0-2  | Remove "since 2009"; name the actual primitives without a false date                                                                                                              | C-3        |
-| P0-3  | Fix or remove the "read the signing logic / key derivation" invitation — the linked repo has none                                                                                 | D-6        |
-| P0-4  | Resolve the fee contradiction (0.125 % vs 0.25 %) — **OWNER**                                                                                                                     | C-6        |
-| P0-5  | Remove or source the competitor fee table                                                                                                                                         | C-7        |
-| P0-6  | Soften unsupported absolutes (never/cannot/only/nothing/every/strictly better/no exit to scam)                                                                                    | C-1        |
-| P0-7  | Decide canonical domain and align every metadata surface — **OWNER**                                                                                                              | D-1, D-2   |
-| P0-8  | Restore mobile navigation                                                                                                                                                         | A-1, M-1   |
-| P0-9  | Fix colour contrast (10 elements)                                                                                                                                                 | A-2        |
-| P0-10 | Label the architecture co-custodial near the hero                                                                                                                                 | C-9        |
-| P0-11 | Link the existing Terms / Privacy / Cookie policies                                                                                                                               | LG-1, LG-2 |
-| P0-12 | Merge this PR to `master` and confirm `bitcoin42.com` serves current content — **OWNER** (build verified green on this branch's preview deploy; production only updates on merge) | D-7        |
+| #     | Item                                                                                                                  | Ref        |
+| ----- | --------------------------------------------------------------------------------------------------------------------- | ---------- |
+| P0-1  | Correct all timelock wording: CLTV makes a branch _spendable_; it does not auto-pay                                   | C-2        |
+| P0-2  | Remove "since 2009"; name the actual primitives without a false date                                                  | C-3        |
+| P0-3  | Fix or remove the "read the signing logic / key derivation" invitation — the linked repo has none                     | D-6        |
+| P0-4  | Resolve the fee contradiction (0.125 % vs 0.25 %) — **OWNER**                                                         | C-6        |
+| P0-5  | Remove or source the competitor fee table                                                                             | C-7        |
+| P0-6  | Soften unsupported absolutes (never/cannot/only/nothing/every/strictly better/no exit to scam)                        | C-1        |
+| P0-7  | Decide canonical domain and align every metadata surface — **OWNER**                                                  | D-1, D-2   |
+| P0-8  | Restore mobile navigation                                                                                             | A-1, M-1   |
+| P0-9  | Fix colour contrast (10 elements)                                                                                     | A-2        |
+| P0-10 | Label the architecture co-custodial near the hero                                                                     | C-9        |
+| P0-11 | Link the existing Terms / Privacy / Cookie policies                                                                   | LG-1, LG-2 |
+| P0-12 | Merge this PR to `master` and confirm `bitcoin42.com` serves current content — **RESOLVED**, verified live 2026-08-15 | D-7        |
 
 ### P1 — integrity, SEO, accessibility
 
@@ -480,7 +480,7 @@ A second, plain-English page was added at the owner's request, from a supplied d
 the landing page's header, navigation, footer, theme and i18n engine, and adds its own stylesheet
 and an interactive two-key-safe demo.
 
-**Finding B-1 (P0, resolved before publication).** The supplied draft reintroduced wording that
+**Finding BG-1 (P0, resolved before publication).** The supplied draft reintroduced wording that
 Phase 2 had removed from the landing page as inaccurate — most seriously, that after the timelock
 "the safe opens for your key alone", which reads as an automatic payout. It also asserted that the
 user's key is derived from their login details, a claim with no public evidence (D-6). These were
@@ -488,7 +488,7 @@ corrected rather than published; the specifics are itemised in **CLAIMS.md secti
 timelock correction is now additionally guarded by an end-to-end assertion that drives the demo
 into its recovery state and rejects payout phrasing.
 
-**Finding B-2 (P2, resolved).** The draft footer carried the Tijuana street address (removed at
+**Finding BG-2 (P2, resolved).** The draft footer carried the Tijuana street address (removed at
 the owner's request) and linked `/datenschutz.html` and `/terms.html`, which do not exist in this
 repository. Both now use the same `nighttrader.exchange` legal links as the landing page (LG-1,
 LG-2).
@@ -499,7 +499,7 @@ safety-critical glossary entries. This follows the standing rule against machine
 corrected security wording, but it means the page written for the least experienced readers is
 partly untranslated for them. This raises the professional-translation backlog from 33 keys to 69. See TRANSLATION_REVIEW.md Tier 4.
 
-**Finding B-4 (P2, resolved).** English fallback strings inside an RTL page had their trailing
+**Finding BG-4 (P2, resolved).** English fallback strings inside an RTL page had their trailing
 punctuation reordered by the bidi algorithm. `applyTranslations` now marks untranslated runs
 `dir="ltr"`, clearing the attribute as soon as a translation lands. This also improves the landing
 page's Arabic rendering for its 58 existing English fallbacks.
@@ -513,8 +513,8 @@ match the landing page exactly, so E1–E3 remain the governing entries and thei
 
 ## 12. Required human review
 
-| Area              | Why                                                                                                                         |
-| ----------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| **Legal**         | LG-4 (broker/custodian/investment-service characterisation), LG-2 applicability, LG-5 geo-disclosure                        |
-| **Cryptographic** | Every claim in CLAIMS.md marked _unverified_; the recovery flow in particular                                               |
-| **Translation**   | All security-critical wording changed in Phase 2, plus the beginner's guide's 36 English placeholders — 69 keys × 8 locales |
+| Area              | Why                                                                                                                                                       |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Legal**         | LG-4 (broker/custodian/investment-service characterisation), LG-2 applicability, LG-5 geo-disclosure                                                      |
+| **Cryptographic** | Every claim in CLAIMS.md marked _unverified_; the recovery flow in particular                                                                             |
+| **Translation**   | 89 keys × 8 locales machine-translated 2026-08-15 at owner's request (BG-3); native-speaker proofread still recommended, tracked in TRANSLATION_REVIEW.md |
