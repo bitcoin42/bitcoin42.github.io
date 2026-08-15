@@ -20,6 +20,16 @@ const CONTEXTS = [
   { name: 'mobile dark', opts: { viewport: { width: 375, height: 800 }, colorScheme: 'dark' }, url: '/' },
   { name: 'arabic rtl', opts: { viewport: { width: 375, height: 800 } }, url: '/?lang=ar' },
   { name: 'mobile menu open', opts: { viewport: { width: 375, height: 800 } }, url: '/', openMenu: true },
+
+  // Beginner's guide — same matrix, since it ships its own stylesheet.
+  { name: 'beginners desktop light', opts: { viewport: { width: 1280, height: 900 } }, url: '/beginners.html' },
+  { name: 'beginners desktop dark', opts: { viewport: { width: 1280, height: 900 }, colorScheme: 'dark' }, url: '/beginners.html' },
+  { name: 'beginners mobile light', opts: { viewport: { width: 375, height: 800 } }, url: '/beginners.html' },
+  { name: 'beginners mobile dark', opts: { viewport: { width: 375, height: 800 }, colorScheme: 'dark' }, url: '/beginners.html' },
+  { name: 'beginners arabic rtl', opts: { viewport: { width: 375, height: 800 } }, url: '/beginners.html?lang=ar' },
+  { name: 'beginners menu open', opts: { viewport: { width: 375, height: 800 } }, url: '/beginners.html', openMenu: true },
+  // The safe demo changes colour and copy when engaged; check the engaged state too.
+  { name: 'beginners safe engaged', opts: { viewport: { width: 1280, height: 900 } }, url: '/beginners.html', openSafe: true },
 ];
 
 (async () => {
@@ -34,6 +44,11 @@ const CONTEXTS = [
     if (ctxDef.openMenu) {
       await page.click('#nav-toggle');
       await page.waitForTimeout(150);
+    }
+    if (ctxDef.openSafe) {
+      await page.click('#k-you');
+      await page.click('#k-us');
+      await page.waitForTimeout(100);
     }
     await page.addScriptTag({ content: AXE });
     const res = await page.evaluate(async () => window.axe.run(document, { resultTypes: ['violations'] }));

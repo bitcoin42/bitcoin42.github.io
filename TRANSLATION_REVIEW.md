@@ -1,7 +1,9 @@
 # Translation Review Required
 
 **Raised:** 2026-08-13 (Phase 2 content correction)
-**Status:** ⚠️ **8 locales are currently showing English for 33 keys.** This is deliberate.
+**Updated:** 2026-08-15 (beginner's guide added)
+**Status:** ⚠️ **8 locales are currently showing English for 69 keys** — 33 on the landing page,
+36 on the beginner's guide. This is deliberate.
 
 ---
 
@@ -26,8 +28,8 @@ wants it as reference — but it should be treated as a source of _terminology_,
 
 ## Locales awaiting review
 
-`zh` · `ru` · `es` · `pt` · `it` · `ar` · `fr` · `de` — all eight non-English locales, all 33 keys
-below.
+`zh` · `ru` · `es` · `pt` · `it` · `ar` · `fr` · `de` — all eight non-English locales, all 69 keys
+below (Tiers 1–3 for the landing page, Tier 4 for the beginner's guide).
 
 `en` is complete and is the source of truth for this review.
 
@@ -91,6 +93,37 @@ reviewed.
 | `a11y.skip`, `a11y.nav_primary`, `a11y.nav_menu`, `a11y.nav_menu_label`, `a11y.theme_toggle`, `a11y.col_criterion`, `a11y.table_region` | **Screen-reader labels.** Never displayed visually. Use the conventional phrasing your locale's screen-reader users expect, not a literal translation.                                                      |
 | `a11y.copy_ok`, `a11y.copy_fallback`                                                                                                    | Announced after the copy button is pressed. Keep short.                                                                                                                                                     |
 
+### Tier 4 — beginner's guide (`beginners.html`), added 2026-08-15
+
+The plain-English page ships **140 new keys**. 104 of them — navigation, section headings, the
+problem statement, the comparison table, fee labels, and the general-bitcoin glossary entries —
+**are translated** into all eight locales and need only proofreading.
+
+The **36 keys below are English placeholders** and follow exactly the same rule as Tier 1: this is
+the page written for people who understand bitcoin least, so a fluent mistranslation of the
+recovery mechanics is more dangerous here than anywhere else on the site.
+
+| Key(s)                                                                                                                                                      | What it must convey                                                                                                                                                                                  |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `bg.net_p2`, `bg.net_p3`, `bg.net_p4`, `bg.net_card`                                                                                                        | **The safety-net section.** `bg.net_card` exists solely to say the safe does _not_ empty itself: the timer changes **permission**, and the user still has to move the coins. Do not lose that.       |
+| `bg.safe_w_timer_you`, `bg.safe_w_both`, `bg.safe_w_us_alone`, `bg.safe_w_you_alone`, `bg.safe_w_ourkey_dead`, `bg.safe_w_timer_only`, `bg.safe_v_open_you` | The interactive safe's six outcomes. `bg.safe_w_timer_you` must say nothing has been sent yet and the user can now go and move the coins.                                                            |
+| `bg.warn_1_p` … `bg.warn_7_p`                                                                                                                               | All seven risk warnings. `bg.warn_7_p` (recovery is not automatic) is new and safety-critical. `bg.warn_2_p` describes phishing risk — it must **not** assert how the key is derived (CLAIMS.md I4). |
+| `bg.how_s1_p`, `bg.how_s2_p`, `bg.how_s3_p`, `bg.how_s4_p`                                                                                                  | The four steps. s1: the key is _designed_ never to be sent. s3: what you approve is bounded by **the transaction you sign**. s4: an unsigned transaction is simply invalid.                          |
+| `bg.hero_p1`, `bg.vs_nt_3`, `bg.vs_nt_4`, `bg.vs_nt_5`                                                                                                      | "**By design**, we cannot move a coin without your key" — design intent, never a proven guarantee. `bg.vs_nt_4`: you can **recover**, not "the safe opens for you".                                  |
+| `bg.priv_p2`, `bg.priv_card`                                                                                                                                | zkMe claims stay attributed to zkMe. A freeze does not put coins permanently out of reach; the branch stays **spendable with the user's key**.                                                       |
+| `bg.extra_1_p`, `bg.extra_2_p`                                                                                                                              | Air-gapped signing (ask which devices are supported) and recovery details.                                                                                                                           |
+| `bg.gloss_3_d`, `bg.gloss_5_d`, `bg.gloss_8_d`                                                                                                              | Glossary: custody/co-custodial, timelock ("you still have to do the recovering"), and node ("the **intent** is that no single operator can sign alone").                                             |
+| `bg.fees_asof`                                                                                                                                              | Carries the as-of date and the note that on-chain network fees are separate. Update the date when fees are re-confirmed.                                                                             |
+| `bg.meta.title`, `bg.meta.description`                                                                                                                      | The beginner page's own `<title>` and meta description. Same treatment as `meta.title`/`meta.description`.                                                                                           |
+
+> **The same translator note applies.** No verb implying autonomous payment, in any language.
+> On this page it matters more, not less.
+
+**Already translated on this page — proofread, don't retranslate.** The 104 remaining `bg.*` keys
+carry real translations. Check especially `bg.gloss_*_t` (term names, where the English loanword
+is often the term people actually use) and `bg.fees_*_eg` (worked examples using €1,000 — adapt
+number formatting to the locale, but keep the arithmetic).
+
 ---
 
 ## Instructions for the translator
@@ -119,13 +152,13 @@ auto-payment phrasing and for "since 2009", and fails the build if either return
 
 ## Sign-off
 
-| Locale | Reviewer | Date | Tier 1 ✔ | Tier 2 ✔ |
-| ------ | -------- | ---- | -------- | -------- |
-| zh     |          |      | ☐        | ☐        |
-| ru     |          |      | ☐        | ☐        |
-| es     |          |      | ☐        | ☐        |
-| pt     |          |      | ☐        | ☐        |
-| it     |          |      | ☐        | ☐        |
-| ar     |          |      | ☐        | ☐        |
-| fr     |          |      | ☐        | ☐        |
-| de     |          |      | ☐        | ☐        |
+| Locale | Reviewer | Date | Tier 1 ✔ | Tier 2 ✔ | Tier 4 ✔ |
+| ------ | -------- | ---- | -------- | -------- | -------- |
+| zh     |          |      | ☐        | ☐        | ☐        |
+| ru     |          |      | ☐        | ☐        | ☐        |
+| es     |          |      | ☐        | ☐        | ☐        |
+| pt     |          |      | ☐        | ☐        | ☐        |
+| it     |          |      | ☐        | ☐        | ☐        |
+| ar     |          |      | ☐        | ☐        | ☐        |
+| fr     |          |      | ☐        | ☐        | ☐        |
+| de     |          |      | ☐        | ☐        | ☐        |

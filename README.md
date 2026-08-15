@@ -1,6 +1,14 @@
 # NightTrader landing page
 
-A static, single-page marketing site for **NightTrader**, published by **bitcoin42**.
+A static marketing site for **NightTrader**, published by **bitcoin42**. Two pages, one shared
+design system and one shared dictionary:
+
+| Page             | Audience                                                         | URL               |
+| ---------------- | ---------------------------------------------------------------- | ----------------- |
+| `index.html`     | Readers who already know Bitcoin — the technical landing page.   | `/`               |
+| `beginners.html` | Readers who do not. Plain English, no jargon, risks spelled out. | `/beginners.html` |
+
+Each links to the other from its nav, its hero and its footer.
 
 No framework, no build step required to serve, and **no third-party requests at runtime** — no
 webfonts, no analytics, no CDN. That last property is a deliberate product claim made on the page
@@ -57,10 +65,13 @@ Legal documents (Terms, Privacy, Cookie policy) are published on the product sit
 ## Repository layout
 
 ```
-index.html                 # the page (English content is the no-JS baseline)
-assets/site.css            # all styles
-assets/site.js             # theme, i18n, diagram interaction
-locales/{lang}.json        # nine locales
+index.html                 # technical landing page (English content is the no-JS baseline)
+beginners.html             # plain-English guide (same, and same header/footer)
+assets/site.css            # shared styles: theme tokens, header, nav, footer, landing page
+assets/beginners.css       # beginner-page layout only; uses site.css's tokens
+assets/site.js             # theme, i18n, diagram interaction — loaded by both pages
+assets/beginners.js        # the two-key safe demo; reads strings via window.ntI18n
+locales/{lang}.json        # nine locales, one dictionary shared by both pages
 AUDIT.md                   # technical/content audit
 CLAIMS.md                  # per-claim evidence matrix
 TRANSLATION_REVIEW.md      # locales/keys awaiting professional review
@@ -94,7 +105,7 @@ npm run test:links   # internal links + required assets
 ```
 
 **`test:claims` is a content guard, not a style check.** It fails the build if wording that was
-corrected for technical accuracy reappears in _any_ locale — specifically any phrasing implying the
+corrected for technical accuracy reappears in _any_ locale or on _either_ page — specifically any phrasing implying the
 timelock pays out automatically (it does not; see below), or the false claim that the construction
 uses primitives Bitcoin has had "since 2009".
 
@@ -108,6 +119,18 @@ uses primitives Bitcoin has had "since 2009".
 3. **No unsourced competitor fee figures.** Any competitor number needs an official source, an
    as-of date, and the tier/product/pair assumptions — otherwise keep the comparison qualitative.
 4. **Security-critical strings are not machine-translated.** See `TRANSLATION_REVIEW.md`.
+5. **Recovery is never described as automatic.** Beyond the wording rule above, `test:e2e` drives
+   the beginner page's safe demo into its timelock state and asserts the explanation both avoids
+   payout verbs and tells the reader they must act.
+
+### Adding a page
+
+The i18n engine is page-agnostic, so a new page needs only: `data-i18n` attributes, the same
+pre-paint bootstrap in `<head>`, `window.__ntMeta` naming its own title/description keys (or it
+will inherit the landing page's), and its path added to `PAGES` in `tests/links.test.js` and
+`tests/locales.test.js`, the context list in `tests/a11y.test.js`, and `test:html` in
+`package.json`. Keys used only from JavaScript are fine — the locale test looks in the scripts
+too before calling a key orphaned.
 
 Before changing any technical claim, read `CLAIMS.md`. Claims marked _unverified_ there are not
 confirmed by any public source and must stay hedged until an owner confirms them.

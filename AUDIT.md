@@ -474,10 +474,47 @@ These block work and must not be answered by guessing:
 
 ---
 
+## 11b. Beginner's guide (`beginners.html`) — added 2026-08-15
+
+A second, plain-English page was added at the owner's request, from a supplied draft. It reuses
+the landing page's header, navigation, footer, theme and i18n engine, and adds its own stylesheet
+and an interactive two-key-safe demo.
+
+**Finding B-1 (P0, resolved before publication).** The supplied draft reintroduced wording that
+Phase 2 had removed from the landing page as inaccurate — most seriously, that after the timelock
+"the safe opens for your key alone", which reads as an automatic payout. It also asserted that the
+user's key is derived from their login details, a claim with no public evidence (D-6). These were
+corrected rather than published; the specifics are itemised in **CLAIMS.md section I**, and the
+timelock correction is now additionally guarded by an end-to-end assertion that drives the demo
+into its recovery state and rejects payout phrasing.
+
+**Finding B-2 (P2, resolved).** The draft footer carried the Tijuana street address (removed at
+the owner's request) and linked `/datenschutz.html` and `/terms.html`, which do not exist in this
+repository. Both now use the same `nighttrader.exchange` legal links as the landing page (LG-1,
+LG-2).
+
+**Finding B-3 (P1, open — OWNER).** The page ships **36 English placeholders** across all eight
+non-English locales, covering the recovery mechanics, all seven risk warnings, and the
+safety-critical glossary entries. This follows the standing rule against machine-translating
+corrected security wording, but it means the page written for the least experienced readers is
+partly untranslated for them. This raises the professional-translation backlog from 33 keys to 69. See TRANSLATION_REVIEW.md Tier 4.
+
+**Finding B-4 (P2, resolved).** English fallback strings inside an RTL page had their trailing
+punctuation reordered by the bidi algorithm. `applyTranslations` now marks untranslated runs
+`dir="ltr"`, clearing the attribute as soon as a translation lands. This also improves the landing
+page's Arabic rendering for its 58 existing English fallbacks.
+
+**Not re-audited.** Claims the beginner page restates from the landing page inherit their existing
+status in CLAIMS.md A–H; section I records only what is new or differently worded. The fee figures
+match the landing page exactly, so E1–E3 remain the governing entries and their open questions
+(as-of dates for the 0.1 % and 0.5 % figures) still stand.
+
+---
+
 ## 12. Required human review
 
-| Area              | Why                                                                                                  |
-| ----------------- | ---------------------------------------------------------------------------------------------------- |
-| **Legal**         | LG-4 (broker/custodian/investment-service characterisation), LG-2 applicability, LG-5 geo-disclosure |
-| **Cryptographic** | Every claim in CLAIMS.md marked _unverified_; the recovery flow in particular                        |
-| **Translation**   | All security-critical wording changed in Phase 2, across 8 non-English locales                       |
+| Area              | Why                                                                                                                         |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| **Legal**         | LG-4 (broker/custodian/investment-service characterisation), LG-2 applicability, LG-5 geo-disclosure                        |
+| **Cryptographic** | Every claim in CLAIMS.md marked _unverified_; the recovery flow in particular                                               |
+| **Translation**   | All security-critical wording changed in Phase 2, plus the beginner's guide's 36 English placeholders — 69 keys × 8 locales |

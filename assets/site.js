@@ -17,6 +17,146 @@
   "a11y.skip": "Skip to content",
   "a11y.table_custody": "Comparison table, scrollable",
   "a11y.theme_toggle": "Toggle colour theme",
+  "bg.extra_1_h": "Keep your key on a device that never touches the internet",
+  "bg.extra_1_p": "Advanced, but worth knowing about: you can keep your key on a separate offline device — an old phone that's never online, or a hardware wallet — using something like <a href=\"https://airgap.it/\">AirGap</a>. To approve a trade, the two devices show each other QR codes through the camera. Nothing electronic passes between them. Ask us which devices are supported before you rely on this.",
+  "bg.extra_2_h": "Your recovery details, given up front",
+  "bg.extra_2_p": "We hand them to you at signup rather than burying them in a help page. With them, you can rebuild and spend the recovery branch yourself even if this website never loads again.",
+  "bg.extra_3_h": "You can see if our systems are healthy",
+  "bg.extra_3_p": "When you're logged in, there's a live readout showing whether the computers that hold our half of the key are running properly. If something's wrong, you find out from the screen — not from an announcement three days later.",
+  "bg.extra_eyebrow": "If you want to be extra careful",
+  "bg.extra_h2": "Three things you can do that most exchanges don't offer.",
+  "bg.fees_1_eg": "On a €1,000 trade, that's €1.25.",
+  "bg.fees_1_l": "Making a trade",
+  "bg.fees_2_eg": "On €1,000, that's €1.",
+  "bg.fees_2_l": "Sending to another NightTrader account",
+  "bg.fees_3_eg": "On €1,000, that's €5.",
+  "bg.fees_3_l": "Withdrawing to your own wallet",
+  "bg.fees_asof": "Fees shown as of August 2026. Bitcoin network fees for moving coins on-chain are separate and go to miners, not to us. Check the exchange for the current schedule.",
+  "bg.fees_eyebrow": "What it costs",
+  "bg.fees_h2": "Three fees. That's the whole list.",
+  "bg.fees_p": "No monthly fee, no account fee, no hidden spread markup. There's also no NightTrader coin or token — we never made one, on purpose. Nobody here is selling you an investment.",
+  "bg.foot_deeper": "Go deeper",
+  "bg.foot_start": "Start here",
+  "bg.gloss_1_d": "A very long secret number that proves bitcoin is yours. Whoever has it can spend the coins. That's why \"not your keys, not your coins\" is the whole argument.",
+  "bg.gloss_1_t": "Private key",
+  "bg.gloss_2_d": "Not a place where coins are kept — the coins live on the bitcoin network. A wallet is really just the thing that holds your key and lets you use it.",
+  "bg.gloss_2_t": "Wallet",
+  "bg.gloss_3_d": "\"Custody\" means someone else holds your coins for you. \"Non-custodial\" means you keep control. NightTrader sits in between: you hold one of the two keys needed, which is why we say co-custodial rather than claiming full self-custody.",
+  "bg.gloss_3_t": "Custody / non-custodial",
+  "bg.gloss_4_d": "The two-key safe from the top of this page. It's a standard bitcoin feature that requires more than one signature before coins can move.",
+  "bg.gloss_4_t": "Multisig (multi-signature)",
+  "bg.gloss_5_d": "A rule written into the safe saying \"after this point, this key alone is allowed to spend.\" It's what makes your coins recoverable if we vanish — though you still have to do the recovering.",
+  "bg.gloss_5_t": "Timelock",
+  "bg.gloss_6_d": "The live list of everyone's offers to buy and sell, with their prices. It's how a real exchange finds you a fair price instead of a formula guessing one.",
+  "bg.gloss_6_t": "Order book",
+  "bg.gloss_7_d": "\"Know Your Customer\" — the identity checks financial services are sometimes required to do. Usually it means handing over your passport. Here it is designed to mean proving you passed a check without us seeing the passport.",
+  "bg.gloss_7_t": "KYC",
+  "bg.gloss_8_d": "A computer helping run the system. Our half of the key is split across several of them, so the intent is that no single operator — including us — can sign alone.",
+  "bg.gloss_8_t": "Node",
+  "bg.gloss_9_d": "A device deliberately kept off the internet. Something that isn't connected to anything can't be reached over the network.",
+  "bg.gloss_9_t": "Air-gapped",
+  "bg.gloss_cta_open": "Open the exchange",
+  "bg.gloss_cta_tech": "Read the technical version",
+  "bg.gloss_eyebrow": "Plain-English dictionary",
+  "bg.gloss_h2": "Words people throw around, explained properly.",
+  "bg.hero_cta_how": "Show me how it works",
+  "bg.hero_cta_words": "What do these words mean?",
+  "bg.hero_eyebrow": "A beginner's guide · No jargon",
+  "bg.hero_h1": "Imagine a safe that needs two keys to open.",
+  "bg.hero_p1": "You hold one. We hold the other. By design, neither of us can open it alone — so we cannot move your bitcoin on our own, and neither can anyone who breaks into our systems.",
+  "bg.hero_p2": "That's the whole idea. Everything below just explains it more slowly.",
+  "bg.how_eyebrow": "Step by step",
+  "bg.how_h2": "What actually happens when you buy or sell",
+  "bg.how_s1_h": "You sign up, and your key is made on your own device",
+  "bg.how_s1_p": "Your key is created inside your browser, on your computer or phone. It is designed never to be sent to us, so there is nothing on our side for an attacker — or anyone with a court order — to take.",
+  "bg.how_s2_h": "You get your recovery details — save them",
+  "bg.how_s2_p": "Right at signup, we show you the information needed to get your coins out on your own, without us. Write it down. Keep it somewhere safe, offline, like you'd keep a passport. This is the single most important thing you'll do here.",
+  "bg.how_s3_h": "You place an order, and approve only that amount",
+  "bg.how_s3_p": "Say you have 1 bitcoin here and you want to sell 0.2. You approve 0.2 — and only 0.2. What you approve is bounded by the transaction you sign. Compare that to a normal exchange, where your whole balance is always in their hands.",
+  "bg.how_s4_h": "Both keys sign, and the trade goes through",
+  "bg.how_s4_p": "Your key signs it. Our side signs it. The trade completes at the price you set. A transaction you did not sign is not a valid transaction — the network itself rejects it, so the safe stays shut.",
+  "bg.meta.description": "A beginner's guide to NightTrader: trade bitcoin from a safe that needs two keys, and one of them is yours. No jargon, and the risks spelled out.",
+  "bg.meta.title": "NightTrader — how it works, in plain English",
+  "bg.nav_fees": "Fees",
+  "bg.nav_how": "How it works",
+  "bg.nav_privacy": "Privacy",
+  "bg.nav_problem": "The problem",
+  "bg.nav_safety": "Safety net",
+  "bg.nav_technical": "Technical version",
+  "bg.nav_warnings": "Warnings",
+  "bg.nav_words": "Dictionary",
+  "bg.net_card": "One thing to be clear about, because it matters: the safe does not empty itself and send you the money. Nothing in bitcoin moves on its own. What the timer changes is <em>permission</em> — after it passes, your key by itself is allowed to move the coins, and you (or a tool acting for you) still have to go and do it.",
+  "bg.net_eyebrow": "The safety net",
+  "bg.net_h2": "What if we disappear tomorrow?",
+  "bg.net_p1": "Fair question, and the honest answer for most exchanges is: you'd be in trouble. Here, there's a built-in timer.",
+  "bg.net_p2": "Every safe has a rule written into it before your coins ever arrive: after enough time passes with no activity, <strong>your key alone becomes enough to open it.</strong> No second key needed. No permission from us.",
+  "bg.net_p3": "This rule isn't a promise on a website. Once your coins sit in such a safe, the rule is enforced by the bitcoin network itself, in the same place the coins live. We can't switch it off after the fact, and neither can anyone who takes over our company, buys us, sues us, or shuts us down.",
+  "bg.net_p4": "While you're actively trading, the timer is designed to keep getting pushed back, so you never bump into it by accident. It's there for the bad day, not the normal one.",
+  "bg.priv_card": "And here's the part that matters most: even if an account is being checked or frozen, the timer in your safe keeps running. Being under review does not put your coins beyond your reach for good — the recovery branch stays spendable with your key.",
+  "bg.priv_eyebrow": "Your privacy",
+  "bg.priv_h2": "We'd rather not know anything about you.",
+  "bg.priv_p1": "We collect the least we can and encrypt what we keep. No ads, no tracking pixels, no selling data to anyone. This page you're reading right now doesn't load a single thing from another company — no fonts, no analytics, nothing.",
+  "bg.priv_p2": "Sometimes rules require an exchange to verify who a user is. If that ever applies to you, it works through <a href=\"https://www.zk.me/\">zkMe</a>. According to zkMe, your ID is checked <strong>on your own device</strong>, and what reaches us is a cryptographic proof that you passed the check rather than the documents themselves.",
+  "bg.problem_eyebrow": "First, the problem",
+  "bg.problem_h2": "On most exchanges, you don't actually own the bitcoin you bought.",
+  "bg.problem_p1": "When you buy bitcoin on a typical website, the coins go into <em>their</em> giant shared wallet. What you get is a number on their screen saying you own some. It looks like ownership. It's really an IOU — a promise that if you ask for your coins back, they'll send them.",
+  "bg.problem_p2": "That promise is only as good as the company. Mt. Gox collapsed in 2014. FTX collapsed in 2022. In both cases people watched a number on a screen while the actual coins were gone. Bitcoin people have a saying about this:",
+  "bg.problem_p3": "We built NightTrader so you can trade without handing over the key.",
+  "bg.problem_quote": "\"Not your keys, not your coins.\"",
+  "bg.problem_quote_note": "Meaning: if you don't hold the key that moves the bitcoin, you don't really have the bitcoin. You have someone's word.",
+  "bg.safe_aria_us": "Turn the exchange's key",
+  "bg.safe_aria_you": "Turn your key",
+  "bg.safe_ff": "Fast-forward",
+  "bg.safe_head": "Try it. Turn the keys and see what happens.",
+  "bg.safe_key_us": "Our key",
+  "bg.safe_key_you": "Your key",
+  "bg.safe_rewind": "Rewind",
+  "bg.safe_timer_label": "A year goes by and we've vanished",
+  "bg.safe_v_locked": "The safe is locked.",
+  "bg.safe_v_open": "The safe opens.",
+  "bg.safe_v_open_you": "Your key is now enough.",
+  "bg.safe_v_still": "Still locked.",
+  "bg.safe_w_both": "Both keys signed. This only happens for a trade you approved, for the amount in the transaction you signed — not for anything else.",
+  "bg.safe_w_ourkey_dead": "Once the timer passes, our key alone gets you nowhere. Only yours can open it.",
+  "bg.safe_w_start": "Nothing can move. Turn a key and watch what changes.",
+  "bg.safe_w_timer_only": "The timer has passed and we are gone. Turn your key — it is the only one that still works.",
+  "bg.safe_w_timer_you": "The timer has passed, so your key alone is now allowed to spend. Nothing has been sent to you yet: this is the point where you can go and move the coins yourself, without us.",
+  "bg.safe_w_us_alone": "This is the important one. We turned our key and nothing happened — by design, we cannot move your coins on our own.",
+  "bg.safe_w_you_alone": "During normal trading you need both keys. Now try fast-forwarding the timer below, then turn your key again.",
+  "bg.switch_a": "Read the technical version",
+  "bg.switch_q": "Already know how bitcoin works?",
+  "bg.vs_cex_1": "They hold all the coins in one big pot",
+  "bg.vs_cex_2": "You hold a number on their screen",
+  "bg.vs_cex_3": "They can move your coins without asking",
+  "bg.vs_cex_4": "If they go bankrupt, you join a queue of creditors",
+  "bg.vs_cex_5": "If they freeze your account, you wait",
+  "bg.vs_cex_h": "A normal exchange",
+  "bg.vs_eyebrow": "The difference",
+  "bg.vs_h2": "Same trading. Different safe.",
+  "bg.vs_note": "Being clear: we're not the only honest option. Bisq and RoboSats also let you keep your keys. They're slower and cost more per trade, because every single trade goes onto the bitcoin network itself. We made a different trade-off to get faster prices and tighter spreads.",
+  "bg.vs_nt_1": "Your coins sit in a safe that needs your key and ours together",
+  "bg.vs_nt_2": "You hold a real key",
+  "bg.vs_nt_3": "By design, we cannot move a coin without your key",
+  "bg.vs_nt_4": "If we go bankrupt, you can still recover the coins yourself",
+  "bg.vs_nt_5": "If we freeze your account, the recovery timer keeps running",
+  "bg.vs_nt_h": "NightTrader",
+  "bg.warn_1_h": "You can lose money. Bitcoin's price moves a lot.",
+  "bg.warn_1_p": "It can fall sharply and stay down for years. Never put in money you need for rent, food, or anything else that matters. There is no guaranteed profit here, and anyone who promises you one is lying to you.",
+  "bg.warn_2_h": "Your login details protect your key.",
+  "bg.warn_2_p": "A weak password or a phishing email is a realistic way for people to lose coins — more likely, in practice, than someone breaking the cryptography. Use a long, unique password. Turn on two-factor. Never type your details into a link someone sent you.",
+  "bg.warn_3_h": "Bitcoin payments can't be reversed.",
+  "bg.warn_3_p": "There's no chargeback, no fraud department, no \"call the bank.\" If you send coins to the wrong address or get tricked into sending them, they're gone. Check twice.",
+  "bg.warn_4_h": "This is a place to trade, not a place to store.",
+  "bg.warn_4_p": "Holding one of two keys is a materially different position from an exchange holding everything. It is still not the same as coins in a wallet only you control. For long-term savings, move them out.",
+  "bg.warn_5_h": "We are not a bank.",
+  "bg.warn_5_p": "Your money isn't insured or protected by a deposit guarantee scheme. Nothing on this page is financial advice, and nothing here is a promise about returns.",
+  "bg.warn_6_h": "Things can go wrong on our end too.",
+  "bg.warn_6_p": "If our systems have problems mid-trade, an order might not complete. You don't lose your coins when that happens, but you can miss a price you wanted.",
+  "bg.warn_7_h": "Recovery is something you have to do.",
+  "bg.warn_7_p": "If we vanish, getting your coins back is not automatic. You need the recovery details from signup, your key, and a wallet that can rebuild the transaction. Save those details now, while everything is working — not on the day you need them.",
+  "bg.warn_eyebrow": "Read this part twice",
+  "bg.warn_h2": "The honest warnings.",
+  "bg.warn_intro": "Most beginner pages skip this. We'd rather you understood the risks before you put money in than after.",
   "controls.c1_h3": "Sign from an air-gapped device",
   "controls.c1_p": "Your key does not have to live in a browser tab. Pair an offline signer — an air-gapped phone running <a href=\"https://airgap.it/\">AirGap Vault</a> or a compatible hardware wallet — and the key need never touch an internet-connected machine. Orders and withdrawals cross the gap as QR codes: unsigned request out, signature back in. Ask us which devices are supported before you rely on this.",
   "controls.c1_qr": "Unsigned request → QR → signature back",
@@ -103,6 +243,7 @@
   "footer.link_whitepaper": "Whitepaper",
   "hero.answer": "NightTrader accounts settle into 2-of-2 or 3-of-3 multisig addresses.<br>\n    One key is yours, generated in your browser. By design, the exchange cannot move funds without it.",
   "hero.architecture": "Co-custodial during trading, with a time-delayed user recovery path.",
+  "hero.cta_beginners": "New to Bitcoin? Start here",
   "hero.cta_note": "Co-custodial · No signup wall to browse the book · Withdraw whenever you want",
   "hero.cta_open": "Open the exchange",
   "hero.cta_paper": "Read the paper",
@@ -138,6 +279,7 @@
   "how.s4_p": "Applicable coins use CHECKLOCKTIMEVERIFY. The locktime is designed to be refreshed while you trade, so in normal use you should not approach it. If you stop trading, the recovery branch eventually becomes spendable with your key alone — you construct and broadcast the recovery transaction yourself.",
   "meta.description": "A Bitcoin-native exchange with a full bid/ask order book. Accounts settle into multisig addresses you hold a key to, with a time-delayed recovery path.",
   "meta.title": "NightTrader — a Bitcoin order book you co-sign",
+  "nav.beginners": "Beginner's guide",
   "nav.controls": "Controls",
   "nav.custody": "Custody",
   "nav.fees": "Fees",
@@ -217,6 +359,11 @@
   // Keys whose values legitimately contain markup. Everything else is written
   // with textContent. Nothing outside this list is ever parsed as HTML.
   var MARKUP_KEYS = [
+  "bg.extra_1_p",
+  "bg.net_card",
+  "bg.net_p2",
+  "bg.priv_p2",
+  "bg.problem_p1",
   "controls.c1_p",
   "footer.legal_p1",
   "hero.answer",
@@ -290,6 +437,19 @@
     return T[currentLang] || T.en;
   }
 
+  // Strings awaiting professional review fall back to English (see
+  // TRANSLATION_REVIEW.md). Left in an RTL paragraph, English runs get their
+  // trailing punctuation reordered by the bidi algorithm — a full stop lands at
+  // the wrong end of the line. Marking those runs dir="ltr" renders them
+  // correctly; the attribute is cleared again as soon as a translation lands.
+  function setDirFor(el, val, isRtl) {
+    if (isRtl && val === T.en[el.getAttribute('data-i18n')] && /[A-Za-z]/.test(val)) {
+      el.setAttribute('dir', 'ltr');
+    } else if (el.getAttribute('dir') === 'ltr') {
+      el.removeAttribute('dir');
+    }
+  }
+
   function applyTranslations(lang) {
     if (SUPPORTED.indexOf(lang) === -1) lang = 'en';
     currentLang = lang;
@@ -298,12 +458,15 @@
     document.documentElement.lang = lang;
     document.documentElement.dir = RTL.indexOf(lang) !== -1 ? 'rtl' : 'ltr';
 
+    var isRtl = RTL.indexOf(lang) !== -1;
+
     document.querySelectorAll('[data-i18n]').forEach(function (el) {
       var key = el.getAttribute('data-i18n');
       var val = d[key] !== undefined ? d[key] : T.en[key];
       if (val === undefined) return;
       if (MARKUP_KEYS.indexOf(key) !== -1) renderMarkup(el, val);
       else el.textContent = val;
+      setDirFor(el, val, isRtl);
     });
 
     document.querySelectorAll('[data-i18n-tag], [data-i18n-note]').forEach(function (el) {
@@ -348,7 +511,28 @@
 
     var select = document.getElementById('lang-select');
     if (select) select.value = lang;
+
+    // Let page-specific scripts re-render their own strings.
+    langListeners.forEach(function (fn) {
+      try { fn(); } catch (e) { /* one bad listener must not break the page */ }
+    });
   }
+
+  // Minimal public hook for per-page scripts (see assets/beginners.js):
+  // t() reads a translated string, onChange() re-runs on every language switch
+  // and once immediately so the caller does not need its own initial paint.
+  var langListeners = [];
+  window.ntI18n = {
+    t: function (key) {
+      var d = dict();
+      return d[key] !== undefined ? d[key] : T.en[key];
+    },
+    onChange: function (fn) {
+      if (typeof fn !== 'function') return;
+      langListeners.push(fn);
+      try { fn(); } catch (e) { /* non-fatal */ }
+    }
+  };
 
   // Reflect the active language in the URL so a translated page can be linked
   // and shared. English is the canonical bare URL and carries no parameter.
@@ -362,6 +546,13 @@
     } catch (e) { /* non-fatal: the page still works, the URL just will not update */ }
   }
 
+  // Which locale keys hold this page's title and description. A page that is
+  // not the landing page declares its own via window.__ntMeta before this
+  // script runs, so it does not inherit the landing page's metadata.
+  var META = (window.__ntMeta && typeof window.__ntMeta === 'object')
+    ? window.__ntMeta
+    : { title: 'meta.title', description: 'meta.description' };
+
   // Keep <title>, description and social metadata in the active language.
   function setMeta(d) {
     function put(sel, attr, key) {
@@ -369,13 +560,13 @@
       var v = d[key] !== undefined ? d[key] : T.en[key];
       if (el && v !== undefined) el.setAttribute(attr, v);
     }
-    var title = d['meta.title'] !== undefined ? d['meta.title'] : T.en['meta.title'];
+    var title = d[META.title] !== undefined ? d[META.title] : T.en[META.title];
     if (title) document.title = title;
-    put('meta[name="description"]', 'content', 'meta.description');
-    put('meta[property="og:title"]', 'content', 'meta.title');
-    put('meta[property="og:description"]', 'content', 'meta.description');
-    put('meta[name="twitter:title"]', 'content', 'meta.title');
-    put('meta[name="twitter:description"]', 'content', 'meta.description');
+    put('meta[name="description"]', 'content', META.description);
+    put('meta[property="og:title"]', 'content', META.title);
+    put('meta[property="og:description"]', 'content', META.description);
+    put('meta[name="twitter:title"]', 'content', META.title);
+    put('meta[name="twitter:description"]', 'content', META.description);
     var ogLocale = document.querySelector('meta[property="og:locale"]');
     if (ogLocale) ogLocale.setAttribute('content', OG_LOCALE[currentLang] || 'en_US');
   }

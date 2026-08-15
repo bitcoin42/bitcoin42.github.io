@@ -65,6 +65,7 @@ const RULES = [
 
 const targets = [
   'index.html',
+  'beginners.html',
   ...fs.readdirSync(path.join(ROOT, 'locales')).map((f) => path.join('locales', f)),
 ];
 
