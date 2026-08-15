@@ -60,16 +60,34 @@ if (data[REFERENCE]) {
     if (empty.length) fail(`${lang}: empty or non-string value(s): ${empty.slice(0, 8).join(', ')}`);
   }
 
-  // Every key the page asks for must exist.
-  const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  // Every key the pages ask for must exist.
+  const PAGES = ['index.html', 'beginners.html'];
   const referenced = new Set();
-  for (const m of html.matchAll(/data-i18n(?:-aria-label|-tag|-note)?="([^"]+)"/g)) referenced.add(m[1]);
-  const unknown = [...referenced].filter((k) => !(k in data[REFERENCE]));
-  if (unknown.length) fail(`index.html references unknown key(s): ${unknown.join(', ')}`);
+  for (const page of PAGES) {
+    const html = fs.readFileSync(path.join(ROOT, page), 'utf8');
+    const pageKeys = new Set();
+    for (const m of html.matchAll(/data-i18n(?:-aria-label|-tag|-note)?="([^"]+)"/g)) {
+      pageKeys.add(m[1]);
+      referenced.add(m[1]);
+    }
+    const unknown = [...pageKeys].filter((k) => !(k in data[REFERENCE]));
+    if (unknown.length) fail(`${page} references unknown key(s): ${unknown.join(', ')}`);
+  }
+
+  // Keys read only from JS (the beginner page's safe demo, copy status, …) are
+  // not in the HTML, so an unreferenced key is not by itself an error — but a
+  // key referenced by neither page nor script is dead weight worth knowing about.
+  const scriptText = ['assets/site.js', 'assets/beginners.js']
+    .map((f) => fs.readFileSync(path.join(ROOT, f), 'utf8'))
+    .join('\n');
+  const orphans = refKeys.filter(
+    (k) => !referenced.has(k) && !scriptText.includes(`'${k}'`) && !scriptText.includes(`"${k}"`)
+  );
+  if (orphans.length) fail(`key(s) referenced by no page and no script: ${orphans.join(', ')}`);
 
   console.log(
     `locales: ${Object.keys(data).length} files, ${refKeys.length} keys each, ` +
-      `${referenced.size} referenced by index.html`
+      `${referenced.size} referenced across ${PAGES.length} pages`
   );
 }
 

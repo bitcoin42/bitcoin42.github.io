@@ -51,7 +51,7 @@ const check = (ok, label, detail = '') => {
     check((await p.getAttribute('#nav-toggle', 'aria-expanded')) === 'false', 'aria-expanded=false initially');
     check((await p.getAttribute('#nav-toggle', 'aria-controls')) === 'nav-links', 'aria-controls points at the panel');
     await p.click('#nav-toggle');
-    check((await visible()) === 8, 'all 8 links exposed when open');
+    check((await visible()) === 9, 'all 9 links exposed when open');
     check((await p.getAttribute('#nav-toggle', 'aria-expanded')) === 'true', 'aria-expanded=true when open');
     await p.keyboard.press('Escape');
     await p.waitForTimeout(120);
@@ -143,24 +143,105 @@ const check = (ok, label, detail = '') => {
     await ctx.close();
   }
 
+  // ---- beginner's guide ---------------------------------------------------
+  console.log("\nbeginner's guide");
+  {
+    const ctx = await browser.newContext({ viewport: { width: 1280, height: 1000 } });
+    const p = await ctx.newPage();
+    const errs = [];
+    p.on('pageerror', (e) => errs.push(e.message));
+    await p.goto(origin + '/beginners.html', { waitUntil: 'networkidle' });
+    check(errs.length === 0, 'no page errors', errs.join('; '));
+
+    // Cross-links between the two pages resolve in both directions.
+    check((await p.locator('a[href="/"]').count()) > 0, 'links back to the technical page');
+
+    // The safe demo: six distinct outcomes driven by three toggles.
+    const verdict = () => p.locator('#verdict').innerText();
+    const why = () => p.locator('#why').innerText();
+    const locked = await verdict();
+    await p.click('#k-us');
+    check((await why()) !== '', 'our key alone explains itself');
+    check(await p.evaluate(() => !document.getElementById('verdict').classList.contains('is-open')),
+      'our key alone does NOT open the safe');
+    await p.click('#k-you');
+    check(await p.evaluate(() => document.getElementById('verdict').classList.contains('is-open')),
+      'both keys open the safe');
+    check((await verdict()) !== locked, 'verdict text changed');
+
+    // Timelock path: our key off, timer on, user key on.
+    await p.click('#k-us');
+    await p.click('#k-time');
+    check(await p.evaluate(() => document.getElementById('verdict').classList.contains('is-open')),
+      'user key + elapsed timer opens the safe');
+    // The recovery copy must not imply an automatic payout.
+    const recovery = (await why()).toLowerCase();
+    check(!/(pays out|paid to you|automatically (paid|returns|refunds))/.test(recovery),
+      'recovery copy does not promise an automatic payout');
+    check(/yourself|you can go|still have to|move the coins/.test(recovery),
+      'recovery copy says the user must act', recovery.slice(0, 90));
+
+    // Fast-forward button relabels itself.
+    check((await p.locator('#k-time').innerText()).trim() !== '', 'timer button keeps a label');
+    await ctx.close();
+  }
+
+  // ---- beginner's guide: language + title ---------------------------------
+  console.log("\nbeginner's guide i18n");
+  {
+    const ctx = await browser.newContext({ viewport: { width: 1280, height: 1000 } });
+    const p = await ctx.newPage();
+    await p.goto(origin + '/beginners.html', { waitUntil: 'networkidle' });
+    const enTitle = await p.title();
+    check(/plain English/i.test(enTitle), 'beginner page keeps its own <title>', enTitle);
+
+    await p.selectOption('#lang-select', 'de');
+    await p.waitForTimeout(500);
+    check((await p.evaluate(() => document.documentElement.lang)) === 'de', 'language applies');
+    check((await p.locator('h1').innerText()).includes('Safe'), 'headline translated');
+    // The safe demo re-renders through the shared i18n hook.
+    check((await p.locator('#verdict').innerText()).includes('Safe'), 'safe demo re-renders on language change');
+    check((await p.evaluate(() => location.search)) === '?lang=de', 'language reflected in URL');
+
+    await p.goto(origin + '/beginners.html?lang=ar', { waitUntil: 'networkidle' });
+    await p.waitForTimeout(400);
+    check((await p.evaluate(() => document.documentElement.dir)) === 'rtl', 'dir=rtl for Arabic');
+    await ctx.close();
+  }
+
+  // ---- beginner's guide: no-JS baseline -----------------------------------
+  console.log("\nbeginner's guide without JavaScript");
+  {
+    const ctx = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 1280, height: 900 } });
+    const p = await ctx.newPage();
+    await p.goto(origin + '/beginners.html', { waitUntil: 'domcontentloaded' });
+    check((await p.locator('h1').innerText()).includes('two keys'), 'headline renders');
+    check((await p.locator('section[id]').count()) >= 8, 'all sections render');
+    const bg = await p.evaluate(() => getComputedStyle(document.body).backgroundColor);
+    check(bg !== 'rgba(0, 0, 0, 0)', 'stylesheet applied', bg);
+    await ctx.close();
+  }
+
   // ---- layout integrity ---------------------------------------------------
   console.log('\nlayout (no horizontal overflow)');
   {
     let bad = [];
+    for (const page of ['/', '/beginners.html']) {
     for (const lang of LOCALES) {
       for (const w of WIDTHS) {
         const ctx = await browser.newContext({ viewport: { width: w, height: 900 } });
         const p = await ctx.newPage();
         const errs = [];
         p.on('pageerror', (e) => errs.push(e.message));
-        await p.goto(`${origin}/?lang=${lang}`, { waitUntil: 'networkidle' });
+        await p.goto(`${origin}${page}?lang=${lang}`, { waitUntil: 'networkidle' });
         await p.waitForTimeout(150);
         const of = await p.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
-        if (of !== 0 || errs.length) bad.push(`${lang}@${w}px overflow=${of} errors=${errs.length}`);
+        if (of !== 0 || errs.length) bad.push(`${page} ${lang}@${w}px overflow=${of} errors=${errs.length}`);
         await ctx.close();
       }
     }
-    check(bad.length === 0, `${LOCALES.length} locales × ${WIDTHS.length} widths clean`, bad.slice(0, 5).join('; '));
+    }
+    check(bad.length === 0, `2 pages × ${LOCALES.length} locales × ${WIDTHS.length} widths clean`, bad.slice(0, 5).join('; '));
   }
 
   await browser.close();

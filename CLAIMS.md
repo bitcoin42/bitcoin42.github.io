@@ -119,14 +119,45 @@ Unsupported absolutes, to be revised unless evidence lands:
 
 ---
 
+## I. Beginner's guide (`beginners.html`)
+
+Added 2026-08-15. The plain-English page restates claims already inventoried above, so this
+section records only what is **new or differently worded** there. Everything else inherits the
+status of its counterpart in A–H, and the same corrections were applied when the page was written
+— the supplied draft asserted several of the absolutes that Phase 2 had removed from the landing
+page, and those were softened rather than reproduced.
+
+| #   | Claim (beginner page)                                                                      | Location / key                                    | Evidence source                                                           | Status                 | Wording actually shipped                                                                                                                       | Owner question                                                                       |
+| --- | ------------------------------------------------------------------------------------------ | ------------------------------------------------- | ------------------------------------------------------------------------- | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| I1  | "We couldn't hand it over even if someone forced us to, because we never had it" _(draft)_ | `bg.how_s1_p`                                     | No published key-derivation code (D-6)                                    | **unverified**         | Rewritten: key "is designed never to be sent to us, so there is nothing on our side … to take." Design intent, not a resistance guarantee.     | Can the key-generation path be published so this is checkable?                       |
+| I2  | "the safe opens for your key alone" / timer "opens" the safe _(draft)_                     | `bg.net_p2`, `bg.net_card`, `bg.safe_w_timer_you` | Bitcoin never spends an output by itself (C2)                             | **corrected**          | Explicit new paragraph: "the safe does not empty itself… you still have to go and do it." Enforced by an e2e assertion.                        | —                                                                                    |
+| I3  | "We cannot move a single coin without your key" _(draft)_                                  | `bg.hero_p1`, `bg.vs_nt_3`                        | Same basis as A1/H1                                                       | **unverified**         | "By design, we cannot move a coin without your key."                                                                                           | —                                                                                    |
+| I4  | "your key is made from your login details" _(draft)_                                       | `bg.warn_2_p`                                     | **No public evidence of the derivation scheme.** Draft stated it as fact. | **unverified**         | Claim removed. Replaced with the risk that actually follows: "Your login details protect your key… phishing is a realistic way to lose coins." | **Is the key derived from login credentials?** If so this needs a documented KDF.    |
+| I5  | Fees 0.125 % / 0.1 % / 0.5 %                                                               | `bg.fees_1_l`–`bg.fees_3_l`                       | Same as E1–E3; owner confirmed 0.125 % current                            | **partially verified** | Figures match the landing page. As-of date added, plus an explicit note that on-chain network fees are separate.                               | Do the 0.1 % and 0.5 % figures also carry the August 2026 as-of date? (E2, E3 open.) |
+| I6  | "If we freeze your account, the timer still runs"                                          | `bg.vs_nt_5`, `bg.priv_card`                      | Mirrors `privacy.p3`                                                      | **unverified**         | Kept, phrased as the recovery branch remaining spendable with the user's key rather than as a promise about company conduct.                   | —                                                                                    |
+| I7  | zkMe: ID "checked on your own device", we "never see the documents" _(draft)_              | `bg.priv_p2`                                      | Vendor claim only (F-series)                                              | **unverified**         | Attributed: "According to zkMe…".                                                                                                              | —                                                                                    |
+| I8  | Bisq / RoboSats "slower and cost more per trade"                                           | `bg.vs_note`                                      | Same basis as `custody.lede`, which the audit retained                    | **unverified**         | Kept as-is for consistency with the landing page. Qualitative, no numbers.                                                                     | Same as E4 — a sourced comparison would need maintaining.                            |
+| I9  | Recovery requires the user to act                                                          | `bg.warn_7_p`                                     | Follows from C2                                                           | **verified**           | **New warning added** that the draft did not have: recovery "is not automatic", save the details in advance.                                   | —                                                                                    |
+| I10 | Node quorum: "no single operator — including us — can act alone" _(draft)_                 | `bg.gloss_8_d`                                    | Threshold scheme not published                                            | **unverified**         | "the intent is that no single operator … can sign alone."                                                                                      | —                                                                                    |
+
+**Not carried over from the draft.** The supplied file's footer contained the Tijuana street
+address (removed at the owner's request) and linked `/datenschutz.html` and `/terms.html`, which
+do not exist in this repository — those are now the same `nighttrader.exchange` legal links the
+landing page uses (LG-1, LG-2).
+
+---
+
 ## Summary
 
 | Status             | Count |
 | ------------------ | ----- |
-| verified           | 5     |
-| partially verified | 6     |
-| unverified         | 24    |
+| verified           | 6     |
+| partially verified | 7     |
+| unverified         | 31    |
 | **incorrect**      | **8** |
+
+Counts include section I (beginner's guide, added 2026-08-15). No new **incorrect** items: the
+draft's inaccuracies were corrected before the page was published rather than shipped and logged.
 
 The eight **incorrect** items (C1–C6, D1, E1, plus G2 as an internal inconsistency) are all
 Phase-2 mandatory corrections. The 24 **unverified** items are not accusations of falsehood — they

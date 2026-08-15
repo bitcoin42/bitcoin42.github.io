@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script>
+/* Runs before first paint: pick theme + language with no flash.
+   Mirrors the bootstrap in index.html so both pages share one stored
+   preference. __ntMeta tells assets/site.js which locale keys hold this
+   page's <title> and description, so it does not apply the landing page's. */
+(function () {
+  window.__ntMeta = { title: 'bg.meta.title', description: 'bg.meta.description' };
+  try {
+    var SUPPORTED = ['en','zh','ru','es','pt','it','ar','fr','de'];
+    var RTL = ['ar'];
+
+    var theme = localStorage.getItem('nt-theme');
+    if (theme !== 'light' && theme !== 'dark') theme = null;
+    if (!theme) theme = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', theme);
+    window.__ntTheme = theme;
+
+    var params = new URLSearchParams(location.search);
+    var lang = params.get('lang');
+    if (lang && SUPPORTED.indexOf(lang) === -1) lang = null;
+    if (lang) {
+      localStorage.setItem('nt-lang', lang);
+    }
+    if (!lang) {
+      lang = localStorage.getItem('nt-lang');
+      if (lang && SUPPORTED.indexOf(lang) === -1) lang = null;
+    }
+    if (!lang) {
+      var browserLangs = navigator.languages || [navigator.language || 'en'];
+      for (var i = 0; i < browserLangs.length; i++) {
+        var primary = String(browserLangs[i]).split('-')[0].toLowerCase();
+        if (SUPPORTED.indexOf(primary) !== -1) { lang = primary; break; }
+      }
+    }
+    if (!lang) lang = 'en';
+
+    window.__ntLang = lang;
+    document.documentElement.lang = lang;
+    document.documentElement.dir = RTL.indexOf(lang) !== -1 ? 'rtl' : 'ltr';
+  } catch (e) {}
+})();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" id="theme-color-meta" content="#F7931A">
+<title>NightTrader — how it works, in plain English</title>
+<meta name="description" content="A beginner's guide to NightTrader: trade bitcoin from a safe that needs two keys, and one of them is yours. No jargon, and the risks spelled out.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://bitcoin42.com/beginners.html">
+
+<link rel="alternate" hreflang="x-default" href="https://bitcoin42.com/beginners.html">
+<link rel="alternate" hreflang="en" href="https://bitcoin42.com/beginners.html">
+<link rel="alternate" hreflang="zh" href="https://bitcoin42.com/beginners.html?lang=zh">
+<link rel="alternate" hreflang="ru" href="https://bitcoin42.com/beginners.html?lang=ru">
+<link rel="alternate" hreflang="es" href="https://bitcoin42.com/beginners.html?lang=es">
+<link rel="alternate" hreflang="pt" href="https://bitcoin42.com/beginners.html?lang=pt">
+<link rel="alternate" hreflang="it" href="https://bitcoin42.com/beginners.html?lang=it">
+<link rel="alternate" hreflang="ar" href="https://bitcoin42.com/beginners.html?lang=ar">
+<link rel="alternate" hreflang="fr" href="https://bitcoin42.com/beginners.html?lang=fr">
+<link rel="alternate" hreflang="de" href="https://bitcoin42.com/beginners.html?lang=de">
+
+<!-- Open Graph -->
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="NightTrader.Exchange">
+<meta property="og:title" content="NightTrader — how it works, in plain English">
+<meta property="og:description" content="A beginner's guide to NightTrader: trade bitcoin from a safe that needs two keys, and one of them is yours. No jargon, and the risks spelled out.">
+<meta property="og:url" content="https://bitcoin42.com/beginners.html">
+<meta property="og:image" content="https://bitcoin42.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="NightTrader.Exchange — not your keys, not your coins, so we gave you a key.">
+<meta property="og:locale" content="en_US">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="NightTrader — how it works, in plain English">
+<meta name="twitter:description" content="A beginner's guide to NightTrader: trade bitcoin from a safe that needs two keys, and one of them is yours. No jargon, and the risks spelled out.">
+<meta name="twitter:image" content="https://bitcoin42.com/og-image.png">
+<meta name="twitter:image:alt" content="NightTrader.Exchange — not your keys, not your coins, so we gave you a key.">
+
+<!-- Icons -->
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "@id": "https://bitcoin42.com/beginners.html",
+  "url": "https://bitcoin42.com/beginners.html",
+  "name": "NightTrader — how it works, in plain English",
+  "description": "A beginner's guide to NightTrader: trade bitcoin from a safe that needs two keys, and one of them is yours.",
+  "inLanguage": "en",
+  "isPartOf": { "@id": "https://bitcoin42.com/#website" },
+  "publisher": { "@id": "https://bitcoin42.com/#organization" }
+}
+</script>
+<link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="/assets/beginners.css">
+</head>
+<body class="bg-page">
+
+<a class="skip-link" href="#main" data-i18n="a11y.skip">Skip to content</a>
+
+<header>
+  <div class="wrap mast">
+    <a class="brand" href="/">NightTrader<span class="dot">.</span>Exchange</a>
+    <nav id="site-nav" data-i18n-aria-label="a11y.nav_primary" aria-label="Primary">
+      <button id="nav-toggle" class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" data-i18n-aria-label="a11y.nav_menu" aria-label="Sections menu">
+        <span class="nav-toggle-bars" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span data-i18n="a11y.nav_menu_label">Sections</span>
+      </button>
+      <div class="nav-links" id="nav-links">
+        <a href="#problem" data-i18n="bg.nav_problem">The problem</a>
+        <a href="#how" data-i18n="bg.nav_how">How it works</a>
+        <a href="#safety-net" data-i18n="bg.nav_safety">Safety net</a>
+        <a href="#fees" data-i18n="bg.nav_fees">Fees</a>
+        <a href="#privacy" data-i18n="bg.nav_privacy">Privacy</a>
+        <a href="#warnings" data-i18n="bg.nav_warnings">Warnings</a>
+        <a href="#words" data-i18n="bg.nav_words">Dictionary</a>
+        <a href="/" data-i18n="bg.nav_technical">Technical version</a>
+      </div>
+      <button id="theme-toggle" class="btn ghost sm" type="button" data-i18n-aria-label="a11y.theme_toggle" aria-label="Toggle colour theme">
+        <span class="tt-to-dark" data-i18n="theme.to_dark">Dark</span><span class="tt-to-light" data-i18n="theme.to_light">Light</span>
+      </button>
+      <a class="btn sm" href="https://nighttrader.exchange" data-i18n="nav.open">Open exchange</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" tabindex="-1">
+<span id="top" aria-hidden="true"></span>
+
+<div class="bg-wrap bg-switch">
+  <span data-i18n="bg.switch_q">Already know how bitcoin works?</span>
+  <a href="/" data-i18n="bg.switch_a">Read the technical version</a>
+</div>
+
+<!-- ============ HERO ============ -->
+<section class="bg-hero">
+  <div class="bg-wrap">
+    <p class="bg-eyebrow" data-i18n="bg.hero_eyebrow">A beginner's guide · No jargon</p>
+    <h1 data-i18n="bg.hero_h1">Imagine a safe that needs two keys to open.</h1>
+    <p class="bg-big" style="margin-top:22px" data-i18n="bg.hero_p1">You hold one. We hold the other. By design, neither of us can open it alone — so we cannot move your bitcoin on our own, and neither can anyone who breaks into our systems.</p>
+    <p class="bg-big" data-i18n="bg.hero_p2">That's the whole idea. Everything below just explains it more slowly.</p>
+
+    <div class="bg-cta">
+      <a class="btn" href="#how" data-i18n="bg.hero_cta_how">Show me how it works</a>
+      <a class="btn ghost" href="#words" data-i18n="bg.hero_cta_words">What do these words mean?</a>
+    </div>
+
+    <!-- ===== interactive two-key safe ===== -->
+    <div class="safe" id="safe">
+      <div class="safe-head" data-i18n="bg.safe_head">Try it. Turn the keys and see what happens.</div>
+      <div class="safe-body">
+        <div class="safe-lid">
+          <div class="safe-holes">
+            <div class="safe-hole-wrap">
+              <button class="safe-hole" type="button" id="k-you" aria-pressed="false" data-i18n-aria-label="bg.safe_aria_you" aria-label="Turn your key">🔑</button>
+              <span class="safe-hole-l" data-i18n="bg.safe_key_you">Your key</span>
+            </div>
+            <div class="safe-hole-wrap">
+              <button class="safe-hole" type="button" id="k-us" aria-pressed="false" data-i18n-aria-label="bg.safe_aria_us" aria-label="Turn the exchange's key">🔑</button>
+              <span class="safe-hole-l" data-i18n="bg.safe_key_us">Our key</span>
+            </div>
+          </div>
+        </div>
+        <p class="safe-timer">
+          <span data-i18n="bg.safe_timer_label">A year goes by and we've vanished</span>
+          <button class="safe-tbtn" type="button" id="k-time" aria-pressed="false" data-i18n="bg.safe_ff">Fast-forward</button>
+        </p>
+      </div>
+      <div class="safe-status" aria-live="polite">
+        <span class="safe-verdict" id="verdict" data-i18n="bg.safe_v_locked">The safe is locked.</span>
+        <span class="safe-why" id="why" data-i18n="bg.safe_w_start">Nothing can move. Turn a key and watch what changes.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE PROBLEM ============ -->
+<section id="problem">
+  <div class="bg-wrap">
+    <p class="bg-eyebrow" data-i18n="bg.problem_eyebrow">First, the problem</p>
+    <h2 data-i18n="bg.problem_h2">On most exchanges, you don't actually own the bitcoin you bought.</h2>
+    <p data-i18n="bg.problem_p1">When you buy bitcoin on a typical website, the coins go into <em>their</em> giant shared wallet. What you get is a number on their screen saying you own some. It looks like ownership. It's really an IOU — a promise that if you ask for your coins back, they'll send them.</p>
+    <p data-i18n="bg.problem_p2">That promise is only as good as the company. Mt. Gox collapsed in 2014. FTX collapsed in 2022. In both cases people watched a number on a screen while the actual coins were gone. Bitcoin people have a saying about this:</p>
+    <div class="bg-card">
+      <p class="bg-pull" data-i18n="bg.problem_quote">"Not your keys, not your coins."</p>
+      <p class="bg-small" style="margin-top:10px" data-i18n="bg.problem_quote_note">Meaning: if you don't hold the key that moves the bitcoin, you don't really have the bitcoin. You have someone's word.</p>
+    </div>
+    <p data-i18n="bg.problem_p3">We built NightTrader so you can trade without handing over the key.</p>
+  </div>
+</section>
+
+<!-- ============ COMPARISON ============ -->
+<section id="compare">
+  <div class="bg-wrap">
+    <p class="bg-eyebrow" data-i18n="bg.vs_eyebrow">The difference</p>
+    <h2 data-i18n="bg.vs_h2">Same trading. Different safe.</h2>
+    <div class="bg-vs">
+      <div>
+        <h3 data-i18n="bg.vs_cex_h">A normal exchange</h3>
+        <ul>
+          <li data-i18n="bg.vs_cex_1">They hold all the coins in one big pot</li>
+          <li data-i18n="bg.vs_cex_2">You hold a number on their screen</li>
+          <li data-i18n="bg.vs_cex_3">They can move your coins without asking</li>
+          <li data-i18n="bg.vs_cex_4">If they go bankrupt, you join a queue of creditors</li>
+          <li data-i18n="bg.vs_cex_5">If they freeze your account, you wait</li>
+        </ul>
+      </div>
+      <div class="is-ours">
+        <h3 data-i18n="bg.vs_nt_h">NightTrader</h3>
+        <ul>
+          <li data-i18n="bg.vs_nt_1">Your coins sit in a safe that needs your key and ours together</li>
+          <li data-i18n="bg.vs_nt_2">You hold a real key</li>
+          <li data-i18n="bg.vs_nt_3">By design, we cannot move a coin without your key</li>
+          <li data-i18n="bg.vs_nt_4">If we go bankrupt, you can still recover the coins yourself</li>
+          <li data-i18n="bg.vs_nt_5">If we freeze your account, the recovery timer keeps running</li>
+        </ul>
+      </div>
+    </div>
+    <p class="bg-small" style="margin-top:20px" data-i18n="bg.vs_note">Being clear: we're not the only honest option. Bisq and RoboSats also let you keep your keys. They're slower and cost more per trade, because every single trade goes onto the bitcoin network itself. We made a different trade-off to get faster prices and tighter spreads.</p>
+  </div>
+</section>
+
+<!-- ============ HOW ============ -->
+<section id="how">
+  <div class="bg-wrap">
+    <p class="bg-eyebrow" data-i18n="bg.how_eyebrow">Step by step</p>
+    <h2 data-i18n="bg.how_h2">What actually happens when you buy or sell</h2>
+    <ol class="bg-steps">
+      <li>
+        <h3 data-i18n="bg.how_s1_h">You sign up, and your key is made on your own device</h3>
+        <p data-i18n="bg.how_s1_p">Your key is created inside your browser, on your computer or phone. It is designed never to be sent to us, so there is nothing on our side for an attacker — or anyone with a court order — to take.</p>
+      </li>
+      <li>
+        <h3 data-i18n="bg.how_s2_h">You get your recovery details — save them</h3>
+        <p data-i18n="bg.how_s2_p">Right at signup, we show you the information needed to get your coins out on your own, without us. Write it down. Keep it somewhere safe, offline, like you'd keep a passport. This is the single most important thing you'll do here.</p>
+      </li>
+      <li>
+        <h3 data-i18n="bg.how_s3_h">You place an order, and approve only that amount</h3>
+        <p data-i18n="bg.how_s3_p">Say you have 1 bitcoin here and you want to sell 0.2. You approve 0.2 — and only 0.2. What you approve is bounded by the transaction you sign. Compare that to a normal exchange, where your whole balance is always in their hands.</p>
+      </li>
+      <li>
+        <h3 data-i18n="bg.how_s4_h">Both keys sign, and the trade goes through</h3>
+        <p data-i18n="bg.how_s4_p">Your key signs it. Our side signs it. The trade completes at the price you set. A transaction you did not sign is not a valid transaction — the network itself rejects it, so the safe stays shut.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ SAFETY NET / TIMELOCK ============ -->
+<section id="safety-net">
+  <div class="bg-wrap">
+    <p class="bg-eyebrow" data-i18n="bg.net_eyebrow">The safety net</p>
+    <h2 data-i18n="bg.net_h2">What if we disappear tomorrow?</h2>
+    <p data-i18n="bg.net_p1">Fair question, and the honest answer for most exchanges is: you'd be in trouble. Here, there's a built-in timer.</p>
+    <p data-i18n="bg.net_p2">Every safe has a rule written into it before your coins ever arrive: after enough time passes with no activity, <strong>your key alone becomes enough to open it.</strong> No second key needed. No permission from us.</p>
+    <div class="bg-card">
+      <p data-i18n="bg.net_card">One thing to be clear about, because it matters: the safe does not empty itself and send you the money. Nothing in bitcoin moves on its own. What the timer changes is <em>permission</em> — after it passes, your key by itself is allowed to move the coins, and you (or a tool acting for you) still have to go and do it.</p>
+    </div>
+    <p data-i18n="bg.net_p3">This rule isn't a promise on a website. Once your coins sit in such a safe, the rule is enforced by the bitcoin network itself, in the same place the coins live. We can't switch it off after the fact, and neither can anyone who takes over our company, buys us, sues us, or shuts us down.</p>
+    <p data-i18n="bg.net_p4">While you're actively trading, the timer is designed to keep getting pushed back, so you never bump into it by accident. It's there for the bad day, not the normal one.</p>
+  </div>
+</section>
+
+<!-- ============ FEES ============ -->
+<section id="fees">
+  <div class="bg-wrap">
+    <p class="bg-eyebrow" data-i18n="bg.fees_eyebrow">What it costs</p>
+    <h2 data-i18n="bg.fees_h2">Three fees. That's the whole list.</h2>
+    <div class="bg-fees">
+      <div>
+        <span class="bg-fee-lbl" data-i18n="bg.fees_1_l">Making a trade</span><span class="bg-fee-amt">0.125%</span>
+        <span class="bg-fee-eg" data-i18n="bg.fees_1_eg">On a €1,000 trade, that's €1.25.</span>
+      </div>
+      <div>
+        <span class="bg-fee-lbl" data-i18n="bg.fees_2_l">Sending to another NightTrader account</span><span class="bg-fee-amt">0.1%</span>
+        <span class="bg-fee-eg" data-i18n="bg.fees_2_eg">On €1,000, that's €1.</span>
+      </div>
+      <div>
+        <span class="bg-fee-lbl" data-i18n="bg.fees_3_l">Withdrawing to your own wallet</span><span class="bg-fee-amt">0.5%</span>
+        <span class="bg-fee-eg" data-i18n="bg.fees_3_eg">On €1,000, that's €5.</span>
+      </div>
+    </div>
+    <p data-i18n="bg.fees_p">No monthly fee, no account fee, no hidden spread markup. There's also no NightTrader coin or token — we never made one, on purpose. Nobody here is selling you an investment.</p>
+    <p class="bg-small" data-i18n="bg.fees_asof">Fees shown as of August 2026. Bitcoin network fees for moving coins on-chain are separate and go to miners, not to us. Check the exchange for the current schedule.</p>
+  </div>
+</section>
+
+<!-- ============ EXTRA SAFETY ============ -->
+<section id="careful">
+  <div class="bg-wrap">
+    <p class="bg-eyebrow" data-i18n="bg.extra_eyebrow">If you want to be extra careful</p>
+    <h2 data-i18n="bg.extra_h2">Three things you can do that most exchanges don't offer.</h2>
+
+    <h3 style="margin-top:26px" data-i18n="bg.extra_1_h">Keep your key on a device that never touches the internet</h3>
+    <p data-i18n="bg.extra_1_p">Advanced, but worth knowing about: you can keep your key on a separate offline device — an old phone that's never online, or a hardware wallet — using something like <a href="https://airgap.it/">AirGap</a>. To approve a trade, the two devices show each other QR codes through the camera. Nothing electronic passes between them. Ask us which devices are supported before you rely on this.</p>
+
+    <h3 style="margin-top:26px" data-i18n="bg.extra_2_h">Your recovery details, given up front</h3>
+    <p data-i18n="bg.extra_2_p">We hand them to you at signup rather than burying them in a help page. With them, you can rebuild and spend the recovery branch yourself even if this website never loads again.</p>
+
+    <h3 style="margin-top:26px" data-i18n="bg.extra_3_h">You can see if our systems are healthy</h3>
+    <p data-i18n="bg.extra_3_p">When you're logged in, there's a live readout showing whether the computers that hold our half of the key are running properly. If something's wrong, you find out from the screen — not from an announcement three days later.</p>
+  </div>
+</section>
+
+<!-- ============ PRIVACY ============ -->
+<section class="bg-night" id="privacy">
+  <div class="bg-wrap">
+    <p class="bg-eyebrow" data-i18n="bg.priv_eyebrow">Your privacy</p>
+    <h2 data-i18n="bg.priv_h2">We'd rather not know anything about you.</h2>
+    <p data-i18n="bg.priv_p1">We collect the least we can and encrypt what we keep. No ads, no tracking pixels, no selling data to anyone. This page you're reading right now doesn't load a single thing from another company — no fonts, no analytics, nothing.</p>
+    <p data-i18n="bg.priv_p2">Sometimes rules require an exchange to verify who a user is. If that ever applies to you, it works through <a href="https://www.zk.me/">zkMe</a>. According to zkMe, your ID is checked <strong>on your own device</strong>, and what reaches us is a cryptographic proof that you passed the check rather than the documents themselves.</p>
+    <div class="bg-card">
+      <p data-i18n="bg.priv_card">And here's the part that matters most: even if an account is being checked or frozen, the timer in your safe keeps running. Being under review does not put your coins beyond your reach for good — the recovery branch stays spendable with your key.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HONEST WARNINGS ============ -->
+<section id="warnings">
+  <div class="bg-wrap">
+    <p class="bg-eyebrow" data-i18n="bg.warn_eyebrow">Read this part twice</p>
+    <h2 data-i18n="bg.warn_h2">The honest warnings.</h2>
+    <p data-i18n="bg.warn_intro">Most beginner pages skip this. We'd rather you understood the risks before you put money in than after.</p>
+
+    <div class="bg-warn">
+      <h3 data-i18n="bg.warn_1_h">You can lose money. Bitcoin's price moves a lot.</h3>
+      <p data-i18n="bg.warn_1_p">It can fall sharply and stay down for years. Never put in money you need for rent, food, or anything else that matters. There is no guaranteed profit here, and anyone who promises you one is lying to you.</p>
+    </div>
+
+    <div class="bg-warn">
+      <h3 data-i18n="bg.warn_2_h">Your login details protect your key.</h3>
+      <p data-i18n="bg.warn_2_p">A weak password or a phishing email is a realistic way for people to lose coins — more likely, in practice, than someone breaking the cryptography. Use a long, unique password. Turn on two-factor. Never type your details into a link someone sent you.</p>
+    </div>
+
+    <div class="bg-warn">
+      <h3 data-i18n="bg.warn_3_h">Bitcoin payments can't be reversed.</h3>
+      <p data-i18n="bg.warn_3_p">There's no chargeback, no fraud department, no "call the bank." If you send coins to the wrong address or get tricked into sending them, they're gone. Check twice.</p>
+    </div>
+
+    <div class="bg-warn">
+      <h3 data-i18n="bg.warn_4_h">This is a place to trade, not a place to store.</h3>
+      <p data-i18n="bg.warn_4_p">Holding one of two keys is a materially different position from an exchange holding everything. It is still not the same as coins in a wallet only you control. For long-term savings, move them out.</p>
+    </div>
+
+    <div class="bg-warn">
+      <h3 data-i18n="bg.warn_5_h">We are not a bank.</h3>
+      <p data-i18n="bg.warn_5_p">Your money isn't insured or protected by a deposit guarantee scheme. Nothing on this page is financial advice, and nothing here is a promise about returns.</p>
+    </div>
+
+    <div class="bg-warn">
+      <h3 data-i18n="bg.warn_6_h">Things can go wrong on our end too.</h3>
+      <p data-i18n="bg.warn_6_p">If our systems have problems mid-trade, an order might not complete. You don't lose your coins when that happens, but you can miss a price you wanted.</p>
+    </div>
+
+    <div class="bg-warn">
+      <h3 data-i18n="bg.warn_7_h">Recovery is something you have to do.</h3>
+      <p data-i18n="bg.warn_7_p">If we vanish, getting your coins back is not automatic. You need the recovery details from signup, your key, and a wallet that can rebuild the transaction. Save those details now, while everything is working — not on the day you need them.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ GLOSSARY ============ -->
+<section id="words">
+  <div class="bg-wrap">
+    <p class="bg-eyebrow" data-i18n="bg.gloss_eyebrow">Plain-English dictionary</p>
+    <h2 data-i18n="bg.gloss_h2">Words people throw around, explained properly.</h2>
+    <dl class="bg-gloss">
+      <dt data-i18n="bg.gloss_1_t">Private key</dt>
+      <dd data-i18n="bg.gloss_1_d">A very long secret number that proves bitcoin is yours. Whoever has it can spend the coins. That's why "not your keys, not your coins" is the whole argument.</dd>
+
+      <dt data-i18n="bg.gloss_2_t">Wallet</dt>
+      <dd data-i18n="bg.gloss_2_d">Not a place where coins are kept — the coins live on the bitcoin network. A wallet is really just the thing that holds your key and lets you use it.</dd>
+
+      <dt data-i18n="bg.gloss_3_t">Custody / non-custodial</dt>
+      <dd data-i18n="bg.gloss_3_d">"Custody" means someone else holds your coins for you. "Non-custodial" means you keep control. NightTrader sits in between: you hold one of the two keys needed, which is why we say co-custodial rather than claiming full self-custody.</dd>
+
+      <dt data-i18n="bg.gloss_4_t">Multisig (multi-signature)</dt>
+      <dd data-i18n="bg.gloss_4_d">The two-key safe from the top of this page. It's a standard bitcoin feature that requires more than one signature before coins can move.</dd>
+
+      <dt data-i18n="bg.gloss_5_t">Timelock</dt>
+      <dd data-i18n="bg.gloss_5_d">A rule written into the safe saying "after this point, this key alone is allowed to spend." It's what makes your coins recoverable if we vanish — though you still have to do the recovering.</dd>
+
+      <dt data-i18n="bg.gloss_6_t">Order book</dt>
+      <dd data-i18n="bg.gloss_6_d">The live list of everyone's offers to buy and sell, with their prices. It's how a real exchange finds you a fair price instead of a formula guessing one.</dd>
+
+      <dt data-i18n="bg.gloss_7_t">KYC</dt>
+      <dd data-i18n="bg.gloss_7_d">"Know Your Customer" — the identity checks financial services are sometimes required to do. Usually it means handing over your passport. Here it is designed to mean proving you passed a check without us seeing the passport.</dd>
+
+      <dt data-i18n="bg.gloss_8_t">Node</dt>
+      <dd data-i18n="bg.gloss_8_d">A computer helping run the system. Our half of the key is split across several of them, so the intent is that no single operator — including us — can sign alone.</dd>
+
+      <dt data-i18n="bg.gloss_9_t">Air-gapped</dt>
+      <dd data-i18n="bg.gloss_9_d">A device deliberately kept off the internet. Something that isn't connected to anything can't be reached over the network.</dd>
+    </dl>
+
+    <div class="bg-cta" style="margin-top:32px">
+      <a class="btn" href="https://nighttrader.exchange" data-i18n="bg.gloss_cta_open">Open the exchange</a>
+      <a class="btn ghost" href="/" data-i18n="bg.gloss_cta_tech">Read the technical version</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap fgrid">
+    <div class="gut">
+      <b>NightTrader</b>Exchange
+      <div class="lang-switch">
+        <label for="lang-select" data-i18n="footer.lang_label">Language</label>
+        <select id="lang-select">
+          <option value="en">English</option>
+          <option value="zh">中文</option>
+          <option value="ru">Русский</option>
+          <option value="es">Español</option>
+          <option value="pt">Português</option>
+          <option value="it">Italiano</option>
+          <option value="ar">العربية</option>
+          <option value="fr">Français</option>
+          <option value="de">Deutsch</option>
+        </select>
+      </div>
+    </div>
+    <div>
+      <div class="fcols">
+        <div>
+          <h3 class="fh" data-i18n="bg.foot_start">Start here</h3>
+          <ul>
+            <li><a href="#how" data-i18n="bg.nav_how">How it works</a></li>
+            <li><a href="#words" data-i18n="bg.nav_words">Dictionary</a></li>
+            <li><a href="#warnings" data-i18n="bg.nav_warnings">Warnings</a></li>
+            <li><a href="#privacy" data-i18n="bg.nav_privacy">Privacy</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="fh" data-i18n="bg.foot_deeper">Go deeper</h3>
+          <ul>
+            <li><a href="/" data-i18n="bg.nav_technical">Technical version</a></li>
+            <li><a href="https://github.com/NightTrader/nighttrader.github.io/blob/master/Nighttrader_A_Decentralized_Multisignature_Electronic_Cash_Wallet.pdf" data-i18n="footer.link_whitepaper">Whitepaper</a></li>
+            <li><a href="https://github.com/NightTrader/nighttrader.github.io" data-i18n="verify.li_source_k">Source</a></li>
+            <li><a href="https://nighttrader.exchange" data-i18n="footer.link_trade">Trade</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="fh" data-i18n="footer.col_legal">Legal</h3>
+          <ul>
+            <li><a href="https://nighttrader.exchange/tandc.html" data-i18n="footer.link_terms">Terms &amp; conditions</a></li>
+            <li><a href="https://nighttrader.exchange/privacy.html" data-i18n="footer.link_privacy">Privacy policy</a></li>
+            <li><a href="https://nighttrader.exchange/cookiepolicy.html" data-i18n="footer.link_cookies">Cookie policy</a></li>
+            <li><a href="#warnings" data-i18n="footer.link_risk">Risk disclosure</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="imp" id="impressum">
+        <h3 class="fh" data-i18n="footer.imp_h4">Legal notice · Operator</h3>
+        <address>
+          NAOME SAPI DE CV<br>
+          <span data-i18n="footer.imp_email_label">E-Mail:</span> <a href="mailto:ceo@nighttrader.org">ceo@nighttrader.org</a>
+        </address>
+        <p class="note-s" data-i18n="footer.entities">NightTrader is the exchange. bitcoin42 is the team behind it, operating since 2014; this page is published at bitcoin42.com. NAOME SAPI DE CV is the legal operator named above. The exchange itself runs at nighttrader.exchange.</p>
+      </div>
+
+      <div class="legal">
+        <p style="margin:0 0 10px" data-i18n="footer.legal_p1">NightTrader.Exchange is a co-custodial trading interface: during trading, funds sit in multisig addresses you co-sign, with a time-delayed recovery path. It is not a bank, a broker or an investment service, and nothing here is investment advice or a promise of yield, liquidity or execution. Trading digital assets can result in total loss. You are responsible for your own key and your own backups. Your use is governed by the <a href="https://nighttrader.exchange/tandc.html">Terms &amp; conditions</a>.</p>
+        <p class="mono" style="margin:0;font-size:11.5px;letter-spacing:.06em" data-i18n="footer.legal_p2">Served from bitcoin42.com — registered 2014 · No third-party requests on this page.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="/assets/site.js" defer></script>
+<script src="/assets/beginners.js" defer></script>
+</body>
+</html>
