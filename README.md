@@ -68,9 +68,9 @@ Legal documents (Terms, Privacy, Cookie policy) are published on the product sit
 index.html                 # technical landing page (English content is the no-JS baseline)
 beginners.html             # plain-English guide (same, and same header/footer)
 assets/site.css            # shared styles: theme tokens, header, nav, footer, landing page
-assets/beginners.css       # beginner-page layout only; uses site.css's tokens
+assets/beginners.css       # beginner-page layout + the six explainer figures
 assets/site.js             # theme, i18n, diagram interaction — loaded by both pages
-assets/beginners.js        # the two-key safe demo; reads strings via window.ntI18n
+assets/beginners.js        # two-key safe demo + recovery-timer and balance figures
 locales/{lang}.json        # nine locales, one dictionary shared by both pages
 AUDIT.md                   # technical/content audit
 CLAIMS.md                  # per-claim evidence matrix
@@ -120,8 +120,10 @@ uses primitives Bitcoin has had "since 2009".
    as-of date, and the tier/product/pair assumptions — otherwise keep the comparison qualitative.
 4. **Security-critical strings are not machine-translated.** See `TRANSLATION_REVIEW.md`.
 5. **Recovery is never described as automatic.** Beyond the wording rule above, `test:e2e` drives
-   the beginner page's safe demo into its timelock state and asserts the explanation both avoids
-   payout verbs and tells the reader they must act.
+   both the beginner page's safe demo _and_ its recovery-timer figure into their timelock states
+   and asserts each explanation avoids payout verbs and tells the reader they must act. The timer
+   figure exists specifically to make that distinction visible: its final stage empties the gauge
+   but the copy states the coins have not moved.
 
 ### Adding a page
 

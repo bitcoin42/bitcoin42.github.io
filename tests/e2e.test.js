@@ -186,6 +186,63 @@ const check = (ok, label, detail = '') => {
     await ctx.close();
   }
 
+  // ---- beginner's guide: explainer figures --------------------------------
+  console.log("\nbeginner's guide figures");
+  {
+    const ctx = await browser.newContext({ viewport: { width: 1280, height: 1000 } });
+    const p = await ctx.newPage();
+    const errs = [];
+    p.on('pageerror', (e) => errs.push(e.message));
+    await p.goto(origin + '/beginners.html', { waitUntil: 'networkidle' });
+
+    // All six figures are present and each has a caption or heading.
+    const figs = await p.locator('figure.bgv').count();
+    check(figs === 6, 'six explainer figures render', 'found ' + figs);
+
+    // Recovery timer: stepping through changes the gauge, the state and the note.
+    const level = () => p.evaluate(() => document.getElementById('gauge-fill').style.getPropertyValue('--level').trim());
+    const note = () => p.locator('#gauge-note').innerText();
+    check((await level()) === '100%', 'timer starts full', await level());
+    await p.click('#viz-timer .bgv-step[data-stage="3"]');
+    await p.waitForTimeout(120);
+    const draining = await level();
+    check(draining !== '100%' && draining !== '0%', 'stage 3 drains the timer partway', draining);
+    await p.click('#viz-timer .bgv-step[data-stage="4"]');
+    await p.waitForTimeout(120);
+    check((await level()) === '0%', 'stage 4 reaches the locktime', await level());
+    check(
+      (await p.locator('#gauge-state').innerText()) !== (await p.locator('#viz-timer .bgv-step[data-stage="1"]').innerText()),
+      'stage label updates'
+    );
+
+    // The whole point of the figure: stage 4 must not read as an automatic payout.
+    const t4 = (await note()).toLowerCase();
+    check(!/(pays out|paid to you|sent to you|automatically (paid|returns|refunds|sends))/.test(t4),
+      'timer stage 4 does not promise an automatic payout', t4.slice(0, 100));
+    check(/build and broadcast|you \(or a recovery tool\)|still sitting/.test(t4),
+      'timer stage 4 says the user constructs the transaction', t4.slice(0, 100));
+
+    // Only one stage is pressed at a time.
+    const pressed = await p.locator('#viz-timer .bgv-step[aria-pressed="true"]').count();
+    check(pressed === 1, 'exactly one timer stage is selected', String(pressed));
+
+    // Approve bar: the custodial toggle changes the note and the bar styling.
+    const abarNote = () => p.locator('#abar-note').innerText();
+    const before = await abarNote();
+    await p.click('#abar-cex');
+    await p.waitForTimeout(120);
+    check((await abarNote()) !== before, 'custodial toggle changes the explanation');
+    check(await p.evaluate(() => document.getElementById('abar-track').classList.contains('is-custodial')),
+      'custodial state applies to the bar');
+    await p.click('#abar-nt');
+    await p.waitForTimeout(120);
+    check(!(await p.evaluate(() => document.getElementById('abar-track').classList.contains('is-custodial'))),
+      'toggling back clears the custodial state');
+
+    check(errs.length === 0, 'no page errors from the figures', errs.join('; '));
+    await ctx.close();
+  }
+
   // ---- beginner's guide: language + title ---------------------------------
   console.log("\nbeginner's guide i18n");
   {

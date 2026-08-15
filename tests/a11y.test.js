@@ -30,6 +30,11 @@ const CONTEXTS = [
   { name: 'beginners menu open', opts: { viewport: { width: 375, height: 800 } }, url: '/beginners.html', openMenu: true },
   // The safe demo changes colour and copy when engaged; check the engaged state too.
   { name: 'beginners safe engaged', opts: { viewport: { width: 1280, height: 900 } }, url: '/beginners.html', openSafe: true },
+  // The explainer figures change colour and copy when stepped through; the
+  // recovery-timer end state and the custodial contrast are the ones whose
+  // contrast could regress, so check them engaged rather than only at rest.
+  { name: 'beginners figures engaged', opts: { viewport: { width: 1280, height: 900 } }, url: '/beginners.html', engageFigures: true },
+  { name: 'beginners figures engaged dark', opts: { viewport: { width: 1280, height: 900 }, colorScheme: 'dark' }, url: '/beginners.html', engageFigures: true },
 ];
 
 (async () => {
@@ -49,6 +54,11 @@ const CONTEXTS = [
       await page.click('#k-you');
       await page.click('#k-us');
       await page.waitForTimeout(100);
+    }
+    if (ctxDef.engageFigures) {
+      await page.click('#viz-timer .bgv-step[data-stage="4"]');
+      await page.click('#abar-cex');
+      await page.waitForTimeout(600);
     }
     await page.addScriptTag({ content: AXE });
     const res = await page.evaluate(async () => window.axe.run(document, { resultTypes: ['violations'] }));

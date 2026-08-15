@@ -2,7 +2,8 @@
 
 **Raised:** 2026-08-13 (Phase 2 content correction)
 **Updated:** 2026-08-15 — beginner's guide added, then the remaining 89 English-placeholder keys
-translated into all eight locales at the owner's explicit request.
+translated into all eight locales at the owner's explicit request. Six explainer figures were then
+added to the beginner's guide, contributing **59 further keys**, translated the same way.
 **Status:** ✅ **No locale shows English placeholders for corrected content anymore.** The 89 keys
 listed below were machine-translated on 2026-08-15 by Claude Code, on direct owner instruction,
 following the same wording rules Phase 2 established. This is **not** the professionally reviewed,
@@ -108,6 +109,20 @@ across `locales/{de,fr,es,it,pt,ru,zh,ar}.json`.
 **Not part of this pass — already had real translations, left untouched:** the other 104 `bg.*`
 keys (navigation, glossary, comparison table, fee labels) added with the beginner's guide on
 2026-08-14, and the ~150 landing-page keys that were translated in the original Phase 3–6 work.
+
+### Explainer figures on the beginner's guide (added 2026-08-15)
+
+Six diagrams were added to `beginners.html`, contributing 59 keys under `bg.viz_*`. All are
+translated in all eight locales under the same rules. Two groups deserve a careful read:
+
+| Keys                                                             | Why they matter                                                                                                                                                                                                                                                         |
+| ---------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `bg.viz_timer_*` (18 keys)                                       | The recovery-timer figure. `bg.viz_timer_note_4` and `bg.viz_timer_cap` are the safety-critical ones: stage 4 grants **permission**, and the user still builds and broadcasts. Never a payout verb. An e2e assertion checks the English; translations need a human eye. |
+| `bg.viz_proof_*` (9 keys)                                        | The zkMe figure. `bg.viz_proof_cap` must keep the attribution — it is their described design, not something we verify.                                                                                                                                                  |
+| `bg.viz_appr_*`, `bg.viz_pool_*`, `bg.viz_gap_*`, `bg.viz_fee_*` | Balance, pooled-custody, air-gap and fee figures. Mostly short labels; keep them short so they fit the diagram boxes at 320px.                                                                                                                                          |
+
+`bg.viz_timer_scale_lock` is deliberately **"Locktime" in every locale** — a preserved technical
+identifier, matching how `timelock.l4` already keeps it untranslated site-wide.
 
 ---
 
