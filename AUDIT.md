@@ -526,6 +526,53 @@ match the landing page exactly, so E1–E3 remain the governing entries and thei
 
 ---
 
+## 11c. `bitbay-explained.html` — added 2026-08-16
+
+A standalone, supplied "picture-book" explainer for BitBay/$BAY was added at the owner's request,
+which also asked that every existing mention of BitBay on the site link to it.
+
+**Scope decision.** Unlike `index.html`/`beginners.html`, this page is **not** folded into the
+shared theme/i18n engine or the strict "zero third-party requests" product commitment: it was
+supplied as a fully self-contained document with its own design system, and it loads Google Fonts.
+It is covered by `npm run test:html` only, and deliberately excluded from `test:links`,
+`test:locales`, `test:a11y` and `test:e2e`, which are built to be deterministic and network-free —
+this page's webfont dependency would break that guarantee in any sandboxed/offline CI runner. This
+exception is documented in an HTML comment in the file itself. It does get canonical/OG/Twitter
+metadata and a `sitemap.xml` entry, consistent with the rest of the site's SEO hygiene.
+
+**Finding BB-1 (P2, resolved).** All 11 `<button>` elements lacked an explicit `type`, and one of
+two `<style>` blocks (75 lines of keyframe animation rules) sat directly under `<body>`, which
+`html-validate` flags as invalid content placement. Fixed: added `type="button"` throughout, and
+merged the two `<style>` blocks into the one already in `<head>`.
+
+**Finding BB-2 (P2, resolved).** A manual axe-core pass (not added to the permanent suite — see
+above) found 23 serious color-contrast violations: the `--liquid-deep`, `--frost-deep`, and `--flag`
+theme tokens produced 3.77–3.97:1 contrast against white card backgrounds, below the 4.5:1 WCAG AA
+threshold for text, on `.tag b`/`.grown span` labels across all nine chapters and on the freeze/
+thaw/vote buttons. Fixed by darkening the three custom-property definitions (`#0E8F86→#0C7F77`,
+`#6B7CC7→#596CC0`, `#E2543B→#D1391F`; each recomputed to ≥4.85:1), rather than every individual
+rule — a smaller diff that also improves the general link color and does not regress the buttons'
+colored-background/white-text `.on` state.
+
+**Finding BB-3 (P3, resolved).** The chapter 5 freeze/thaw diagram's two zone labels ("Reserve",
+"Liquid") were marked up as `<h4>` with no `<h3>` anywhere earlier in the document, which axe-core
+flags as a heading-level skip. Changed both to `<h3>` (and the matching CSS selector) — actually
+correct in context, since they are sub-headings of the chapter's `<h2>`.
+
+**Finding BB-4 (P1, resolved) — "whenever BitBay is mentioned, link it to the BitBay explained
+site."** Every mention of "BitBay" on the landing page now links to `/bitbay-explained.html`
+instead of `bitbay.market` (or, for the timeline label, instead of plain text):
+`history.p2` (the BitBay sentence in the history section), `history.tl_bitbay` (the "2015 · BitBay"
+timeline entry), and `history.citation` (the Bitcoinist citation's "BitBay" mention). Applied
+identically across `index.html` and all nine `locales/*.json` files, and the embedded `EN` fallback
+dictionary in `assets/site.js` was resynced to match. `history.tl_bitbay` now contains inline
+markup for the first time and was added to `MARKUP_KEYS` in `assets/site.js` so the i18n renderer
+allows it through `renderMarkup()`'s sanitizer. `history.p2` and `history.citation` were already
+markup-enabled keys. No wording changed — only which URL "BitBay" points to — so this does not
+touch any claim tracked in CLAIMS.md, and `test:claims`'s banned-phrase scan is unaffected.
+
+---
+
 ## 12. Required human review
 
 | Area              | Why                                                                                                                                                       |

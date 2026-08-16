@@ -7,7 +7,7 @@
     "start": "http-server . -p 8080 -c-1 --silent",
     "lint": "eslint assets/site.js assets/beginners.js tests/ && prettier --check \"**/*.{json,md}\"",
     "format": "prettier --write \"**/*.{json,md}\"",
-    "test:html": "html-validate index.html beginners.html",
+    "test:html": "html-validate index.html beginners.html bitbay-explained.html",
     "test:locales": "node tests/locales.test.js",
     "test:claims": "node tests/claims.test.js",
     "test:links": "node tests/links.test.js",
