@@ -67,6 +67,7 @@ Legal documents (Terms, Privacy, Cookie policy) are published on the product sit
 ```
 index.html                 # technical landing page (English content is the no-JS baseline)
 beginners.html             # plain-English guide (same, and same header/footer)
+bitbay-explained.html      # standalone BitBay/$BAY explainer; own design system, see below
 assets/site.css            # shared styles: theme tokens, header, nav, footer, landing page
 assets/beginners.css       # beginner-page layout + the six explainer figures
 assets/site.js             # theme, i18n, diagram interaction — loaded by both pages
@@ -79,6 +80,13 @@ SECURITY.md                # static-site security posture
 .assetsignore              # excludes node_modules/.git/.DS_Store from the Cloudflare asset upload
 wrangler.jsonc              # tells the Cloudflare Workers deploy command where the assets are
 ```
+
+`bitbay-explained.html` is a supplied, self-contained page — its own design system, not the shared
+theme/i18n engine, and it loads Google Fonts as a deliberate exception to the "no third-party
+requests" claim below, which applies specifically to `index.html`/`beginners.html`. It's covered by
+`npm run test:html` only; see `AUDIT.md` section 11c for the full scope decision. Every mention of
+"BitBay" on the landing page (`history.p2`, `history.tl_bitbay`, `history.citation`, in all nine
+locales) links to it.
 
 `wrangler.jsonc` exists solely to point the already-configured Cloudflare deploy command at this
 repo's assets — it declares no routes, bindings, or Worker script, and does not change how

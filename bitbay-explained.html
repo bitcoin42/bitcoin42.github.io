@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BitBay, explained like you're five</title>
+<meta name="description" content="A picture-book guide to BitBay ($BAY), its dynamic peg, and its double deposit escrow marketplace. No crypto knowledge needed.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://bitcoin42.com/bitbay-explained.html">
+
+<!-- Open Graph -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="BitBay, explained like you're five">
+<meta property="og:description" content="A picture-book guide to BitBay ($BAY), its dynamic peg, and its double deposit escrow marketplace. No crypto knowledge needed.">
+<meta property="og:url" content="https://bitcoin42.com/bitbay-explained.html">
+<meta property="og:locale" content="en_US">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="BitBay, explained like you're five">
+<meta name="twitter:description" content="A picture-book guide to BitBay ($BAY), its dynamic peg, and its double deposit escrow marketplace. No crypto knowledge needed.">
+
+<!--
+  Note for maintainers: unlike index.html and beginners.html, this page is a
+  standalone, self-contained explainer with its own design system (not the
+  shared theme/i18n engine in assets/site.css and assets/site.js), matching
+  how it was authored and supplied. It loads Google Fonts, which is a
+  deliberate exception to the "no third-party requests" claim that applies
+  specifically to the two NightTrader pages — see README.md and AUDIT.md.
+  It is intentionally excluded from tests/links.test.js and
+  tests/locales.test.js for the same reason, but is checked by test:html.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:SOFT,WONK,opsz,wght@0..100,0..1,9..144,100..900&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   TOKENS — "Sea-glass harbour": pale mint paper, aqua liquid,
+   frosted periwinkle reserve, buoy yellow, signal red.
+   ============================================================ */
+:root{
+  --paper:#EEF5F2;
+  --card:#FFFFFF;
+  --ink:#14343F;
+  --ink-soft:#4A6B76;
+  --liquid:#16B5A8;
+  --liquid-deep:#0C7F77; /* darkened from #0E8F86: 3.97:1 on white failed WCAG AA text contrast (4.5:1) */
+  --frost:#8E9FE0;
+  --frost-deep:#596CC0; /* darkened from #6B7CC7: 3.94:1 on white failed WCAG AA text contrast (4.5:1) */
+  --buoy:#FFB627;
+  --flag:#D1391F; /* darkened from #E2543B: 3.77:1 on white failed WCAG AA text contrast (4.5:1) */
+  --deep:#0E2B34;
+  --rule:rgba(20,52,63,.14);
+  --shadow:0 1px 0 rgba(20,52,63,.06), 0 18px 40px -24px rgba(14,43,52,.45);
+  --r:20px;
+  --tide-h:78px;
+  --display:"Fraunces",Georgia,serif;
+  --body:"Karla","Helvetica Neue",Arial,sans-serif;
+  --mono:"DM Mono",ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--body);
+  font-size:17px;
+  line-height:1.6;
+  padding-bottom:calc(var(--tide-h) + 8px);
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+h1,h2,h3{
+  font-family:var(--display);
+  font-variation-settings:'SOFT' 70,'WONK' 1,'opsz' 96;
+  font-weight:800;
+  line-height:1.02;
+  letter-spacing:-.015em;
+  margin:0;
+}
+p{margin:0 0 1em}
+a{color:var(--liquid-deep)}
+.wrap{width:min(980px,92vw);margin:0 auto}
+
+/* ---------- HERO ---------- */
+.hero{
+  position:relative;
+  padding:64px 0 0;
+  background:linear-gradient(180deg,#DCEDF1 0%,#E4F1EF 55%,var(--paper) 100%);
+  overflow:hidden;
+}
+.hero-grid{display:grid;gap:28px;align-items:center}
+.eyebrow{
+  font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--ink-soft);margin:0 0 18px;display:flex;align-items:center;gap:10px;
+}
+.eyebrow::before{content:"";width:26px;height:1px;background:var(--ink-soft);display:block}
+.hero h1{font-size:clamp(40px,8vw,80px);max-width:14ch}
+.hero h1 em{font-style:normal;color:var(--liquid-deep)}
+.hero-lede{font-size:clamp(18px,2.4vw,21px);max-width:46ch;color:var(--ink-soft);margin-top:22px}
+.hero-scene{position:relative;height:clamp(220px,34vw,320px);margin-top:8px}
+.hero-scene svg{position:absolute;inset:0;width:100%;height:100%}
+.scroll-cue{
+  font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink-soft);display:inline-flex;align-items:center;gap:10px;margin-bottom:26px;
+}
+.scroll-cue span{display:block;width:9px;height:9px;border-right:1.5px solid var(--ink-soft);
+  border-bottom:1.5px solid var(--ink-soft);transform:rotate(45deg);animation:bob 1.8s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:rotate(45deg) translate(0,0)}50%{transform:rotate(45deg) translate(3px,3px)}}
+
+/* ---------- CHAPTER RAIL ---------- */
+.rail{position:fixed;right:22px;top:50%;transform:translateY(-50%);z-index:40;display:none}
+.rail a{
+  display:flex;align-items:center;gap:9px;justify-content:flex-end;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--ink-soft);
+  text-decoration:none;padding:4px 0;opacity:.5;transition:opacity .25s
+}
+.rail a i{font-style:normal;width:7px;height:7px;border-radius:50%;border:1.4px solid var(--ink-soft);transition:all .25s}
+.rail a.on{opacity:1;color:var(--ink)}
+.rail a.on i{background:var(--buoy);border-color:var(--buoy);transform:scale(1.35)}
+@media(min-width:1180px){.rail{display:block}}
+
+/* ---------- CHAPTERS ---------- */
+.chapter{padding:64px 0}
+.chapter + .chapter{padding-top:12px}
+.card{
+  background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);
+  padding:clamp(24px,4vw,44px);position:relative;overflow:hidden;
+}
+.tag{
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink-soft);margin:0 0 14px;
+}
+.tag b{color:var(--liquid-deep);font-weight:500}
+.chapter h2{font-size:clamp(28px,4.6vw,44px);max-width:20ch;margin-bottom:16px}
+.kid{font-size:clamp(18px,2.2vw,20.5px);max-width:56ch}
+.kid strong{background:linear-gradient(180deg,transparent 62%,rgba(255,182,39,.5) 62%);font-weight:700}
+.scene{
+  margin:30px 0 0;background:linear-gradient(180deg,#F4F9F8,#EDF4F2);
+  border:1px solid var(--rule);border-radius:14px;padding:18px;position:relative;
+}
+.scene svg{display:block;width:100%;height:auto}
+.grown{
+  margin-top:26px;border-top:1px dashed var(--rule);padding-top:16px;
+  font-family:var(--mono);font-size:13px;line-height:1.75;color:var(--ink-soft);
+}
+.grown b{color:var(--ink);font-weight:500}
+.grown span{color:var(--liquid-deep)}
+
+/* ---------- CONTROLS ---------- */
+.controls{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px;align-items:center}
+button.btn{
+  font-family:var(--body);font-weight:700;font-size:15px;
+  border:1.5px solid var(--ink);background:var(--card);color:var(--ink);
+  padding:10px 18px;border-radius:999px;cursor:pointer;transition:transform .15s,background .2s,color .2s;
+}
+button.btn:hover{transform:translateY(-2px)}
+button.btn.on{background:var(--ink);color:#fff}
+button.btn.warm{border-color:var(--flag);color:var(--flag)}
+button.btn.warm.on{background:var(--flag);color:#fff}
+button.btn.cool{border-color:var(--frost-deep);color:var(--frost-deep)}
+button.btn.cool.on{background:var(--frost-deep);color:#fff}
+button.btn:focus-visible,a:focus-visible{outline:3px solid var(--buoy);outline-offset:3px}
+.readout{font-family:var(--mono);font-size:13px;color:var(--ink-soft);margin-left:auto}
+.readout b{color:var(--ink);font-weight:500}
+input[type=range]{
+  -webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:99px;
+  background:linear-gradient(90deg,var(--liquid),var(--frost));outline:none;margin:6px 0 0;
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:var(--buoy);
+  border:3px solid #fff;box-shadow:0 3px 10px rgba(14,43,52,.3);cursor:grab
+}
+input[type=range]::-moz-range-thumb{
+  width:26px;height:26px;border-radius:50%;background:var(--buoy);
+  border:3px solid #fff;box-shadow:0 3px 10px rgba(14,43,52,.3);cursor:grab
+}
+.slider-label{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
+
+/* ---------- COIN HARBOUR ---------- */
+.harbour{display:grid;gap:12px}
+.zone{border-radius:12px;padding:14px;border:1.5px solid var(--rule);background:#fff;min-height:104px}
+.zone.res{border-color:rgba(142,159,224,.5);background:linear-gradient(180deg,#F3F5FE,#EDF0FD)}
+.zone.liq{border-color:rgba(22,181,168,.45);background:linear-gradient(180deg,#EEFAF8,#E6F7F4)}
+.zone h3{
+  margin:0 0 10px;font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-soft);display:flex;justify-content:space-between;font-weight:400
+}
+.coins{display:flex;flex-wrap:wrap;gap:7px}
+.coin{
+  width:26px;height:26px;border-radius:50%;background:var(--liquid);
+  box-shadow:inset 0 -3px 0 rgba(0,0,0,.14);animation:arrive .45s cubic-bezier(.2,1.4,.4,1)
+}
+.coin.f{background:var(--frost);box-shadow:inset 0 -3px 0 rgba(0,0,0,.12),0 0 0 3px rgba(142,159,224,.2)}
+@keyframes arrive{0%{transform:translateY(-22px) scale(.4);opacity:0}100%{transform:none;opacity:1}}
+.bars{display:grid;grid-template-columns:1fr;gap:10px;margin-top:14px}
+.bar-row{display:flex;align-items:center;gap:12px;font-family:var(--mono);font-size:12px;color:var(--ink-soft)}
+.bar-row .track{flex:1;height:12px;border-radius:99px;background:rgba(20,52,63,.09);overflow:hidden}
+.bar-row .fill{height:100%;border-radius:99px;transition:width .7s cubic-bezier(.2,.9,.2,1)}
+.bar-row .lbl{width:120px;flex:none}
+
+/* ---------- VOTE ---------- */
+.votes{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;padding:6px 0 2px}
+.voter{width:38px;text-align:center;font-family:var(--mono);font-size:11px;color:var(--ink-soft)}
+.voter .head{
+  width:26px;height:26px;border-radius:50% 50% 46% 46%;background:#CBDDDF;margin:0 auto 4px;
+  position:relative;transition:background .4s
+}
+.voter .head::after{
+  content:"";position:absolute;left:50%;top:-13px;width:2px;height:13px;background:var(--rule);
+  transform:translateX(-50%) scaleY(0);transform-origin:bottom;transition:transform .3s
+}
+.voter.cast .head::after{transform:translateX(-50%) scaleY(1)}
+.voter .flag{
+  width:15px;height:11px;margin:0 auto;border-radius:2px;opacity:0;transform:translateY(6px) scale(.5);
+  transition:all .4s cubic-bezier(.2,1.5,.4,1)
+}
+.voter.cast .flag{opacity:1;transform:none}
+.voter.up .flag{background:var(--liquid)}
+.voter.down .flag{background:var(--frost)}
+.voter.me .head{background:var(--buoy)}
+
+/* ---------- ESCROW ---------- */
+.escrow-out{
+  margin-top:14px;font-family:var(--mono);font-size:13px;line-height:1.7;
+  border-left:3px solid var(--rule);padding:6px 0 6px 14px;color:var(--ink-soft);min-height:52px
+}
+.escrow-out b{color:var(--ink);font-weight:500}
+.escrow-out.good{border-color:var(--liquid)}
+.escrow-out.bad{border-color:var(--flag)}
+
+/* ---------- FIXED TIDE BAR (signature) ---------- */
+.tide{
+  position:fixed;left:0;right:0;bottom:0;height:var(--tide-h);z-index:50;pointer-events:none;
+}
+.tide svg{position:absolute;inset:0;width:100%;height:100%}
+.tide-meta{
+  position:absolute;left:16px;bottom:8px;font-family:var(--mono);font-size:10.5px;
+  letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.72)
+}
+.tide-meta b{color:var(--buoy);font-weight:500}
+#buoy{transition:transform 1.2s cubic-bezier(.3,.9,.3,1)}
+#waveGroup{transition:transform 1.2s ease}
+
+/* ---------- FOOTER ---------- */
+footer{padding:70px 0 40px;background:var(--deep);color:#B9D2D6;margin-top:60px}
+footer h3{color:#fff;font-size:clamp(24px,3.6vw,34px);margin-bottom:18px}
+.links{display:flex;flex-wrap:wrap;gap:12px;margin:22px 0 34px}
+.links a{
+  font-family:var(--body);font-weight:700;font-size:15px;text-decoration:none;color:var(--deep);
+  background:var(--buoy);padding:11px 20px;border-radius:999px;transition:transform .15s
+}
+.links a.ghost{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.35)}
+.links a:hover{transform:translateY(-2px)}
+.small{font-family:var(--mono);font-size:12px;line-height:1.85;color:#7EA1A8;max-width:70ch}
+.small b{color:#D9E9EB;font-weight:500}
+
+@media(min-width:820px){
+  .hero{padding:84px 0 0}
+  .hero-grid{grid-template-columns:1.05fr .95fr;gap:40px}
+  .harbour{gap:14px}
+  .bars{grid-template-columns:1fr 1fr}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+}
+
+/* ---- keyframe animations (originally a second <style> under <body>;
+   merged here because a <style> element is not valid content under <body>) ---- */
+/* ---- keyframe animations kept together so they're easy to tune ---- */
+.w{animation:drift 14s linear infinite}
+.w2{animation-duration:10s}
+.w3{animation-duration:7s}
+@keyframes drift{from{transform:translateX(0)}to{transform:translateX(-260px)}}
+.tw{animation:driftT 16s linear infinite}
+.t2{animation-duration:11s}
+@keyframes driftT{from{transform:translateX(0)}to{transform:translateX(-300px)}}
+
+.boatA{animation:sailA 9s ease-in-out infinite}
+@keyframes sailA{
+  0%{transform:translate(120px,222px) rotate(-4deg)}
+  50%{transform:translate(180px,214px) rotate(5deg)}
+  100%{transform:translate(120px,222px) rotate(-4deg)}
+}
+.boatB{animation:sailB 7s ease-in-out infinite}
+@keyframes sailB{
+  0%{transform:translate(330px,240px) rotate(4deg)}
+  50%{transform:translate(280px,232px) rotate(-5deg)}
+  100%{transform:translate(330px,240px) rotate(4deg)}
+}
+.stormBoat{animation:storm 2.6s ease-in-out infinite}
+@keyframes storm{
+  0%{transform:translate(120px,58px) rotate(-16deg)}
+  25%{transform:translate(230px,96px) rotate(14deg)}
+  50%{transform:translate(360px,44px) rotate(-18deg)}
+  75%{transform:translate(470px,98px) rotate(15deg)}
+  100%{transform:translate(120px,58px) rotate(-16deg)}
+}
+.calmBoat{animation:calm 6s ease-in-out infinite}
+@keyframes calm{
+  0%{transform:translate(120px,182px) rotate(-2deg)}
+  50%{transform:translate(420px,186px) rotate(2deg)}
+  100%{transform:translate(120px,182px) rotate(-2deg)}
+}
+.draw{stroke-dasharray:1400;stroke-dashoffset:1400;animation:draw 4s ease-in-out infinite}
+.d2{animation-duration:5s}
+@keyframes draw{0%{stroke-dashoffset:1400}45%{stroke-dashoffset:0}90%{stroke-dashoffset:0;opacity:1}100%{stroke-dashoffset:0;opacity:0}}
+
+.dropCoin{opacity:0}
+.dc1{animation:dropL 4s ease-in infinite}
+.dc2{animation:dropL 4s ease-in infinite 2s}
+.dc3{animation:dropR 4s ease-in infinite 1s}
+.dc4{animation:dropR 4s ease-in infinite 3s}
+@keyframes dropL{
+  0%{transform:translate(242px,-10px);opacity:0}
+  15%{opacity:1}
+  70%{transform:translate(242px,142px);opacity:1}
+  85%,100%{transform:translate(242px,142px);opacity:0}
+}
+@keyframes dropR{
+  0%{transform:translate(398px,-10px);opacity:0}
+  15%{opacity:1}
+  70%{transform:translate(398px,142px);opacity:1}
+  85%,100%{transform:translate(398px,142px);opacity:0}
+}
+.finalBoat{animation:fboat 10s ease-in-out infinite}
+@keyframes fboat{
+  0%{transform:translate(140px,96px) rotate(-3deg)}
+  50%{transform:translate(430px,92px) rotate(3deg)}
+  100%{transform:translate(140px,96px) rotate(-3deg)}
+}
+.finalBuoy{animation:fbuoy 3.4s ease-in-out infinite}
+@keyframes fbuoy{
+  0%,100%{transform:translate(560px,96px) rotate(-6deg)}
+  50%{transform:translate(560px,88px) rotate(6deg)}
+}
+#wheel.spin{animation:spin 9s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+#wheel{transform-origin:0 0}
+#buoyHolder{position:absolute;right:7%;bottom:26px;transition:transform 1.2s cubic-bezier(.3,.9,.3,1)}
+#buoyHolder svg{display:block;animation:bobbuoy 3.2s ease-in-out infinite}
+@keyframes bobbuoy{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-5px) rotate(5deg)}}
+.pulse{animation:pulse .6s ease}
+@keyframes pulse{0%{transform:scale(1)}45%{transform:scale(1.14)}100%{transform:scale(1)}}
+</style>
+</head>
+<body>
+
+<!-- ============ CHAPTER RAIL ============ -->
+<nav class="rail" aria-label="Chapters">
+  <a href="#c1"><span>Money</span><i></i></a>
+  <a href="#c2"><span>Wiggly prices</span><i></i></a>
+  <a href="#c3"><span>Wild sea</span><i></i></a>
+  <a href="#c4"><span>Two pockets</span><i></i></a>
+  <a href="#c5"><span>Freeze &amp; thaw</span><i></i></a>
+  <a href="#c6"><span>Everyone votes</span><i></i></a>
+  <a href="#c7"><span>Autopilot</span><i></i></a>
+  <a href="#c8"><span>Two deposits</span><i></i></a>
+  <a href="#c9"><span>Try it</span><i></i></a>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero" data-mood="calm">
+  <div class="wrap hero-grid">
+    <div>
+      <p class="eyebrow">bitbay.market · the picture-book version</p>
+      <h1>BitBay, explained like you're <em>five</em>.</h1>
+      <p class="hero-lede">It's a bay. Boats come in, boats go out, and the water keeps trying to find a comfortable level. Scroll down and we'll show you every part of it, one drawing at a time.</p>
+      <p class="scroll-cue" style="margin-top:26px">Start here <span></span></p>
+    </div>
+    <div class="hero-scene" aria-hidden="true">
+      <svg viewBox="0 0 520 320" preserveAspectRatio="xMidYMid slice">
+        <circle cx="430" cy="70" r="34" fill="#FFB627" opacity=".9"/>
+        <g opacity=".35">
+          <path d="M60 96q14-9 28 0t28 0" stroke="#4A6B76" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M120 74q11-7 22 0t22 0" stroke="#4A6B76" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        </g>
+        <!-- boats -->
+        <g class="boatA">
+          <path d="M-22 0 L22 0 L14 16 L-14 16 Z" fill="#14343F"/>
+          <path d="M0 -34 L0 -2 M0 -32 L18 -6 L0 -6 Z" stroke="#14343F" stroke-width="2.5" fill="#E2543B"/>
+        </g>
+        <g class="boatB">
+          <path d="M-16 0 L16 0 L10 12 L-10 12 Z" fill="#14343F"/>
+          <path d="M0 -26 L0 -2 M0 -24 L13 -5 L0 -5 Z" stroke="#14343F" stroke-width="2.2" fill="#16B5A8"/>
+        </g>
+        <!-- water layers -->
+        <g id="heroWaves">
+          <path class="w w1" d="M0 230 Q65 214 130 230 T260 230 T390 230 T520 230 T650 230 T780 230 T910 230 T1040 230 V320 H0 Z" fill="#9FD3D0" opacity=".75"/>
+          <path class="w w2" d="M0 250 Q65 234 130 250 T260 250 T390 250 T520 250 T650 250 T780 250 T910 250 T1040 250 V320 H0 Z" fill="#3FA8A2" opacity=".8"/>
+          <path class="w w3" d="M0 272 Q65 258 130 272 T260 272 T390 272 T520 272 T650 272 T780 272 T910 272 T1040 272 V320 H0 Z" fill="#14343F" opacity=".85"/>
+        </g>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- ============ 1 · MONEY WITHOUT A MIDDLE PERSON ============ -->
+<section class="chapter" id="c1" data-mood="calm">
+  <div class="wrap"><div class="card">
+    <p class="tag">Chart one · <b>What is $BAY?</b></p>
+    <h2>It's money you can hand to someone, without a grown-up in the middle.</h2>
+    <p class="kid">Normally, when you send money, a bank passes it along. The bank is slow, it can say no, and it <strong>keeps a little slice</strong>. BAY goes straight from your pocket to their pocket. Nobody in the middle. Press the button and watch both ways.</p>
+
+    <div class="scene">
+      <svg viewBox="0 0 640 190" role="img" aria-label="A coin travelling from one person to another, with and without a bank in the middle">
+        <!-- people -->
+        <g transform="translate(60,110)">
+          <circle cx="0" cy="-30" r="16" fill="#14343F"/>
+          <path d="M-20 20 q20-32 40 0 z" fill="#14343F"/>
+          <text x="0" y="46" text-anchor="middle" font-family="DM Mono, monospace" font-size="12" fill="#4A6B76">YOU</text>
+        </g>
+        <g transform="translate(580,110)">
+          <circle cx="0" cy="-30" r="16" fill="#14343F"/>
+          <path d="M-20 20 q20-32 40 0 z" fill="#14343F"/>
+          <text x="0" y="46" text-anchor="middle" font-family="DM Mono, monospace" font-size="12" fill="#4A6B76">YOUR FRIEND</text>
+        </g>
+        <!-- bank -->
+        <g id="bankGroup" transform="translate(320,96)" opacity="1">
+          <rect x="-46" y="-34" width="92" height="58" rx="4" fill="#CBDDDF"/>
+          <path d="M-54 -34 L0 -60 L54 -34 Z" fill="#4A6B76"/>
+          <rect x="-30" y="-16" width="10" height="40" fill="#fff"/>
+          <rect x="-5" y="-16" width="10" height="40" fill="#fff"/>
+          <rect x="20" y="-16" width="10" height="40" fill="#fff"/>
+          <text x="0" y="44" text-anchor="middle" font-family="DM Mono, monospace" font-size="12" fill="#4A6B76">MIDDLE PERSON</text>
+        </g>
+        <!-- path line -->
+        <path d="M92 76 H548" stroke="#4A6B76" stroke-width="1.5" stroke-dasharray="5 7" opacity=".45" fill="none"/>
+        <!-- coin -->
+        <g id="payCoin" transform="translate(92,76)">
+          <circle r="15" fill="#FFB627" stroke="#14343F" stroke-width="2"/>
+          <text y="5" text-anchor="middle" font-family="Fraunces, serif" font-weight="800" font-size="14" fill="#14343F">B</text>
+        </g>
+        <!-- fee crumb -->
+        <g id="feeCrumb" opacity="0" transform="translate(320,76)">
+          <circle r="6" fill="#E2543B"/>
+        </g>
+      </svg>
+      <div class="controls">
+        <button type="button" class="btn" id="payBank">Send it through a bank</button>
+        <button type="button" class="btn on" id="payBay">Send it as $BAY</button>
+        <span class="readout" id="payOut">Arrived in <b>2 seconds</b>. Fee taken: <b>none</b>.</span>
+      </div>
+    </div>
+
+    <p class="grown"><b>Grown-up words:</b> $BAY is a <span>peer-to-peer cryptocurrency</span> — a shared list of who owns what, kept by thousands of computers instead of one company. No bank has to approve your payment, and no one can freeze your account.</p>
+  </div></div>
+</section>
+
+<!-- ============ 2 · WHY PRICES WIGGLE ============ -->
+<section class="chapter" id="c2" data-mood="calm">
+  <div class="wrap"><div class="card">
+    <p class="tag">Chart two · <b>Why prices wiggle</b></p>
+    <h2>A price is just a tug-of-war between wanters and havers.</h2>
+    <p class="kid">Imagine ten cupcakes at a party. If two kids want a cupcake, they're cheap. If fifty kids want one, everyone starts <strong>offering more</strong> to get one. Same cupcakes — different price. Drag the slider and watch the seesaw tip.</p>
+
+    <div class="scene">
+      <svg viewBox="0 0 640 200" role="img" aria-label="A seesaw balancing how many people want the coin against how many coins exist">
+        <line x1="60" y1="160" x2="580" y2="160" stroke="#4A6B76" stroke-width="2" opacity=".3"/>
+        <path d="M320 160 L296 196 L344 196 Z" fill="#4A6B76" opacity=".55"/>
+        <g id="seesaw" transform="rotate(0 320 156)">
+          <rect x="110" y="150" width="420" height="12" rx="6" fill="#14343F"/>
+          <!-- wanters -->
+          <g id="wantSide">
+            <text x="160" y="132" text-anchor="middle" font-family="DM Mono, monospace" font-size="11" fill="#4A6B76">PEOPLE WHO WANT IT</text>
+            <g id="wanters"></g>
+          </g>
+          <!-- coins -->
+          <g>
+            <text x="478" y="132" text-anchor="middle" font-family="DM Mono, monospace" font-size="11" fill="#4A6B76">COINS FOR SALE</text>
+            <g id="stockCoins"></g>
+          </g>
+        </g>
+        <g id="priceTag" transform="translate(320,40)">
+          <rect x="-62" y="-24" width="124" height="46" rx="10" fill="#FFB627"/>
+          <text id="priceTxt" y="8" text-anchor="middle" font-family="Fraunces, serif" font-weight="900" font-size="26" fill="#14343F">$1.00</text>
+        </g>
+      </svg>
+      <label class="slider-label" for="demand">How many people want BAY today?</label>
+      <input type="range" id="demand" min="1" max="12" value="6">
+      <div class="controls"><span class="readout" id="demandOut"><b>6</b> wanters · <b>6</b> coins for sale</span></div>
+    </div>
+
+    <p class="grown"><b>Grown-up words:</b> price sits where <span>supply meets demand</span>. Demand jumps around all day and nobody can control it — so if you want a steadier price, the only lever you have left is the supply.</p>
+  </div></div>
+</section>
+
+<!-- ============ 3 · THE WILD SEA ============ -->
+<section class="chapter" id="c3" data-mood="wild">
+  <div class="wrap"><div class="card">
+    <p class="tag">Chart three · <b>The problem</b></p>
+    <h2>Most crypto is a stormy sea. Hard to buy a sandwich on a stormy sea.</h2>
+    <p class="kid">If a coin is worth one sandwich in the morning and half a sandwich by dinner, nobody wants to be paid in it. BitBay's whole idea is to <strong>calm the water down</strong> — not perfectly flat, just calm enough to actually use.</p>
+
+    <div class="scene">
+      <svg viewBox="0 0 640 220" role="img" aria-label="A jagged wild price line next to a calmer line">
+        <text x="20" y="26" font-family="DM Mono, monospace" font-size="11" fill="#E2543B">MOST CRYPTO · STORMY</text>
+        <path class="draw" d="M20 76 L60 40 L92 92 L128 32 L164 100 L200 44 L240 104 L276 36 L316 96 L352 48 L392 104 L432 40 L472 92 L512 44 L556 98 L600 52"
+              stroke="#E2543B" stroke-width="3" fill="none" stroke-linejoin="round"/>
+        <g class="stormBoat">
+          <path d="M-14 0 L14 0 L9 11 L-9 11 Z" fill="#14343F"/>
+          <path d="M0 -22 L0 -2" stroke="#14343F" stroke-width="2"/>
+        </g>
+
+        <line x1="20" y1="128" x2="620" y2="128" stroke="#4A6B76" stroke-width="1" opacity=".2"/>
+        <text x="20" y="152" font-family="DM Mono, monospace" font-size="11" fill="#0E8F86">BITBAY'S GOAL · CALMER</text>
+        <path class="draw d2" d="M20 190 Q80 178 140 190 T260 190 T380 190 T500 190 T620 190"
+              stroke="#16B5A8" stroke-width="3" fill="none"/>
+        <g class="calmBoat">
+          <path d="M-14 0 L14 0 L9 11 L-9 11 Z" fill="#14343F"/>
+          <path d="M0 -22 L0 -2" stroke="#14343F" stroke-width="2"/>
+        </g>
+      </svg>
+    </div>
+
+    <p class="grown"><b>Grown-up words:</b> this is <span>volatility</span>. A currency needs to be both a store of value and a medium of exchange, and wild swings break the second one. BitBay's answer is called the <span>dynamic peg</span> — but note the word <b>calmer</b>, not <b>fixed</b>. Nothing here promises a price.</p>
+  </div></div>
+</section>
+
+<!-- ============ 4 · TWO POCKETS ============ -->
+<section class="chapter" id="c4" data-mood="calm">
+  <div class="wrap"><div class="card">
+    <p class="tag">Chart four · <b>The big idea</b></p>
+    <h2>Every wallet has two pockets: one you spend from, one that rests.</h2>
+    <p class="kid">Your coins are split in two. <strong>Liquid</strong> coins are in your front pocket — spend them right now. <strong>Reserve</strong> coins are in the piggy bank — still 100% yours, but they take a while to come out, like money in a savings bond.</p>
+
+    <div class="scene">
+      <svg viewBox="0 0 640 230" role="img" aria-label="A wallet with a liquid pocket and a reserve pocket, coins dropping into each">
+        <rect x="150" y="70" width="340" height="130" rx="16" fill="#14343F"/>
+        <rect x="150" y="70" width="340" height="30" rx="14" fill="#0E2B34"/>
+        <!-- liquid pocket -->
+        <rect x="172" y="112" width="140" height="72" rx="10" fill="#16B5A8"/>
+        <text x="242" y="152" text-anchor="middle" font-family="Fraunces, serif" font-weight="800" font-size="17" fill="#08302D">LIQUID</text>
+        <text x="242" y="170" text-anchor="middle" font-family="DM Mono, monospace" font-size="10.5" fill="#08302D">SPEND IT NOW</text>
+        <!-- reserve pocket -->
+        <rect x="328" y="112" width="140" height="72" rx="10" fill="#8E9FE0"/>
+        <text x="398" y="152" text-anchor="middle" font-family="Fraunces, serif" font-weight="800" font-size="17" fill="#1E2657">RESERVE</text>
+        <text x="398" y="170" text-anchor="middle" font-family="DM Mono, monospace" font-size="10.5" fill="#1E2657">RESTING · YOURS</text>
+        <!-- dropping coins -->
+        <g class="dropCoin dc1"><circle r="11" fill="#FFB627" stroke="#14343F" stroke-width="2"/></g>
+        <g class="dropCoin dc2"><circle r="11" fill="#FFB627" stroke="#14343F" stroke-width="2"/></g>
+        <g class="dropCoin dc3"><circle r="11" fill="#FFB627" stroke="#14343F" stroke-width="2"/></g>
+        <g class="dropCoin dc4"><circle r="11" fill="#FFB627" stroke="#14343F" stroke-width="2"/></g>
+      </svg>
+    </div>
+
+    <p class="grown"><b>Grown-up words:</b> every address holds a <span>liquid balance</span> and a <span>reserve balance</span>. Reserve coins move with a time delay, which is what makes them behave a bit like a bond. You never lose them — they just aren't in circulation right now.</p>
+  </div></div>
+</section>
+
+<!-- ============ 5 · FREEZE & THAW ============ -->
+<section class="chapter" id="c5" data-mood="crash">
+  <div class="wrap"><div class="card">
+    <p class="tag">Chart five · <b>The dynamic peg</b></p>
+    <h2>When the price falls, the bay puts some coins to sleep.</h2>
+    <p class="kid">Fewer cupcakes at the party means each cupcake matters more. So when the price is dropping, holders can vote to <strong>freeze</strong> a slice of everyone's liquid coins into reserve — fewer coins out shopping, which <em>may</em> help the price of the rest. When the price is climbing too fast, they <strong>thaw</strong> some back out. Try both.</p>
+
+    <div class="scene">
+      <div class="harbour">
+        <div class="zone res">
+          <h3><span>Reserve · asleep in the dam</span><span id="resN">0 coins</span></h3>
+          <div class="coins" id="resCoins"></div>
+        </div>
+        <div class="zone liq">
+          <h3><span>Liquid · out shopping</span><span id="liqN">24 coins</span></h3>
+          <div class="coins" id="liqCoins"></div>
+        </div>
+      </div>
+      <div class="bars">
+        <div class="bar-row"><span class="lbl">COINS SHOPPING</span><span class="track"><span class="fill" id="supFill" style="width:100%;background:var(--liquid)"></span></span></div>
+        <div class="bar-row"><span class="lbl">PRICE PRESSURE</span><span class="track"><span class="fill" id="prFill" style="width:34%;background:var(--buoy)"></span></span></div>
+      </div>
+      <div class="controls">
+        <button type="button" class="btn cool" id="freezeBtn">❄ Price is falling — freeze some</button>
+        <button type="button" class="btn warm" id="thawBtn">☀ Price is climbing — thaw some</button>
+        <span class="readout" id="pegOut"><b>0%</b> of the supply is frozen</span>
+      </div>
+    </div>
+
+    <p class="grown"><b>Grown-up words:</b> this is the <span>dynamic peg</span> — adaptive supply control. Freezing shrinks the circulating supply and <b>may</b> support the price; thawing expands it and <b>may</b> reduce volatility. It is not a stablecoin, not a reserve of dollars, and not a guarantee of any price. It changes the supply and lets the market do the rest.</p>
+  </div></div>
+</section>
+
+<!-- ============ 6 · EVERYONE VOTES ============ -->
+<section class="chapter" id="c6" data-mood="steady">
+  <div class="wrap"><div class="card">
+    <p class="tag">Chart six · <b>Who's in charge?</b></p>
+    <h2>Nobody. Everybody. That's kind of the point.</h2>
+    <p class="kid">There's no boss pressing the freeze button. People who hold BAY and help run the network each <strong>raise a little flag</strong> for the direction they think it should go. The middle of all those flags wins. Cast your vote and watch the crowd decide.</p>
+
+    <div class="scene">
+      <div class="votes" id="voters"></div>
+      <svg viewBox="0 0 640 92" role="img" aria-label="An arrow showing the average of everyone's votes">
+        <line x1="320" y1="10" x2="320" y2="72" stroke="#4A6B76" stroke-width="1" stroke-dasharray="3 5" opacity=".5"/>
+        <text x="70" y="20" font-family="DM Mono, monospace" font-size="11" fill="#6B7CC7">MORE FROZEN</text>
+        <text x="500" y="20" font-family="DM Mono, monospace" font-size="11" fill="#0E8F86">MORE LIQUID</text>
+        <line x1="60" y1="46" x2="580" y2="46" stroke="#4A6B76" stroke-width="2" opacity=".25"/>
+        <g id="consensus" transform="translate(320,46)">
+          <circle r="15" fill="#FFB627" stroke="#14343F" stroke-width="2.5"/>
+          <path d="M-5 0 L5 0 M1 -4 L5 0 L1 4" stroke="#14343F" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        </g>
+        <text id="consensusTxt" x="320" y="84" text-anchor="middle" font-family="DM Mono, monospace" font-size="12" fill="#4A6B76">WAITING FOR VOTES</text>
+      </svg>
+      <div class="controls">
+        <button type="button" class="btn cool" id="voteFreeze">I vote: freeze more</button>
+        <button type="button" class="btn" id="voteLiquid">I vote: keep it liquid</button>
+        <button type="button" class="btn" id="voteAgain" style="border-style:dashed">Shuffle the crowd</button>
+      </div>
+    </div>
+
+    <p class="grown"><b>Grown-up words:</b> the vote is carried out by <span>stakers</span> — holders whose running wallets secure the network and get a say proportional to their stake. There is no company, foundation or admin key that can move the peg on its own.</p>
+  </div></div>
+</section>
+
+<!-- ============ 7 · AUTOPILOT ============ -->
+<section class="chapter" id="c7" data-mood="steady">
+  <div class="wrap"><div class="card">
+    <p class="tag">Chart seven · <b>Don't want to vote?</b></p>
+    <h2>Then let the ship's wheel steer itself.</h2>
+    <p class="kid">Voting every day sounds like homework. So the wallet can vote for you, using a rule that watches the price and picks a sensible direction. You can grab the wheel back <strong>whenever you like</strong>.</p>
+
+    <div class="scene" style="display:grid;grid-template-columns:1fr;gap:14px;align-items:center">
+      <svg viewBox="0 0 200 200" style="max-width:190px;margin:0 auto" role="img" aria-label="A ship's wheel that spins when autopilot is on">
+        <g transform="translate(100,100)"><g id="wheel">
+          <circle r="66" fill="none" stroke="#14343F" stroke-width="9"/>
+          <circle r="24" fill="#14343F"/>
+          <g stroke="#14343F" stroke-width="8" stroke-linecap="round">
+            <line x1="0" y1="-82" x2="0" y2="-20"/><line x1="0" y1="20" x2="0" y2="82"/>
+            <line x1="-82" y1="0" x2="-20" y2="0"/><line x1="20" y1="0" x2="82" y2="0"/>
+            <line x1="-58" y1="-58" x2="-14" y2="-14"/><line x1="14" y1="14" x2="58" y2="58"/>
+            <line x1="58" y1="-58" x2="14" y2="-14"/><line x1="-14" y1="14" x2="-58" y2="58"/>
+          </g>
+          <circle r="8" fill="#FFB627"/>
+        </g></g>
+      </svg>
+      <div class="controls" style="justify-content:center">
+        <button type="button" class="btn" id="steerMe">I'll steer</button>
+        <button type="button" class="btn on" id="steerAuto">Autopilot</button>
+        <span class="readout" id="steerOut">Autopilot is voting for you, using the built-in rule.</span>
+      </div>
+    </div>
+
+    <p class="grown"><b>Grown-up words:</b> the client ships an <span>automated voting algorithm</span> based on user preference, so casual holders still take part in supply decisions without watching charts.</p>
+  </div></div>
+</section>
+
+<!-- ============ 8 · DOUBLE DEPOSIT ESCROW ============ -->
+<section class="chapter" id="c8" data-mood="steady">
+  <div class="wrap"><div class="card">
+    <p class="tag">Chart eight · <b>The marketplace</b></p>
+    <h2>Both of you put a snack in the box. Cheat, and you both lose your snack.</h2>
+    <p class="kid">You want to buy a bike from a stranger on the internet. Scary! So you <em>both</em> put a deposit into a locked box that neither of you controls. Do the deal properly and you both get your deposit back. Try to cheat and <strong>your own deposit is gone too</strong> — so cheating is just a bad idea. No referee needed.</p>
+
+    <div class="scene">
+      <svg viewBox="0 0 640 200" role="img" aria-label="Two people each placing a deposit in a shared locked box">
+        <g transform="translate(90,120)">
+          <circle id="buyerFace" cx="0" cy="-34" r="18" fill="#14343F"/>
+          <path d="M-22 22 q22-34 44 0 z" fill="#14343F"/>
+          <text x="0" y="50" text-anchor="middle" font-family="DM Mono, monospace" font-size="11" fill="#4A6B76">BUYER</text>
+        </g>
+        <g transform="translate(550,120)">
+          <circle id="sellerFace" cx="0" cy="-34" r="18" fill="#14343F"/>
+          <path d="M-22 22 q22-34 44 0 z" fill="#14343F"/>
+          <text x="0" y="50" text-anchor="middle" font-family="DM Mono, monospace" font-size="11" fill="#4A6B76">SELLER</text>
+        </g>
+        <!-- box -->
+        <g transform="translate(320,110)">
+          <g id="boxLid" transform="translate(0,0)">
+            <rect x="-62" y="-46" width="124" height="20" rx="5" fill="#0E2B34"/>
+          </g>
+          <rect x="-62" y="-28" width="124" height="66" rx="7" fill="#14343F"/>
+          <circle cx="0" cy="4" r="13" fill="#FFB627"/>
+          <rect x="-4" y="2" width="8" height="14" rx="2" fill="#14343F"/>
+          <text x="0" y="58" text-anchor="middle" font-family="DM Mono, monospace" font-size="11" fill="#4A6B76">THE LOCKED BOX</text>
+        </g>
+        <g id="depA" transform="translate(150,64)" opacity="0"><circle r="13" fill="#16B5A8" stroke="#14343F" stroke-width="2"/></g>
+        <g id="depB" transform="translate(490,64)" opacity="0"><circle r="13" fill="#16B5A8" stroke="#14343F" stroke-width="2"/></g>
+        <g id="goods" transform="translate(320,168)" opacity="0">
+          <circle cx="-14" cy="0" r="9" fill="none" stroke="#E2543B" stroke-width="3"/>
+          <circle cx="14" cy="0" r="9" fill="none" stroke="#E2543B" stroke-width="3"/>
+          <path d="M-14 0 L0 -14 L14 0 M0 -14 L4 -20" stroke="#E2543B" stroke-width="3" fill="none" stroke-linecap="round"/>
+        </g>
+      </svg>
+      <div class="controls">
+        <button type="button" class="btn" id="escrowGood">Both keep the promise</button>
+        <button type="button" class="btn warm" id="escrowBad">Someone tries to cheat</button>
+      </div>
+      <p class="escrow-out" id="escrowOut">Press a button to run the trade.</p>
+    </div>
+
+    <p class="grown"><b>Grown-up words:</b> <span>double deposit escrow</span>. Both sides lock collateral into a contract that no third party holds, so the cheapest move for everyone is to behave. BitBay uses it for its decentralized markets, cash-for-coins swaps, hiring, auctions and barter — with no escrow agent and no escrow fee.</p>
+  </div></div>
+</section>
+
+<!-- ============ 9 · RECAP ============ -->
+<section class="chapter" id="c9" data-mood="calm">
+  <div class="wrap"><div class="card">
+    <p class="tag">Chart nine · <b>The whole bay, in one breath</b></p>
+    <h2>Money that steers itself, and a market where cheating costs you.</h2>
+    <p class="kid">BAY is money with no bank in the middle. Everyone holds it in two pockets. When the water gets rough, holders vote to freeze or thaw coins so the bay stays calmer. And when you trade with a stranger, you both put a deposit down so nobody has to trust anybody.</p>
+    <div class="scene">
+      <svg viewBox="0 0 640 150" role="img" aria-label="A calm bay with a boat and a bobbing buoy">
+        <g class="finalBoat">
+          <path d="M-26 0 L26 0 L18 18 L-18 18 Z" fill="#14343F"/>
+          <path d="M0 -38 L0 -3 M0 -36 L22 -8 L0 -8 Z" stroke="#14343F" stroke-width="2.5" fill="#FFB627"/>
+        </g>
+        <g class="finalBuoy">
+          <path d="M0 -18 L11 8 L-11 8 Z" fill="#E2543B"/>
+          <rect x="-13" y="8" width="26" height="7" rx="3" fill="#14343F"/>
+        </g>
+        <path class="w w2" d="M0 104 Q80 88 160 104 T320 104 T480 104 T640 104 T800 104 T960 104 T1120 104 T1280 104 V150 H0 Z" fill="#3FA8A2" opacity=".85"/>
+        <path class="w w3" d="M0 122 Q80 110 160 122 T320 122 T480 122 T640 122 T800 122 T960 122 T1120 122 T1280 122 V150 H0 Z" fill="#14343F" opacity=".9"/>
+      </svg>
+    </div>
+    <p class="grown"><b>One more time, plainly:</b> the peg changes how many coins are moving around. It does not promise a price, it is not backed by dollars, and the price of BAY can still go down. This page is a simplified picture, not financial advice.</p>
+  </div></div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <h3>Ready for the grown-up version?</h3>
+    <p class="small" style="max-width:56ch;font-family:var(--body);font-size:17px;color:#CFE3E6">Everything on this page is the cartoon. The real thing lives here.</p>
+    <div class="links">
+      <a href="https://bitbay.market/" target="_blank" rel="noopener">bitbay.market</a>
+      <a class="ghost" href="https://bitbay.market/downloads/bitbay-dynamic-peg-intro.pdf" target="_blank" rel="noopener">Quick guide (PDF)</a>
+      <a class="ghost" href="https://app.bitbay.market" target="_blank" rel="noopener">Web marketplace</a>
+      <a class="ghost" href="https://wallet.bitbay.market/" target="_blank" rel="noopener">Web wallet</a>
+      <a class="ghost" href="https://bitbay.market/double-deposit-escrow/index.html" target="_blank" rel="noopener">Double deposit escrow</a>
+      <a class="ghost" href="https://t.me/bitbayofficial" target="_blank" rel="noopener">Community</a>
+    </div>
+    <p class="small"><b>Please read this bit.</b> This page is an unofficial, simplified explainer made for beginners. Everything is a metaphor and the numbers in the animations are made up. The dynamic peg adjusts coin supply — it is <b>not</b> a stablecoin, <b>not</b> backed by any asset, and <b>not</b> a promise about the price of $BAY. Crypto can lose value quickly and you can lose everything you put in. Nothing here is financial advice. Check bitbay.market and the whitepaper before doing anything.</p>
+  </div>
+</footer>
+
+<!-- ============ FIXED TIDE BAR ============ -->
+<div class="tide" id="tide" aria-hidden="true">
+  <svg viewBox="0 0 1200 78" preserveAspectRatio="none">
+    <g id="waveGroup">
+      <path class="tw t1" d="M0 34 Q75 16 150 34 T300 34 T450 34 T600 34 T750 34 T900 34 T1050 34 T1200 34 T1350 34 T1500 34 V78 H0 Z" fill="#3FA8A2" opacity=".75"/>
+      <path class="tw t2" d="M0 46 Q75 30 150 46 T300 46 T450 46 T600 46 T750 46 T900 46 T1050 46 T1200 46 T1350 46 T1500 46 V78 H0 Z" fill="#14343F"/>
+    </g>
+  </svg>
+  <div id="buoyHolder">
+    <svg width="40" height="52" viewBox="-18 -34 36 52">
+      <line x1="0" y1="-30" x2="0" y2="-18" stroke="#fff" stroke-width="2"/>
+      <circle cx="0" cy="-31" r="3.5" fill="#fff"/>
+      <path d="M0 -18 L12 8 L-12 8 Z" fill="#FFB627"/>
+      <rect x="-14" y="8" width="28" height="8" rx="4" fill="#E2543B"/>
+    </svg>
+  </div>
+  <p class="tide-meta">Price buoy · <b id="moodTxt">calm water</b></p>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var $ = function(id){ return document.getElementById(id); };
+
+  /* ---------- 1 · PAYMENT ---------- */
+  var coin=$('payCoin'), bank=$('bankGroup'), fee=$('feeCrumb'),
+      payOut=$('payOut'), bBank=$('payBank'), bBay=$('payBay'), payTimer;
+
+  function runPay(withBank){
+    bBank.classList.toggle('on', withBank);
+    bBay.classList.toggle('on', !withBank);
+    bank.style.transition='opacity .5s';
+    bank.style.opacity = withBank ? 1 : .12;
+    clearTimeout(payTimer);
+    fee.style.opacity=0;
+    fee.style.transition='none';
+    fee.style.transform='translate(320px,76px)';
+    coin.style.transition='none';
+    coin.style.transform='translate(92px,76px)';
+    // force reflow so the reset takes effect before we animate
+    void coin.getBoundingClientRect();
+    if(withBank){
+      coin.style.transition='transform 1400ms ease-in-out';
+      coin.style.transform='translate(320px,76px)';
+      payTimer=setTimeout(function(){
+        fee.style.transition='transform .8s ease,opacity .3s';
+        fee.style.opacity=1;
+        fee.style.transform='translate(320px,116px)';
+        coin.style.transition='transform 1600ms ease-in-out 500ms';
+        coin.style.transform='translate(548px,76px)';
+      },1450);
+      payOut.innerHTML='Arrived in <b>3 days</b>. Fee taken: <b>a slice</b>. The bank could also say no.';
+    }else{
+      coin.style.transition='transform 900ms cubic-bezier(.4,0,.3,1)';
+      coin.style.transform='translate(548px,76px)';
+      payOut.innerHTML='Arrived in <b>2 seconds</b>. Fee taken: <b>none</b>. Nobody could say no.';
+    }
+  }
+  bBank.addEventListener('click',function(){ runPay(true); });
+  bBay.addEventListener('click',function(){ runPay(false); });
+
+  /* ---------- 2 · SEESAW ---------- */
+  var seesaw=$('seesaw'), wanters=$('wanters'), stock=$('stockCoins'),
+      priceTxt=$('priceTxt'), demand=$('demand'), demandOut=$('demandOut');
+  var NS='http://www.w3.org/2000/svg';
+
+  function drawSeesaw(){
+    var n = parseInt(demand.value,10), supply = 6;
+    wanters.innerHTML=''; stock.innerHTML='';
+    for(var i=0;i<n;i++){
+      var c=document.createElementNS(NS,'circle');
+      c.setAttribute('cx', 122 + (i%6)*15);
+      c.setAttribute('cy', 138 - Math.floor(i/6)*16);
+      c.setAttribute('r','6'); c.setAttribute('fill','#14343F');
+      wanters.appendChild(c);
+    }
+    for(var j=0;j<supply;j++){
+      var k=document.createElementNS(NS,'circle');
+      k.setAttribute('cx', 440 + (j%6)*15);
+      k.setAttribute('cy', 138);
+      k.setAttribute('r','6'); k.setAttribute('fill','#FFB627');
+      k.setAttribute('stroke','#14343F'); k.setAttribute('stroke-width','1.5');
+      stock.appendChild(k);
+    }
+    var tilt = Math.max(-9, Math.min(9, (n - supply) * 1.6));
+    seesaw.style.transition='transform .55s cubic-bezier(.2,.9,.3,1)';
+    seesaw.style.transformOrigin='320px 156px';
+    seesaw.style.transform='rotate('+(-tilt)+'deg)';
+    var price = (0.25 + n*0.18).toFixed(2);
+    priceTxt.textContent='$'+price;
+    demandOut.innerHTML='<b>'+n+'</b> wanters · <b>'+supply+'</b> coins for sale';
+  }
+  demand.addEventListener('input',drawSeesaw);
+  drawSeesaw();
+
+  /* ---------- 5 · FREEZE / THAW ---------- */
+  var TOTAL=24, frozen=0;
+  var liqC=$('liqCoins'), resC=$('resCoins'), liqN=$('liqN'), resN=$('resN'),
+      supFill=$('supFill'), prFill=$('prFill'), pegOut=$('pegOut');
+
+  function makeCoin(f){
+    var d=document.createElement('span');
+    d.className='coin'+(f?' f':'');
+    return d;
+  }
+  function renderHarbour(){
+    liqC.innerHTML=''; resC.innerHTML='';
+    for(var i=0;i<TOTAL-frozen;i++) liqC.appendChild(makeCoin(false));
+    for(var j=0;j<frozen;j++) resC.appendChild(makeCoin(true));
+    var liquid = TOTAL-frozen;
+    liqN.textContent = liquid+' coin'+(liquid===1?'':'s');
+    resN.textContent = frozen+' coin'+(frozen===1?'':'s');
+    var pct = Math.round(frozen/TOTAL*100);
+    supFill.style.width = (liquid/TOTAL*100)+'%';
+    prFill.style.width = Math.min(100, 34 + pct*0.9)+'%';
+    pegOut.innerHTML='<b>'+pct+'%</b> of the supply is frozen'+(pct>0?' · fewer coins out shopping':'');
+  }
+  $('freezeBtn').addEventListener('click',function(){
+    if(frozen>=TOTAL-4){ pegOut.innerHTML='<b>The dam is nearly full.</b> The peg never freezes everything.'; return; }
+    frozen+=4; renderHarbour();
+  });
+  $('thawBtn').addEventListener('click',function(){
+    if(frozen<=0){ pegOut.innerHTML='<b>Nothing is frozen.</b> Every coin is already out shopping.'; return; }
+    frozen-=4; renderHarbour();
+  });
+  renderHarbour();
+
+  /* ---------- 6 · VOTING ---------- */
+  var votersEl=$('voters'), consensus=$('consensus'), cTxt=$('consensusTxt');
+  var CROWD=14, votes=[];
+
+  function buildCrowd(){
+    votersEl.innerHTML=''; votes=[];
+    for(var i=0;i<CROWD;i++){
+      var v=document.createElement('div');
+      v.className='voter';
+      v.innerHTML='<div class="head"></div><div class="flag"></div>';
+      votersEl.appendChild(v);
+      votes.push(null);
+    }
+    var me=document.createElement('div');
+    me.className='voter me'; me.id='meVoter';
+    me.innerHTML='<div class="head"></div><div class="flag"></div><div>you</div>';
+    votersEl.appendChild(me);
+    consensus.style.transition='transform 1s cubic-bezier(.2,.9,.3,1)';
+    consensus.style.transform='translate(320px,46px)';
+    cTxt.textContent='WAITING FOR VOTES';
+  }
+  function castAll(myVote){
+    var kids=votersEl.querySelectorAll('.voter:not(.me)');
+    var up=0;
+    Array.prototype.forEach.call(kids,function(v,i){
+      setTimeout(function(){
+        var dir = Math.random() < (myVote==='up'?0.58:0.42) ? 'up':'down';
+        if(dir==='up') up++;
+        v.classList.remove('up','down');
+        v.classList.add('cast',dir);
+        if(i===kids.length-1) finish(myVote);
+      }, reduce?0:i*90);
+    });
+    var me=$('meVoter');
+    me.classList.remove('up','down');
+    me.classList.add('cast', myVote);
+  }
+  function finish(myVote){
+    var ups=votersEl.querySelectorAll('.voter.up').length;
+    var total=votersEl.querySelectorAll('.voter.cast').length;
+    var ratio = ups/total;                 // 1 = all liquid, 0 = all frozen
+    var x = 130 + ratio*380;
+    consensus.style.transform='translate('+x+'px,46px)';
+    var pct=Math.round(ratio*100);
+    cTxt.textContent='THE CROWD SAYS: '+pct+'% LIQUID · '+(100-pct)+'% FROZEN';
+  }
+  $('voteLiquid').addEventListener('click',function(){ castAll('up'); });
+  $('voteFreeze').addEventListener('click',function(){ castAll('down'); });
+  $('voteAgain').addEventListener('click',buildCrowd);
+  buildCrowd();
+
+  /* ---------- 7 · AUTOPILOT ---------- */
+  var wheel=$('wheel'), steerOut=$('steerOut'), sMe=$('steerMe'), sAuto=$('steerAuto');
+  function setSteer(auto){
+    sAuto.classList.toggle('on',auto);
+    sMe.classList.toggle('on',!auto);
+    wheel.classList.toggle('spin', auto && !reduce);
+    steerOut.textContent = auto
+      ? 'Autopilot is voting for you, using the built-in rule.'
+      : 'You are voting by hand, every round.';
+  }
+  sMe.addEventListener('click',function(){ setSteer(false); });
+  sAuto.addEventListener('click',function(){ setSteer(true); });
+  setSteer(true);
+
+  /* ---------- 8 · ESCROW ---------- */
+  var depA=$('depA'), depB=$('depB'), goods=$('goods'), lid=$('boxLid'),
+      eOut=$('escrowOut'), bFace=$('buyerFace'), sFace=$('sellerFace'), eTimers=[];
+
+  function clearTimers(){ eTimers.forEach(clearTimeout); eTimers=[]; }
+  function after(ms,fn){ eTimers.push(setTimeout(fn, reduce?0:ms)); }
+  function resetEscrow(){
+    clearTimers();
+    [depA,depB].forEach(function(d){ d.style.transition='none'; d.style.opacity=0; });
+    depA.style.transform='translate(150px,64px)';
+    depB.style.transform='translate(490px,64px)';
+    depA.querySelector('circle').setAttribute('fill','#16B5A8');
+    depB.querySelector('circle').setAttribute('fill','#16B5A8');
+    goods.style.transition='none'; goods.style.opacity=0;
+    lid.style.transition='none'; lid.style.transform='translate(0px,0px)';
+    bFace.setAttribute('fill','#14343F'); sFace.setAttribute('fill','#14343F');
+    void depA.getBoundingClientRect();
+  }
+  function runEscrow(honest){
+    resetEscrow();
+    eOut.className='escrow-out';
+    eOut.innerHTML='Both sides lock a deposit into the box…';
+    after(60,function(){
+      [depA,depB].forEach(function(d){ d.style.transition='transform 1s cubic-bezier(.4,0,.2,1),opacity .3s'; d.style.opacity=1; });
+      depA.style.transform='translate(300px,110px)';
+      depB.style.transform='translate(340px,110px)';
+    });
+    if(honest){
+      after(1300,function(){
+        eOut.innerHTML='Bike handed over. Payment sent. Nobody blinked.';
+        goods.style.transition='opacity .5s'; goods.style.opacity=1;
+      });
+      after(2300,function(){
+        lid.style.transition='transform .7s cubic-bezier(.3,1.4,.4,1)';
+        lid.style.transform='translate(0px,-26px)';
+        [depA,depB].forEach(function(d){ d.style.transition='transform 1.1s cubic-bezier(.3,.9,.3,1)'; });
+        depA.style.transform='translate(150px,64px)';
+        depB.style.transform='translate(490px,64px)';
+        eOut.className='escrow-out good';
+        eOut.innerHTML='<b>Deal done.</b> Both deposits come straight back. Total cost of trusting a stranger: <b>nothing</b>.';
+      });
+    }else{
+      after(1300,function(){
+        eOut.innerHTML='The seller never sends the bike…';
+        sFace.setAttribute('fill','#E2543B');
+      });
+      after(2300,function(){
+        bFace.setAttribute('fill','#E2543B');
+        [depA,depB].forEach(function(d){
+          d.style.transition='transform .5s';
+          d.querySelector('circle').setAttribute('fill','#8E9FE0');
+        });
+        eOut.className='escrow-out bad';
+        eOut.innerHTML='<b>Both deposits stay locked in the box.</b> The cheater loses their own money too — which is exactly why almost nobody cheats.';
+      });
+    }
+  }
+  $('escrowGood').addEventListener('click',function(){ runEscrow(true); });
+  $('escrowBad').addEventListener('click',function(){ runEscrow(false); });
+
+  /* ---------- SIGNATURE · TIDE BAR REACTS TO THE CHAPTER ---------- */
+  var buoy=$('buoyHolder'), waveG=$('waveGroup'), moodTxt=$('moodTxt');
+  var MOODS={
+    calm:   {y:0,  amp:1,   label:'calm water'},
+    wild:   {y:-16,amp:2.3, label:'storm · price all over the place'},
+    crash:  {y:14, amp:1.8, label:'falling · time to freeze coins'},
+    steady: {y:-4, amp:.65, label:'steadying · the bay is working'}
+  };
+  function setMood(m){
+    var s=MOODS[m]||MOODS.calm;
+    buoy.style.transform='translateY('+s.y+'px)';
+    waveG.style.transformOrigin='center bottom';
+    waveG.style.transform='scaleY('+s.amp+')';
+    moodTxt.textContent=s.label;
+  }
+  var rail=document.querySelectorAll('.rail a');
+  var sections=document.querySelectorAll('[data-mood]');
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          setMood(e.target.getAttribute('data-mood'));
+          var id=e.target.id;
+          rail.forEach(function(a){ a.classList.toggle('on', a.getAttribute('href')==='#'+id); });
+        }
+      });
+    },{rootMargin:'-45% 0px -45% 0px'});
+    sections.forEach(function(s){ io.observe(s); });
+  }
+  setMood('calm');
+})();
+</script>
+</body>
+</html>

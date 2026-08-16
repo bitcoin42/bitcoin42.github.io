@@ -147,6 +147,23 @@ landing page uses (LG-1, LG-2).
 
 ---
 
+## J. `bitbay-explained.html` — added 2026-08-16
+
+A standalone, supplied explainer page for BitBay/$BAY, linked from every "BitBay" mention on the
+landing page (BB-4 in `AUDIT.md`). Its claims are **not evaluated here individually** — the page is
+BitBay's own self-description of its own product (dynamic peg, double-deposit escrow, no admin key,
+automated staker voting, an autopilot mode), not a claim this repository's audit scope covers or can
+verify, the same treatment given to zkMe's vendor claims in section F. The page carries its own
+disclaimer to that effect ("unofficial, simplified explainer... not a promise about the price of
+$BAY... Nothing here is financial advice").
+
+**Status: unverified (vendor description), by design — not tracked per-claim.** What this repo
+_does_ take responsibility for is unchanged elsewhere: `history.p2`/`history.citation`'s "BitBay"
+sentences (D-series, historical/factual) keep their existing evidence and status; only their link
+target changed, from `bitbay.market` to this page.
+
+---
+
 ## Summary
 
 | Status             | Count |
